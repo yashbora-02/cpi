@@ -16,7 +16,7 @@ export default function AgreementModal({ onClose }: { onClose: () => void }) {
             <strong>Order Number:</strong> {orderNumber}
           </p>
           <p>
-            <strong>Purchaser's Name:</strong> {purchaser}
+            <strong>Purchaser Name:</strong> {purchaser}
           </p>
           <p>
             <strong>Date:</strong> {date}

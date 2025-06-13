@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from '@/components/Sidebar';
-
+import Image from 'next/image';
 const playlists = [
   {
     title: 'Why Your Organization Needs a CPR Trainer',
@@ -36,7 +36,7 @@ export default function VideoPlayerPage() {
               key={index}
               className="w-full md:w-[30%] bg-white border rounded shadow hover:shadow-md transition"
             >
-              <img
+              <Image
                 src={`https://img.youtube.com/vi/${playlist.videoId}/hqdefault.jpg`}
                 alt={playlist.title}
                 className="w-full h-48 object-cover rounded-t"

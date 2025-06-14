@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Sidebar from '@/components/Sidebar';
-import ReauthorizeModal from '@/components/ReauthorizeModal';
+import { useState } from "react";
+import Sidebar from "@/components/Sidebar";
+import ReauthorizeModal from "@/components/ReauthorizeModal";
 
 export default function ReauthorizeInstructorsPage() {
-  const [group, setGroup] = useState('');
-  const [site, setSite] = useState('Arizona Provider Training, LLC');
+  const [group, setGroup] = useState("");
+  const [site, setSite] = useState("Arizona Provider Training, LLC");
   const [showModal, setShowModal] = useState(false);
 
   const handleSearch = () => {
     if (group && site) {
       setShowModal(true);
     } else {
-      alert('Please select a group and site');
+      alert("Please select a group and site");
     }
   };
 
@@ -21,7 +21,9 @@ export default function ReauthorizeInstructorsPage() {
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
       <main className="flex-1 p-8 max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Reauthorize Instructors</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">
+          Reauthorize Instructors
+        </h1>
 
         <div className="bg-white p-6 rounded shadow">
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -32,7 +34,7 @@ export default function ReauthorizeInstructorsPage() {
               <select
                 value={group}
                 onChange={(e) => setGroup(e.target.value)}
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded text-gray-600 placeholder-gray-600"
               >
                 <option value="">-- Select Group --</option>
                 <option>Current to 90 Days Past Due</option>
@@ -42,11 +44,13 @@ export default function ReauthorizeInstructorsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700">Select Site</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700">
+                Select Site
+              </label>
               <select
                 value={site}
                 onChange={(e) => setSite(e.target.value)}
-                className="w-full border p-2 rounded"
+                className="w-full border p-2 rounded text-gray-600 placeholder-gray-600"
               >
                 <option>Arizona Provider Training, LLC</option>
                 <option>CPR Mobile Training</option>

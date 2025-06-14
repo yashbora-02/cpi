@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -24,10 +24,10 @@ export default function Sidebar() {
       <DropdownSection
         label="General"
         isOpen={open.general}
-        onToggle={() => toggle('general')}
+        onToggle={() => toggle("general")}
         links={[
-          { label: 'Dashboard', path: '/dashboard' },
-          { label: 'Video Player', path: '/video' },
+          { label: "Dashboard", path: "/dashboard" },
+          { label: "Video Player", path: "/video" },
         ]}
         currentPath={pathname}
       />
@@ -36,12 +36,14 @@ export default function Sidebar() {
       <DropdownSection
         label="Instructors"
         isOpen={open.instructors}
-        onToggle={() => toggle('instructors')}
+        onToggle={() => toggle("instructors")}
         links={[
-          { label: 'Manage Instructors', path: '/instructors/manage' },
-          { label: 'Reauthorize Instructors', path: '/instructors/reauthorize' },
-          { label: 'Instructor Development', path: '/instructors/development' },
-          { label: 'Add Instructors', path: '/instructors/add' },
+          { label: "Manage Instructors", path: "/instructors/manage" },
+          {
+            label: "Reauthorize Instructors",
+            path: "/instructors/reauthorize",
+          },
+          { label: "Instructor Development", path: "/instructors/development" },
         ]}
         currentPath={pathname}
       />
@@ -50,11 +52,11 @@ export default function Sidebar() {
       <DropdownSection
         label="Training"
         isOpen={open.training}
-        onToggle={() => toggle('training')}
+        onToggle={() => toggle("training")}
         links={[
-          { label: 'Create Class - Blended', path: '/training/blended' },
-          { label: 'Create Class - Digital', path: '/training/digital' },
-          { label: 'Student Search', path: '/students/search' },
+          { label: "Create Class - Blended", path: "/training/blended" },
+          { label: "Create Class - Digital", path: "/training/digital" },
+          { label: "Student Search", path: "/students/search" },
         ]}
         currentPath={pathname}
       />
@@ -84,7 +86,7 @@ function DropdownSection({
         className="w-full flex justify-between items-center text-left font-semibold text-gray-800 hover:text-blue-600"
       >
         {label}
-        <span className="text-xs">{isOpen ? '▲' : '▼'}</span>
+        <span className="text-xs">{isOpen ? "▲" : "▼"}</span>
       </button>
       {isOpen && (
         <div className="ml-2 mt-2 flex flex-col gap-1">
@@ -93,7 +95,9 @@ function DropdownSection({
               key={item.path}
               href={item.path}
               className={`p-2 rounded hover:bg-blue-100 text-sm ${
-                currentPath === item.path ? 'bg-blue-500 text-white' : 'text-gray-700'
+                currentPath === item.path
+                  ? "bg-blue-500 text-white"
+                  : "text-gray-700"
               }`}
             >
               {item.label}

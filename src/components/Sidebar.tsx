@@ -54,8 +54,10 @@ export default function Sidebar() {
         isOpen={open.training}
         onToggle={() => toggle("training")}
         links={[
-          { label: "Create Class - Blended", path: "/training/blended" },
-          { label: "Create Class - Digital", path: "/training/digital" },
+          {
+            label: "Create Class - Blended/Online",
+            path: "/training/blended-online",
+          },
           { label: "Student Search", path: "/students/search" },
         ]}
         currentPath={pathname}

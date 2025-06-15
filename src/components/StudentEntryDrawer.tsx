@@ -42,11 +42,6 @@ export default function StudentEntryDrawer({
               placeholder="Email"
               className="border p-2 rounded text-gray-800"
             />
-            <input
-              type="text"
-              placeholder="Cell Phone"
-              className="border p-2 rounded text-gray-800"
-            />
           </div>
         ))}
 

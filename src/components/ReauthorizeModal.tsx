@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import CheckoutModal from './CheckoutModal';
+import { useState } from "react";
+import CheckoutModal from "./CheckoutModal";
 
 const mockInstructors = [
-  { name: 'Berenisse Molinar', id: '2436436', expiration: '08/03/2025' },
-  { name: 'Cassandra Gilmore', id: '4864850', expiration: '08/30/2025' },
-  { name: 'Dolores Delgado', id: '2881335', expiration: '08/20/2025' },
-  { name: 'Lizeth Flores', id: '9842626', expiration: '07/02/2025' },
-  { name: 'Manuel Gongora', id: '9842627', expiration: '08/06/2025' },
-  { name: 'Michelle Hale', id: '4478458', expiration: '06/16/2025' },
-  { name: 'Monica Martinek', id: '3537880', expiration: '08/27/2025' },
+  { name: "Berenisse Molinar", id: "2436436", expiration: "08/03/2025" },
+  { name: "Cassandra Gilmore", id: "4864850", expiration: "08/30/2025" },
+  { name: "Dolores Delgado", id: "2881335", expiration: "08/20/2025" },
+  { name: "Lizeth Flores", id: "9842626", expiration: "07/02/2025" },
+  { name: "Manuel Gongora", id: "9842627", expiration: "08/06/2025" },
+  { name: "Michelle Hale", id: "4478458", expiration: "06/16/2025" },
+  { name: "Monica Martinek", id: "3537880", expiration: "08/27/2025" },
 ];
 
 export default function ReauthorizeModal({ onClose }: { onClose: () => void }) {
@@ -27,7 +27,10 @@ export default function ReauthorizeModal({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-40 z-40" onClick={onClose}></div>
+      <div
+        className="fixed inset-0 bg-black/40 bg-opacity-40 z-40"
+        onClick={onClose}
+      ></div>
       <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-white z-50 p-6 rounded shadow-lg max-w-3xl w-full">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Expiring Instructors &gt;&gt; Current to 90 Days Past Due
@@ -35,7 +38,7 @@ export default function ReauthorizeModal({ onClose }: { onClose: () => void }) {
 
         <div className="overflow-x-auto max-h-[60vh]">
           <table className="w-full table-auto text-sm">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-100 text-gray-600">
               <tr>
                 <th className="p-2 text-left">Instructor</th>
                 <th className="p-2 text-left">Instructor ID</th>
@@ -46,7 +49,7 @@ export default function ReauthorizeModal({ onClose }: { onClose: () => void }) {
             </thead>
             <tbody>
               {mockInstructors.map((inst, i) => (
-                <tr key={i} className="border-b hover:bg-gray-50">
+                <tr key={i} className="border-b hover:bg-gray-50 text-gray-600">
                   <td className="p-2">{inst.name}</td>
                   <td className="p-2">{inst.id}</td>
                   <td className="p-2">{inst.expiration}</td>

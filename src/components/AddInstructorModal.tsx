@@ -1,76 +1,183 @@
-// components/AddInstructorModal.tsx
+// AddInstructorModal.tsx
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
-
-interface Props {
-  show: boolean;
-  setShow: Dispatch<SetStateAction<boolean>>;
-  selection: string;
-  setSelection: Dispatch<SetStateAction<string>>;
-  onContinue: () => void;
-}
+import React, { useState } from "react";
 
 export default function AddInstructorModal({
   show,
   setShow,
-  selection,
-  setSelection,
-  onContinue,
-}: Props) {
+}: {
+  show: boolean;
+  setShow: (val: boolean) => void;
+}) {
+  const [step, setStep] = useState(1);
+  const [selection, setSelection] = useState("new");
+  const [quantity, setQuantity] = useState(1);
+  const [orderNumber] = useState(() => Math.floor(Math.random() * 10000000));
+  const date = new Date().toLocaleDateString();
+
+  const close = () => {
+    setShow(false);
+    setStep(1);
+    setSelection("new");
+    setQuantity(1);
+  };
+
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white w-full max-w-md rounded shadow-lg">
-        <div className="bg-green-600 text-white px-4 py-2 flex justify-between items-center rounded-t">
-          <h2 className="text-lg font-semibold">Add Instructor</h2>
-          <button onClick={() => setShow(false)} className="text-xl font-bold">
-            &times;
-          </button>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4">
+      <div className="bg-white text-black rounded-lg shadow-xl p-6 max-w-xl w-full mt-20 border border-gray-300">
+        {step === 1 && (
+          <>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-green-700">Add Instructor</h2>
+              <button onClick={close} className="text-gray-500 text-2xl">×</button>
+            </div>
+            <p className="mb-4 text-sm text-gray-800">
+              Select to add a New instructor, Shared instructor or Change of Affiliation.
+            </p>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input type="radio" checked readOnly className="mr-2 text-green-600" />
+                Purchase or Complete New Instructor Application
+              </label>
+              <label className="flex items-center text-gray-400">
+                <input type="radio" disabled className="mr-2 text-gray-300" /> Shared Instructor
+              </label>
+              <label className="flex items-center text-gray-400">
+                <input type="radio" disabled className="mr-2 text-gray-300" /> Instructor Change of Affiliation
+              </label>
+            </div>
+            <div className="flex justify-end mt-6">
+              <button onClick={() => setStep(2)} className="bg-green-600 text-white px-4 py-2 rounded">
+                CONTINUE WITH SELECTION
+              </button>
+            </div>
+          </>
+        )}
 
-        <div className="p-4">
-          <p className="mb-4 text-gray-700">
-            Select to add a New instructor, Shared instructor or Change of
-            Affiliation.
-          </p>
-
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-gray-500">
-              <input
-                type="radio"
-                name="instructorType"
-                value="new"
-                checked={selection === "new"}
-                onChange={() => setSelection("new")}
-                className="accent-green-600"
-              />
-              <span>Purchase or Complete New Instructor Application</span>
-            </label>
-
-            <label className="flex items-center gap-2 text-gray-500">
-              <input
-                type="radio"
-                name="instructorType"
-                value="shared"
-                checked={selection === "shared"}
-                onChange={() => setSelection("shared")}
-                className="accent-green-600"
-              />
-              <span>Shared Instructor</span>
-            </label>
-          </div>
-
-          <div className="mt-6 flex justify-end">
+        {step === 2 && (
+          <>
+            <h2 className="text-xl font-bold mb-4">Instructor Application</h2>
+            <label className="block text-sm mb-1">Quantity</label>
+            <input
+              type="number"
+              min={1}
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="w-full border px-2 py-1 rounded mb-4"
+            />
             <button
-              onClick={onContinue}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              onClick={() => setStep(3)}
+              className="bg-green-600 text-white px-4 py-2 rounded"
             >
-              CONTINUE WITH SELECTION
+              PURCHASE NOW
             </button>
-          </div>
-        </div>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <h2 className="text-xl font-bold mb-4">Shopping Cart Details</h2>
+            <p className="text-sm mb-2">OL-NIMF - Online New Instructor Member Fee</p>
+            <p>Quantity: {quantity}</p>
+            <p>Price: $35.00</p>
+            <p className="mb-4">Subtotal: ${(quantity * 35).toFixed(2)}</p>
+            <button onClick={() => setStep(4)} className="bg-blue-500 text-white px-4 py-2 rounded">
+              Continue Checkout
+            </button>
+          </>
+        )}
+
+        {step === 4 && (
+          <>
+            <h2 className="text-xl font-bold mb-4">Purchase Agreement</h2>
+            <p className="mb-1">Order Number: {orderNumber}</p>
+            <p className="mb-1">Purchaser's Name: Alison B Pattison</p>
+            <p className="mb-4">Date: {date}</p>
+            <p className="mb-4 text-sm text-gray-700">
+              The following items are on your order and are ready for purchase.
+            </p>
+            <div className="flex justify-between">
+              <button onClick={close} className="bg-red-500 text-white px-4 py-2 rounded">
+                Decline
+              </button>
+              <button onClick={() => setStep(5)} className="bg-green-600 text-white px-4 py-2 rounded">
+                Accept
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 5 && (
+          <>
+            <h2 className="text-xl font-bold mb-4">Payment Checkout</h2>
+            <p className="mb-2">Saved Cards:</p>
+            <div className="space-y-2 mb-4">
+              <label className="flex items-center">
+                <input type="radio" name="card" defaultChecked className="mr-2" />
+                XXXX-1016 (American Express)
+              </label>
+              <label className="flex items-center">
+                <input type="radio" name="card" className="mr-2" />
+                XXXX-1821 (Visa)
+              </label>
+            </div>
+            <div className="flex flex-col gap-2 mb-4">
+              <button onClick={() => setStep(6)} className="bg-green-600 text-white px-4 py-2 rounded">
+                Pay
+              </button>
+              <button onClick={() => setStep(6)} className="bg-green-700 text-white px-4 py-2 rounded">
+                Pay and Save Card
+              </button>
+              <button onClick={() => setStep(6)} className="bg-green-800 text-white px-4 py-2 rounded">
+                Pay with Saved Card
+              </button>
+            </div>
+          </>
+        )}
+
+        {step === 6 && (
+          <>
+            <h2 className="text-xl font-bold mb-4">Your order has been processed</h2>
+            <p className="mb-4 text-sm text-gray-800">
+              You will receive an email shortly including the order and invoice details of your purchase. You can log in at any time to review the status of your order. If you have any questions, please call 1.800.246.5101 or <span className="underline cursor-pointer">Click here</span> to email our client service department.
+            </p>
+            <button
+              onClick={() => setStep(7)}
+              className="bg-green-600 text-white px-4 py-2 rounded"
+            >
+              Okay
+            </button>
+          </>
+        )}
+
+        {step === 7 && (
+          <>
+            <h2 className="text-xl font-bold mb-4">Purchased Authorizations</h2>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left">
+                  <th className="py-1">ID</th>
+                  <th className="py-1">NAME</th>
+                  <th className="py-1">START/CONTINUE APPLICATION</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="py-2">{orderNumber}</td>
+                  <td className="py-2">New Instructor</td>
+                  <td className="py-2">
+                    <button onClick={close} className="bg-green-600 text-white px-3 py-1 rounded">
+                      CONTINUE WITH APPLICATION
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
     </div>
   );

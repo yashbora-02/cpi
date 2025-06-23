@@ -56,7 +56,7 @@ export default function Sidebar() {
         links={[
           {
             label: "Create Class - Blended/Online",
-            path: "/training/blended-online",
+            path: "/training/create-class",
           },
           { label: "Student Search", path: "/students/search" },
         ]}

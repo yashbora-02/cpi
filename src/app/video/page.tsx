@@ -1,7 +1,6 @@
 "use client";
 
 import Sidebar from "@/components/Sidebar";
-import Image from "next/image";
 const playlists = [
   {
     title: "Why Your Organization Needs a CPR Trainer",

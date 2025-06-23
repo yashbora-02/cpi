@@ -91,7 +91,7 @@ export default function InstructorDevelopmentPage() {
             The following courses can greatly enrich your abilities as an
             instructor. Click on the{" "}
             <strong className="font-semibold text-gray-800">
-              "Add Course"
+              &quot;Add Course&quot;
             </strong>{" "}
             button to enroll yourself into these courses.
           </p>

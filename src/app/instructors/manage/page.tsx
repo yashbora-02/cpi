@@ -162,9 +162,9 @@ export default function ManageInstructorsPage() {
             <AddInstructorModal
               show={showModal}
               setShow={setShowModal}
-              selection={selection}
-              setSelection={setSelection}
-              onContinue={handleContinue}
+              // selection={selection}
+              // setSelection={setSelection}
+              // onContinue={handleContinue}
             />
           </div>
         </div>

@@ -73,7 +73,7 @@ const EnterDigitalDetails: React.FC<DigitalCertCardsProps> = ({
         <input
           type="text"
           name="classType"
-          value="Initial"
+          value={classType}
           onChange={onChange}
           className="w-full border rounded px-3 py-2"
           readOnly

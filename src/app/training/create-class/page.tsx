@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import StudentEntryDrawer from "@/components/StudentEntryDrawer";
 import EnterBlendedDetails from "../blended-class/enter-details";
@@ -9,7 +9,6 @@ import EnterDigitalDetails from "../digital-cert-card/enter-details";
 import ConfirmModal from "@/components/ConfirmModal";
 import AccessLinkModal from "@/components/AccessLinkModal";
 import SelectStudentDrawer from "@/components/SelectStudentDrawer";
-import { useRouter } from "next/navigation";
 
 interface Student {
   firstName: string;
@@ -33,8 +32,8 @@ export default function CreateClassPage() {
     setShowDrawer(false);
   };
 
-  const [site, setSite] = useState(""); // Hardcoded, as in screenshot
-  const [classType, setClassType] = useState("");
+  const [site, setSite] = useState("Arizona Provider Training, LLC"); // Hardcoded, as in screenshot
+  const [classType, setClassType] = useState("Initial");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [accreditingInstructor, setAccreditingInstructor] = useState("");
@@ -94,8 +93,6 @@ export default function CreateClassPage() {
     // Optionally validate required fields here
     setStep(2); // move to the next step
   };
-
-  const router = useRouter();
 
   return (
     <div className="flex min-h-screen bg-gray-100">

@@ -31,26 +31,41 @@ export default function AddInstructorModal({
         {step === 1 && (
           <>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-green-700">Add Instructor</h2>
-              <button onClick={close} className="text-gray-500 text-2xl">×</button>
+              <h2 className="text-xl font-bold text-green-700">
+                Add Instructor
+              </h2>
+              <button onClick={close} className="text-gray-500 text-2xl">
+                ×
+              </button>
             </div>
             <p className="mb-4 text-sm text-gray-800">
-              Select to add a New instructor, Shared instructor or Change of Affiliation.
+              Select to add a New instructor, Shared instructor or Change of
+              Affiliation.
             </p>
             <div className="space-y-2">
               <label className="flex items-center">
-                <input type="radio" checked readOnly className="mr-2 text-green-600" />
+                <input
+                  type="radio"
+                  checked
+                  readOnly
+                  className="mr-2 text-green-600"
+                />
                 Purchase or Complete New Instructor Application
               </label>
               <label className="flex items-center text-gray-400">
-                <input type="radio" disabled className="mr-2 text-gray-300" /> Shared Instructor
+                <input type="radio" disabled className="mr-2 text-gray-300" />{" "}
+                Shared Instructor
               </label>
               <label className="flex items-center text-gray-400">
-                <input type="radio" disabled className="mr-2 text-gray-300" /> Instructor Change of Affiliation
+                <input type="radio" disabled className="mr-2 text-gray-300" />{" "}
+                Instructor Change of Affiliation
               </label>
             </div>
             <div className="flex justify-end mt-6">
-              <button onClick={() => setStep(2)} className="bg-green-600 text-white px-4 py-2 rounded">
+              <button
+                onClick={() => setStep(2)}
+                className="bg-green-600 text-white px-4 py-2 rounded"
+              >
                 CONTINUE WITH SELECTION
               </button>
             </div>
@@ -80,11 +95,16 @@ export default function AddInstructorModal({
         {step === 3 && (
           <>
             <h2 className="text-xl font-bold mb-4">Shopping Cart Details</h2>
-            <p className="text-sm mb-2">OL-NIMF - Online New Instructor Member Fee</p>
+            <p className="text-sm mb-2">
+              OL-NIMF - Online New Instructor Member Fee
+            </p>
             <p>Quantity: {quantity}</p>
             <p>Price: $35.00</p>
             <p className="mb-4">Subtotal: ${(quantity * 35).toFixed(2)}</p>
-            <button onClick={() => setStep(4)} className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button
+              onClick={() => setStep(4)}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
               Continue Checkout
             </button>
           </>
@@ -100,10 +120,16 @@ export default function AddInstructorModal({
               The following items are on your order and are ready for purchase.
             </p>
             <div className="flex justify-between">
-              <button onClick={close} className="bg-red-500 text-white px-4 py-2 rounded">
+              <button
+                onClick={close}
+                className="bg-red-500 text-white px-4 py-2 rounded"
+              >
                 Decline
               </button>
-              <button onClick={() => setStep(5)} className="bg-green-600 text-white px-4 py-2 rounded">
+              <button
+                onClick={() => setStep(5)}
+                className="bg-green-600 text-white px-4 py-2 rounded"
+              >
                 Accept
               </button>
             </div>
@@ -116,7 +142,12 @@ export default function AddInstructorModal({
             <p className="mb-2">Saved Cards:</p>
             <div className="space-y-2 mb-4">
               <label className="flex items-center">
-                <input type="radio" name="card" defaultChecked className="mr-2" />
+                <input
+                  type="radio"
+                  name="card"
+                  defaultChecked
+                  className="mr-2"
+                />
                 XXXX-1016 (American Express)
               </label>
               <label className="flex items-center">
@@ -125,13 +156,22 @@ export default function AddInstructorModal({
               </label>
             </div>
             <div className="flex flex-col gap-2 mb-4">
-              <button onClick={() => setStep(6)} className="bg-green-600 text-white px-4 py-2 rounded">
+              <button
+                onClick={() => setStep(6)}
+                className="bg-green-600 text-white px-4 py-2 rounded"
+              >
                 Pay
               </button>
-              <button onClick={() => setStep(6)} className="bg-green-700 text-white px-4 py-2 rounded">
+              <button
+                onClick={() => setStep(6)}
+                className="bg-green-700 text-white px-4 py-2 rounded"
+              >
                 Pay and Save Card
               </button>
-              <button onClick={() => setStep(6)} className="bg-green-800 text-white px-4 py-2 rounded">
+              <button
+                onClick={() => setStep(6)}
+                className="bg-green-800 text-white px-4 py-2 rounded"
+              >
                 Pay with Saved Card
               </button>
             </div>
@@ -140,9 +180,16 @@ export default function AddInstructorModal({
 
         {step === 6 && (
           <>
-            <h2 className="text-xl font-bold mb-4">Your order has been processed</h2>
+            <h2 className="text-xl font-bold mb-4">
+              Your order has been processed
+            </h2>
             <p className="mb-4 text-sm text-gray-800">
-              You will receive an email shortly including the order and invoice details of your purchase. You can log in at any time to review the status of your order. If you have any questions, please call 1.800.246.5101 or <span className="underline cursor-pointer">Click here</span> to email our client service department.
+              You will receive an email shortly including the order and invoice
+              details of your purchase. You can log in at any time to review the
+              status of your order. If you have any questions, please call
+              1.800.246.5101 or{" "}
+              <span className="underline cursor-pointer">Click here</span> to
+              email our client service department.
             </p>
             <button
               onClick={() => setStep(7)}
@@ -169,7 +216,10 @@ export default function AddInstructorModal({
                   <td className="py-2">{orderNumber}</td>
                   <td className="py-2">New Instructor</td>
                   <td className="py-2">
-                    <button onClick={close} className="bg-green-600 text-white px-3 py-1 rounded">
+                    <button
+                      onClick={close}
+                      className="bg-green-600 text-white px-3 py-1 rounded"
+                    >
                       CONTINUE WITH APPLICATION
                     </button>
                   </td>

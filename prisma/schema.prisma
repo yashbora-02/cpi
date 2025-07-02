@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admins {
+  login_id   String   @id           // Primary key
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Credit {
+  id         Int      @id @default(autoincrement())
+  type       String
+  credits    Int
+  updated_at DateTime @updatedAt
+
+  @@map("credits") // explicitly map model to "credits" table
+}
+
+model Video {
+  id           Int    @id @default(autoincrement())
+  title        String
+  description  String
+  video_id     String @unique
+  video_url     String
+  thumbnail_url String
+
+  @@map("videos") 
+}
+

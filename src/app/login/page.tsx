@@ -1,39 +1,59 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { setToken } from "../utils/auth";
 
 export default function Login() {
   const router = useRouter();
-  const [loginId, setLoginId] = useState('2335082');
-  const [password, setPassword] = useState('password');
+  const [loginId, setLoginId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.replace("/dashboard");
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/dashboard'); // mock login
+    setError("");
+
+    // Simple form validation
+    if (!loginId || !password) {
+      setError("Login ID and password are required.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ login_id: loginId, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed. Please try again.");
+      } else {
+        localStorage.setItem("token", data.token);
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-800 to-gray-100">
       <div className="bg-white shadow-lg rounded-md p-8 w-full max-w-md text-center">
-        {/* Logo Section */}
-        <div className="mb-6">
-          <h1 className="text-5xl font-bold text-blue-700 tracking-wide">CPI</h1>
-          <div className="flex justify-center gap-2 mt-2 text-xs text-gray-700 font-medium">
-            <span>AMERICAN SAFETY&</span>
-            <span>MEDIC First Aid</span>
-            <span>EMS SAFETY</span>
-            <span>AVERT</span>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex justify-between bg-blue-600 text-white rounded mb-4 text-sm font-semibold">
-          <button className="w-1/2 py-2 border-b-2 border-white">START</button>
-          <button className="w-1/2 py-2 opacity-70 hover:opacity-100">SUPPORT</button>
-        </div>
-
-        {/* Form */}
         <form onSubmit={handleLogin} className="text-left text-gray-700">
           <label className="block text-sm font-medium mb-1">Login ID *</label>
           <input
@@ -43,32 +63,33 @@ export default function Login() {
             className="w-full mb-2 px-3 py-2 border border-gray-300 rounded"
           />
 
-          <div className="text-sm mb-3 text-blue-600 hover:underline cursor-pointer">
-            Forgot Login ID
-          </div>
-
           <label className="block text-sm font-medium mb-1">Password *</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-2 px-3 py-2 border border-gray-300 rounded"
+            className="w-full mb-4 px-3 py-2 border border-gray-300 rounded"
           />
 
-          <div className="flex justify-between text-sm text-blue-600 mt-1 mb-4">
-            <span className="hover:underline cursor-pointer">Reset Password</span>
-            <span className="hover:underline cursor-pointer">Set Language</span>
-          </div>
+          {error && (
+            <p className="text-red-600 text-sm mb-4 text-center">{error}</p>
+          )}
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm font-semibold flex items-center justify-center gap-2"
           >
-            <span>🔒</span> LOG IN
+            {loading ? (
+              "Logging in..."
+            ) : (
+              <>
+                <span>🔒</span> LOG IN
+              </>
+            )}
           </button>
         </form>
 
-        {/* Footer */}
         <p className="text-xs text-gray-500 mt-6">© 2025 CPI</p>
       </div>
     </div>

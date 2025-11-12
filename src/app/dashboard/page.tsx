@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 type Credit = {
   type: "cpr_only" | "first_aid_only" | "combo";
@@ -12,15 +14,18 @@ type Credit = {
 export default function Dashboard() {
   const router = useRouter();
   const [creditsData, setCreditsData] = useState<Credit[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
 
-    if (!token) {
-      router.replace("/login");
-    }
-    async function fetchCredits() {
+      // User is authenticated, fetch credits
       try {
+        const token = await user.getIdToken();
         const res = await fetch("/api/credits", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -30,11 +35,13 @@ export default function Dashboard() {
         setCreditsData(data);
       } catch (error) {
         console.error("Error fetching credits:", error);
+      } finally {
+        setLoading(false);
       }
-    }
+    });
 
-    fetchCredits();
-  }, []);
+    return () => unsubscribe();
+  }, [router]);
 
   const getCreditsByType = (type: string) =>
     creditsData.find((c) => c.type === type)?.credits ?? 0;

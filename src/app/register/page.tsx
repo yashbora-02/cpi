@@ -2,15 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { loginWithEmail, loginWithGoogle } from "@/lib/firebaseAuth";
+import { registerWithEmail, loginWithGoogle } from "@/lib/firebaseAuth";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { FaShieldAlt, FaLock, FaUser, FaGoogle } from "react-icons/fa";
+import { FaShieldAlt, FaLock, FaUser, FaGoogle, FaEnvelope } from "react-icons/fa";
 
-export default function Login() {
+export default function Register() {
   const router = useRouter();
-  const [loginId, setLoginId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,13 +27,23 @@ export default function Login() {
     return () => unsubscribe();
   }, [router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // Simple form validation
-    if (!loginId || !password) {
-      setError("Email and password are required.");
+    // Form validation
+    if (!name || !email || !password || !confirmPassword) {
+      setError("All fields are required.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
@@ -39,18 +51,20 @@ export default function Login() {
       setLoading(true);
 
       // Use Firebase authentication
-      const { user, error: firebaseError } = await loginWithEmail(loginId, password);
+      const { user, error: firebaseError } = await registerWithEmail(email, password);
 
       if (firebaseError) {
         // Provide user-friendly error messages
-        if (firebaseError.includes("invalid-credential") || firebaseError.includes("user-not-found") || firebaseError.includes("wrong-password")) {
-          setError("Invalid email or password. Please try again.");
-        } else if (firebaseError.includes("too-many-requests")) {
-          setError("Too many failed attempts. Please try again later.");
+        if (firebaseError.includes("email-already-in-use")) {
+          setError("This email is already registered. Please login instead.");
+        } else if (firebaseError.includes("invalid-email")) {
+          setError("Invalid email address.");
+        } else if (firebaseError.includes("weak-password")) {
+          setError("Password is too weak. Please use a stronger password.");
         } else if (firebaseError.includes("network")) {
           setError("Network error. Please check your connection.");
         } else {
-          setError("Login failed. Please try again.");
+          setError("Registration failed. Please try again.");
         }
       } else if (user) {
         // Get the Firebase ID token for authenticated requests
@@ -65,7 +79,7 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleRegister = async () => {
     setError("");
     try {
       setLoading(true);
@@ -73,11 +87,11 @@ export default function Login() {
 
       if (firebaseError) {
         if (firebaseError.includes("popup-closed-by-user")) {
-          setError("Login cancelled. Please try again.");
+          setError("Registration cancelled. Please try again.");
         } else if (firebaseError.includes("network")) {
           setError("Network error. Please check your connection.");
         } else {
-          setError("Google login failed. Please try again.");
+          setError("Google sign-up failed. Please try again.");
         }
       } else if (user) {
         const token = await user.getIdToken();
@@ -92,7 +106,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#2D2F33] relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen bg-[#2D2F33] relative overflow-hidden py-8">
       {/* Background Image with Overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -107,7 +121,7 @@ export default function Login() {
       <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#C10E21]/20 to-transparent"></div>
       <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00A5A8]/15 to-transparent"></div>
 
-      {/* Login Card */}
+      {/* Register Card */}
       <div className="relative z-10 w-full max-w-md px-4">
         {/* Logo and Branding */}
         <div className="text-center mb-8">
@@ -117,12 +131,32 @@ export default function Login() {
             </div>
             <span className="text-3xl font-bold text-white">CPI Training</span>
           </div>
-          <p className="text-white/80 text-lg">Instructor Portal Login</p>
+          <p className="text-white/80 text-lg">Create Your Account</p>
         </div>
 
-        {/* Login Form Card */}
+        {/* Register Form Card */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8">
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleRegister} className="space-y-5">
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-semibold text-white mb-2">
+                Full Name
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FaUser className="text-white/50" />
+                </div>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+            </div>
+
             {/* Email Field */}
             <div>
               <label className="block text-sm font-semibold text-white mb-2">
@@ -130,12 +164,12 @@ export default function Login() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <FaUser className="text-white/50" />
+                  <FaEnvelope className="text-white/50" />
                 </div>
                 <input
                   type="email"
-                  value={loginId}
-                  onChange={(e) => setLoginId(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
                   placeholder="Enter your email"
                   required
@@ -157,7 +191,27 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
-                  placeholder="Enter your password"
+                  placeholder="Create a password (min 6 characters)"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div>
+              <label className="block text-sm font-semibold text-white mb-2">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FaLock className="text-white/50" />
+                </div>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
+                  placeholder="Confirm your password"
                   required
                 />
               </div>
@@ -170,7 +224,7 @@ export default function Login() {
               </div>
             )}
 
-            {/* Login Button */}
+            {/* Register Button */}
             <button
               type="submit"
               disabled={loading}
@@ -182,10 +236,10 @@ export default function Login() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Logging in...
+                  Creating Account...
                 </span>
               ) : (
-                "Login to Portal"
+                "Create Account"
               )}
             </button>
 
@@ -199,15 +253,15 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Google Sign-In Button */}
+            {/* Google Sign-Up Button */}
             <button
               type="button"
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleRegister}
               disabled={loading}
               className="w-full bg-white hover:bg-gray-50 text-gray-700 py-4 rounded-lg font-bold flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg active:scale-95"
             >
-              <FaGoogle className="text-xl text-[#C10E21] transition-transform group-hover:rotate-12" />
-              Sign in with Google
+              <FaGoogle className="text-xl text-[#C10E21]" />
+              Sign up with Google
             </button>
 
             {/* Additional Links */}
@@ -221,10 +275,10 @@ export default function Login() {
               </button>
               <button
                 type="button"
-                onClick={() => router.push("/register")}
+                onClick={() => router.push("/login")}
                 className="text-[#00A5A8] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
               >
-                Create Account →
+                Already have account? Login →
               </button>
             </div>
           </form>
@@ -233,7 +287,7 @@ export default function Login() {
         {/* Footer */}
         <div className="text-center mt-8 text-white/60 text-sm">
           <p>© 2025 CPI Training. All rights reserved.</p>
-          <p className="mt-2">Secure Instructor Portal</p>
+          <p className="mt-2">Secure Registration</p>
         </div>
       </div>
     </div>

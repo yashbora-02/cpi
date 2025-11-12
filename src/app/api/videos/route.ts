@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@/generated/prisma";
-import { verifyTokenFromRequest } from "@/app/lib/auth";
+import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
 
 const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
-  const decoded = verifyTokenFromRequest(req);
+  const decoded = await verifyTokenFromRequest(req);
 
   if (!decoded) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

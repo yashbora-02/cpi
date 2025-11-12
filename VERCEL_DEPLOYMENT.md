@@ -48,7 +48,6 @@ In the Vercel project settings, add these environment variables:
 #### Database
 ```
 DATABASE_URL=your_postgresql_connection_string
-JWT_SECRET=your_random_secret_key_here
 ```
 
 #### Firebase Configuration
@@ -125,7 +124,6 @@ Click **Deploy** in Vercel. The deployment process will:
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `JWT_SECRET` | Yes | Random secret for JWT signing |
 | `NEXT_PUBLIC_FIREBASE_API_KEY` | Yes | Firebase API key |
 | `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Yes | Firebase auth domain |
 | `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |

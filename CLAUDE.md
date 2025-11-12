@@ -26,7 +26,6 @@ npx prisma studio    # Open Prisma Studio GUI
 ### Environment Setup
 Required environment variables (see `.env.example`):
 - `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET` - Secret for JWT signing
 - `NEXT_PUBLIC_FIREBASE_API_KEY` - Firebase client API key
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` - Firebase auth domain
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID` - Firebase project ID

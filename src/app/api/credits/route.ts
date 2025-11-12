@@ -1,17 +1,18 @@
-import { PrismaClient } from "@/generated/prisma";
 import { NextResponse } from "next/server";
-import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
+// import { PrismaClient } from "@/generated/prisma";
+// import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
-export async function GET(req: Request) {
-  const decoded = await verifyTokenFromRequest(req);
-
-  if (!decoded) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function GET() {
+  // Skip auth verification in development for now
+  // TODO: Set up proper Firebase Admin credentials for production
+  // const decoded = await verifyTokenFromRequest(req);
+  // if (!decoded) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
 
   try {
     // Temporary mock data - replace with real database query when DB is set up

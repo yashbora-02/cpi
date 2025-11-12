@@ -26,8 +26,8 @@ export default function VideoPlayerPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-6 bg-gray-50">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
+      <main className="flex-1 p-8 bg-gray-50">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
           Video Playlist
         </h1>
 

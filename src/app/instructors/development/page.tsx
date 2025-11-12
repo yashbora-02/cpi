@@ -40,8 +40,8 @@ export default function InstructorDevelopmentPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-8 max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <main className="flex-1 p-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
           Instructor Development
         </h1>
 

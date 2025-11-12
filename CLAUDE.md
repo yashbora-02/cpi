@@ -10,18 +10,21 @@ CPI Training Platform - a comprehensive CPR and First Aid training management sy
 
 ### Running the Application
 ```bash
-npm run dev          # Start development server with Turbopack
-npm run build        # Build for production
+npm run dev          # Start development server
+npm run build        # Build for production (runs prisma generate first)
 npm start            # Start production server
 npm run lint         # Run ESLint
+npm install          # Install dependencies (automatically runs prisma generate via postinstall)
 ```
 
 ### Database Commands
 ```bash
 npx prisma generate  # Generate Prisma Client (outputs to src/generated/prisma)
-npx prisma db push   # Push schema changes to database
-npx prisma studio    # Open Prisma Studio GUI
+npx prisma db push   # Push schema changes to database (creates tables if they don't exist)
+npx prisma studio    # Open Prisma Studio GUI for database management
 ```
+
+**Note:** `prisma generate` runs automatically when you run `npm install` due to the postinstall script.
 
 ### Environment Setup
 Required environment variables (see `.env.example`):
@@ -69,7 +72,10 @@ src/
 │   ├── video/                # Video player page
 │   └── page.tsx              # Landing page
 ├── components/               # Reusable components
-│   └── Sidebar.tsx           # Main navigation sidebar
+│   ├── Sidebar.tsx           # Main navigation sidebar
+│   ├── *Modal.tsx            # Various modal components (Confirm, AccessLink, Agreement, etc.)
+│   ├── *Drawer.tsx           # Drawer components (StudentEntry, SelectStudent)
+│   └── Student*.tsx          # Student-related components (List, History)
 ├── lib/                      # Utility libraries
 │   ├── firebase.ts           # Firebase client config
 │   ├── firebaseAdmin.ts      # Firebase Admin SDK for server
@@ -147,10 +153,13 @@ export default function ProtectedPage() {
 ```
 
 **Multi-Step Form Pattern (training/create-class):**
-- useState for currentStep tracking
-- Conditional rendering based on step number
-- State accumulation across steps
-- Final submission aggregates all collected data
+- Uses `step` state variable for tracking current position (1-4)
+- Step 1: Program type selection (Blended/Digital) with conditional detail forms
+- Step 2: Roster building with drawer-based student entry
+- Step 3: Review and confirmation with email notification options
+- Step 4: Progress tracking with student status display
+- State accumulation across steps using multiple useState hooks
+- Navigation buttons (BACK/CONTINUE) control flow between steps
 
 ## Important Implementation Details
 
@@ -172,7 +181,10 @@ import { PrismaClient } from '@/generated/prisma';
 
 ### Component Responsibilities
 - **Sidebar.tsx** - Main navigation with collapsible dropdown sections (General, Instructors, Training, Courses) and logout button
-- Logout flow: Signs out via Firebase, removes localStorage token, redirects to `/login`
+  - Logout flow: Signs out via Firebase, removes localStorage token, redirects to `/login`
+- **Modal Components** - Various modals for confirmations, agreements, access links, and instructor management
+- **Drawer Components** - Side drawers for student entry and selection during class creation
+- **Student Components** - Reusable components for displaying student lists and history
 
 ### Styling Conventions
 - Tailwind CSS 4 utility classes throughout
@@ -186,9 +198,15 @@ import { PrismaClient } from '@/generated/prisma';
 - Smooth transitions and hover effects on buttons and cards
 
 ### Build Configuration Notes
-- Turbopack enabled for faster development (`--turbopack` flag)
 - Path aliases: `@/*` maps to `./src/*`
 - Vercel deployment configured in `vercel.json` (region: iad1)
+- Automatic Prisma Client generation on `npm install` via postinstall script
+
+### Development vs Production
+**Important:** API route authentication is currently commented out for development. Before deploying to production:
+1. Uncomment authentication checks in API routes (see `src/app/api/credits/route.ts:10-15`)
+2. Set up Firebase Admin SDK with proper credentials
+3. Ensure `NEXT_PUBLIC_FIREBASE_PROJECT_ID` is set for server-side token verification
 
 ## Common Development Workflows
 

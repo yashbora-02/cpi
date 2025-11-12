@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import {
-  FaPlay,
   FaClock,
   FaCertificate,
   FaUsers,
@@ -44,7 +44,7 @@ export default function CoursesPage() {
     return () => unsubscribe();
   }, [router]);
 
-  // TODO: Replace with your actual GoHighLevel course data
+  // Course data from GoHighLevel
   const courses: Course[] = [
     {
       id: "1",
@@ -53,21 +53,21 @@ export default function CoursesPage() {
         "Learn life-saving CPR and AED techniques for adults, children, and infants. Nationally recognized 2-year certification.",
       duration: "4 hours",
       studentsEnrolled: 1250,
-      thumbnail: "/courses/cpr.jpg",
-      ghlUrl: "https://your-ghl-domain.com/course/cpr-aed", // Replace with your actual URL
+      thumbnail: "/thumbnail1.png",
+      ghlUrl: "https://pcmblsiwgjfc3pmqyyzx.app.clientclub.net/courses/offers/9698431c-c263-40b1-84e1-8e55a700c794",
       category: "CPR",
       certification: true,
     },
     {
       id: "2",
-      title: "First Aid Essentials",
+      title: "CPR Training Course",
       description:
-        "Comprehensive first aid training covering bleeding control, burns, fractures, and medical emergencies.",
-      duration: "3 hours",
-      studentsEnrolled: 890,
-      thumbnail: "/courses/first-aid.jpg",
-      ghlUrl: "https://your-ghl-domain.com/course/first-aid", // Replace with your actual URL
-      category: "First Aid",
+        "Comprehensive CPR training covering emergency response techniques, rescue breathing, and chest compressions. Get certified today.",
+      duration: "6 hours",
+      studentsEnrolled: 980,
+      thumbnail: "/thumbnail2.jpeg",
+      ghlUrl: "https://coherencemarketing.com/courses/offers/e1455d2e-8cd9-4abb-b68b-93b413fde8a2",
+      category: "CPR",
       certification: true,
     },
   ];
@@ -100,27 +100,27 @@ export default function CoursesPage() {
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
             <FaGraduationCap className="text-blue-600" />
             Available Courses
           </h1>
-          <p className="text-gray-600 text-lg">
-            Explore our professional training courses powered by GoHighLevel
+          <p className="text-gray-600">
+            Explore our professional training courses
           </p>
         </div>
 
         {/* Category Filter */}
-        <div className="mb-8 flex flex-wrap gap-3">
+        <div className="mb-6 flex flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform ${
+              className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition ${
                 selectedCategory === category
-                  ? "bg-blue-600 text-white shadow-lg scale-105"
-                  : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 hover:scale-105 hover:shadow-md"
-              } active:scale-95`}
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+              }`}
             >
               {category}
             </button>
@@ -128,41 +128,47 @@ export default function CoursesPage() {
         </div>
 
         {/* Courses Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredCourses.map((course) => (
             <div
               key={course.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all group border border-gray-100"
+              className="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition group border border-gray-100"
             >
               {/* Course Thumbnail */}
-              <div className="relative h-32 bg-white border-2 border-blue-600 flex items-center justify-center">
-                <FaPlay className="text-blue-600 text-4xl opacity-70 group-hover:opacity-100 transition" />
+              <div className="relative h-36 bg-gray-100 overflow-hidden">
+                <Image
+                  src={course.thumbnail}
+                  alt={course.title}
+                  width={400}
+                  height={144}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
                 {course.certification && (
-                  <div className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1">
-                    <FaCertificate className="text-xs" />
+                  <div className="absolute top-1.5 right-1.5 bg-blue-600 text-white px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
+                    <FaCertificate className="text-[8px]" />
                     Certified
                   </div>
                 )}
               </div>
 
               {/* Course Content */}
-              <div className="p-4">
-                <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition">
+              <div className="p-3">
+                <h3 className="text-base font-bold text-gray-800 mb-1.5 group-hover:text-blue-600 transition">
                   {course.title}
                 </h3>
 
-                <p className="text-gray-600 text-xs mb-3 line-clamp-2">
+                <p className="text-gray-600 text-[11px] mb-2 line-clamp-2">
                   {course.description}
                 </p>
 
                 {/* Course Meta */}
-                <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                <div className="flex items-center gap-2.5 text-[11px] text-gray-500 mb-2.5">
                   <div className="flex items-center gap-1">
-                    <FaClock className="text-blue-600 text-xs" />
+                    <FaClock className="text-blue-600 text-[10px]" />
                     {course.duration}
                   </div>
                   <div className="flex items-center gap-1">
-                    <FaUsers className="text-blue-600 text-xs" />
+                    <FaUsers className="text-blue-600 text-[10px]" />
                     {course.studentsEnrolled.toLocaleString()}
                   </div>
                 </div>
@@ -170,10 +176,10 @@ export default function CoursesPage() {
                 {/* Enroll Button */}
                 <button
                   onClick={() => handleEnrollClick(course.ghlUrl)}
-                  className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2 group transform hover:scale-105 hover:shadow-lg active:scale-95"
+                  className="w-full px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition flex items-center justify-center gap-1.5"
                 >
                   Enroll Now
-                  <FaExternalLinkAlt className="text-xs group-hover:translate-x-1 transition-transform duration-300" />
+                  <FaExternalLinkAlt className="text-[10px]" />
                 </button>
               </div>
             </div>
@@ -190,13 +196,12 @@ export default function CoursesPage() {
         )}
 
         {/* Help Section */}
-        <div className="mt-8 bg-white border border-gray-200 rounded-lg p-6">
-          <h2 className="text-lg font-bold text-gray-800 mb-2">Need Help Choosing a Course?</h2>
-          <p className="mb-4 text-gray-600 text-sm">
-            Our training specialists are here to help you find the perfect course
-            for your needs.
+        <div className="mt-6 bg-white border border-gray-200 rounded-lg p-4 max-w-xl">
+          <h2 className="text-sm font-semibold text-gray-800 mb-1">Need Help Choosing a Course?</h2>
+          <p className="mb-3 text-gray-600 text-xs">
+            Our training specialists are here to help you find the perfect course.
           </p>
-          <button className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
+          <button className="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition">
             Contact Support
           </button>
         </div>

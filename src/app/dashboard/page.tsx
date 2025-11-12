@@ -14,7 +14,6 @@ type Credit = {
 export default function Dashboard() {
   const router = useRouter();
   const [creditsData, setCreditsData] = useState<Credit[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -32,11 +31,17 @@ export default function Dashboard() {
           },
         });
         const data = await res.json();
-        setCreditsData(data);
+
+        // Ensure data is an array before setting state
+        if (Array.isArray(data)) {
+          setCreditsData(data);
+        } else {
+          console.error("Invalid credits data format:", data);
+          setCreditsData([]);
+        }
       } catch (error) {
         console.error("Error fetching credits:", error);
-      } finally {
-        setLoading(false);
+        setCreditsData([]);
       }
     });
 

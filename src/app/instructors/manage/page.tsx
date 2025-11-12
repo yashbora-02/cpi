@@ -13,7 +13,6 @@ export default function ManageInstructorsPage() {
   const [filteredInstructors, setFilteredInstructors] = useState(instructors);
 
   const [showModal, setShowModal] = useState(false);
-  const [selection, setSelection] = useState("new");
 
   const handleSearch = () => {
     const filtered = instructors.filter((ins) => {
@@ -27,14 +26,11 @@ export default function ManageInstructorsPage() {
     setFilteredInstructors(filtered);
   };
 
-  const handleContinue = () => {
-    setShowModal(false);
-  };
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+      <main className="flex-1 p-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">
           Manage Instructors
         </h1>
 

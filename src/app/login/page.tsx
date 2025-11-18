@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { loginWithEmail, loginWithGoogle } from "@/lib/firebaseAuth";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { FaShieldAlt, FaLock, FaUser, FaGoogle } from "react-icons/fa";
+import { FaLock, FaUser, FaGoogle } from "react-icons/fa";
+import Image from "next/image";
 
 export default function Login() {
   const router = useRouter();
@@ -111,11 +112,14 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-md px-4">
         {/* Logo and Branding */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-xl flex items-center justify-center shadow-lg">
-              <FaShieldAlt className="text-3xl text-white" />
-            </div>
-            <span className="text-3xl font-bold text-white">CPI Training</span>
+          <div className="flex items-center justify-center mb-4">
+            <Image
+              src="/logo.png"
+              alt="CarePoint Institute"
+              width={120}
+              height={60}
+              className="object-contain"
+            />
           </div>
           <p className="text-white/80 text-lg">Instructor Portal Login</p>
         </div>
@@ -232,8 +236,7 @@ export default function Login() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-white/60 text-sm">
-          <p>© 2025 CPI Training. All rights reserved.</p>
-          <p className="mt-2">Secure Instructor Portal</p>
+          <p>© 2025 CarePoint Institute. All rights reserved.</p>
         </div>
       </div>
     </div>

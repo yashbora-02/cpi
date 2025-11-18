@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   FaHeart,
   FaShieldAlt,
@@ -10,19 +11,38 @@ import {
   FaClock,
   FaCheckCircle,
   FaGraduationCap,
-  FaChartLine,
-  FaQuoteLeft,
-  FaChevronDown,
-  FaAward,
   FaHandHoldingHeart,
   FaLaptop,
   FaUserMd,
-  FaStar
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaVideo,
+  FaClipboardList,
+  FaDesktop,
+  FaHandsHelping,
+  FaBuilding,
+  FaChalkboardTeacher,
+  FaUserShield,
+  FaBrain,
+  FaEye,
+  FaHandPaper,
+  FaBook,
+  FaComments,
+  FaBalanceScale,
+  FaPlayCircle,
+  FaHeadset,
+  FaBars,
+  FaTimes,
+  FaChevronDown,
+  FaUser
 } from "react-icons/fa";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Home() {
   const router = useRouter();
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -31,8 +51,8 @@ export default function Home() {
     }
   }, []);
 
-  const toggleFaq = (index: number) => {
-    setOpenFaq(openFaq === index ? null : index);
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "es" : "en");
   };
 
   return (
@@ -40,29 +60,111 @@ export default function Home() {
       {/* Navigation Bar */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-lg flex items-center justify-center">
-                <FaShieldAlt className="text-2xl text-white" />
-              </div>
-              <span className="text-2xl font-bold text-[#2D2F33]">CPI Training</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#courses" className="text-[#2D2F33] hover:text-[#C10E21] font-semibold transition">Courses</a>
-              <a href="#about" className="text-[#2D2F33] hover:text-[#C10E21] font-semibold transition">About</a>
-              <a href="#pricing" className="text-[#2D2F33] hover:text-[#C10E21] font-semibold transition">Pricing</a>
-              <button
-                onClick={() => router.push("/login")}
-                className="px-6 py-2.5 bg-[#C10E21] text-white font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95"
-              >
-                Login
+          <div className="flex items-center h-16 md:h-20">
+            {/* Logo - Left */}
+            <div className="flex items-center">
+              <button onClick={() => router.push("/")}>
+                <Image
+                  src="/logo.png"
+                  alt="CarePoint Institute"
+                  width={100}
+                  height={50}
+                  className="object-contain md:w-[140px] md:h-[50px]"
+                />
               </button>
             </div>
+
+            {/* Center Navigation */}
+            <div className="hidden md:flex items-center justify-center flex-1 space-x-8">
+              <a href="#courses" className="flex items-center text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+                {t.nav.cprCourses}
+                <FaChevronDown className="ml-1 text-xs" />
+              </a>
+              <a href="#training-options" className="flex items-center text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+                {t.nav.moreCourses}
+                <FaChevronDown className="ml-1 text-xs" />
+              </a>
+              <button onClick={() => router.push("/acceptance")} className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+                {t.nav.acceptance}
+              </button>
+              <button onClick={() => router.push("/login")} className="flex items-center text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+                <FaUser className="mr-2 text-sm" />
+                {t.nav.logIn}
+              </button>
+            </div>
+
+            {/* Right Side - Phone & Language */}
+            <div className="hidden md:flex items-center space-x-4">
+              <a href="tel:1-800-555-0123" className="flex items-center text-[#00A5A8] hover:text-[#008a8d] font-medium transition">
+                <FaPhone className="mr-2 text-sm" />
+                {t.nav.phone}
+              </a>
+              <button
+                onClick={toggleLanguage}
+                className="px-4 py-2 border border-gray-300 rounded-md text-[#2D2F33] hover:border-[#C10E21] hover:text-[#C10E21] font-medium transition"
+              >
+                {t.nav.language}
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-[#2D2F33] hover:text-[#C10E21] transition ml-auto"
+            >
+              {mobileMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
+            </button>
           </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden bg-white border-t border-gray-200 py-4">
+              <div className="flex flex-col space-y-4 px-4">
+                <a
+                  href="#courses"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2"
+                >
+                  {t.nav.cprCourses}
+                </a>
+                <a
+                  href="#training-options"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2"
+                >
+                  {t.nav.moreCourses}
+                </a>
+                <button
+                  onClick={() => { router.push("/acceptance"); setMobileMenuOpen(false); }}
+                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                >
+                  {t.nav.acceptance}
+                </button>
+                <button
+                  onClick={() => { router.push("/login"); setMobileMenuOpen(false); }}
+                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                >
+                  {t.nav.logIn}
+                </button>
+                <a
+                  href="tel:1-800-555-0123"
+                  className="text-[#00A5A8] font-medium py-2"
+                >
+                  {t.nav.phone}
+                </a>
+                <button
+                  onClick={() => { toggleLanguage(); setMobileMenuOpen(false); }}
+                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                >
+                  {t.nav.language}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
-      {/* Hero Section - Inspired by Red Cross & St John Ambulance */}
+      {/* Hero Section */}
       <section className="relative bg-[#2D2F33] text-white overflow-hidden">
         {/* Background Image with Overlay */}
         <div
@@ -73,7 +175,7 @@ export default function Home() {
           }}
         />
 
-        {/* Dark Gradient Overlay to Fade the Background */}
+        {/* Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#2D2F33]/65 via-[#2D2F33]/55 to-[#2D2F33]/70"></div>
 
         {/* Red Accent Gradient on Left */}
@@ -84,57 +186,36 @@ export default function Home() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Trust Badge */}
-            <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full border border-white/30 mb-8">
-              <FaAward className="text-[#00A5A8]" />
-              <span className="text-sm font-bold">America's Trusted First Aid & CPR Training Provider</span>
-            </div>
-
-            {/* Main Headline - Larger, Bolder */}
+            {/* Main Headline */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-              Learn to Save a Life with<br />
-              <span className="text-[#00A5A8]">the Nation's Experts</span>
+              {t.hero.title}<br />
+              <span className="text-[#00A5A8]">{t.hero.titleHighlight}</span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl md:text-2xl text-white/95 leading-relaxed mb-10 max-w-3xl mx-auto">
-              Join over 5 million people who choose our award-winning CPR, First Aid & AED certification courses. Professional training that empowers you to respond with confidence when it matters most.
+            <p className="text-xl md:text-2xl text-white/95 leading-relaxed mb-6 max-w-3xl mx-auto">
+              {t.hero.subtitle}
+            </p>
+
+            {/* Description */}
+            <p className="text-lg text-white/85 leading-relaxed mb-10 max-w-3xl mx-auto">
+              {t.hero.description}
             </p>
 
             {/* Primary CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => router.push("/login")}
                 className="px-10 py-5 bg-[#00A5A8] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
               >
-                Find a Class Near You
+                {t.hero.getCertified}
               </button>
               <button
                 onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-10 py-5 bg-white text-[#C10E21] text-lg font-bold uppercase rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
               >
-                Explore Courses
+                {t.hero.exploreCourses}
               </button>
-            </div>
-
-            {/* Trust Statistics - Prominent Display */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-                <div className="text-4xl font-bold text-[#00A5A8] mb-2">5M+</div>
-                <div className="text-sm text-white/90 font-semibold">Students Trained Annually</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-                <div className="text-4xl font-bold text-[#00A5A8] mb-2">100+</div>
-                <div className="text-sm text-white/90 font-semibold">Years of Excellence</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-                <div className="text-4xl font-bold text-[#00A5A8] mb-2">98%</div>
-                <div className="text-sm text-white/90 font-semibold">Student Pass Rate</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-                <div className="text-4xl font-bold text-[#00A5A8] mb-2">OSHA</div>
-                <div className="text-sm text-white/90 font-semibold">Compliant Certified</div>
-              </div>
             </div>
           </div>
         </div>
@@ -147,797 +228,543 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick Action Icons - Inspired by St John Ambulance */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <button
-              onClick={() => router.push("/login")}
-              className="group bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-transparent hover:border-[#00A5A8] active:scale-95"
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                <FaGraduationCap className="text-3xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Book Training Now</h3>
-              <p className="text-sm text-gray-600">Find classes in your area</p>
-            </button>
-
-            <button
-              onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-transparent hover:border-[#00A5A8] active:scale-95"
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                <FaLaptop className="text-3xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Online Courses</h3>
-              <p className="text-sm text-gray-600">Learn at your own pace</p>
-            </button>
-
-            <button
-              onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-transparent hover:border-[#00A5A8] active:scale-95"
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                <FaUsers className="text-3xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Corporate Training</h3>
-              <p className="text-sm text-gray-600">For teams & organizations</p>
-            </button>
-
-            <button
-              onClick={() => router.push("/login")}
-              className="group bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-transparent hover:border-[#00A5A8] active:scale-95"
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition">
-                <FaCertificate className="text-3xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Recertification</h3>
-              <p className="text-sm text-gray-600">Renew your certification</p>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Real-Life Impact Story - Inspired by St John Ambulance */}
-      <section className="py-20 bg-gradient-to-br from-[#00A5A8] to-[#008a8d] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                <span className="text-sm font-bold">Real Life. Real Impact.</span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                "My CPR training saved my colleague's life"
-              </h2>
-              <p className="text-xl text-white/95 leading-relaxed mb-6">
-                When David collapsed at work, Sarah's quick thinking and CPR skills made all the difference. Within minutes of cardiac arrest, she started chest compressions while a coworker called 911. David survived thanks to her training.
-              </p>
-              <div className="flex items-center space-x-4 mb-8">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-bold text-[#C10E21]">SM</span>
-                </div>
-                <div>
-                  <div className="font-bold text-lg">Sarah Martinez</div>
-                  <div className="text-white/80">Office Manager, Chicago</div>
-                </div>
-              </div>
-              <button
-                onClick={() => router.push("/login")}
-                className="px-8 py-4 bg-white text-[#C10E21] font-bold uppercase rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
-              >
-                Be Ready Like Sarah
-              </button>
-            </div>
-            <div className="relative hidden md:block">
-              <div className="bg-white/10 backdrop-blur-lg p-12 rounded-3xl border border-white/20">
-                <div className="flex items-center justify-center w-full h-64 bg-gradient-to-br from-white/20 to-white/5 rounded-2xl">
-                  <FaHandHoldingHeart className="text-9xl text-white/50" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us - HSI Inspired Features */}
-      <section id="about" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
-              Why Professionals Choose Us
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Award-winning training trusted by individuals, healthcare providers, and Fortune 500 companies
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
-                <FaUserMd className="text-3xl text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Certified Expert Instructors</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Learn from nationally certified professionals with real-world emergency response experience. Our instructors bring decades of expertise to every training session.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
-                <FaClock className="text-3xl text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Flexible Learning Options</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Choose from in-person, blended online, or fully remote training. Video-driven, scenario-based programs designed to engage all learning styles.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
-                <FaShieldAlt className="text-3xl text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Latest Standards & Science</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Our programs reflect the latest resuscitation science from the International Liaison Committee on Resuscitation (ILCOR). Stay current with evidence-based training.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
-                <FaCertificate className="text-3xl text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Nationally Recognized Certification</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Earn 2-year certifications accepted by employers, regulatory bodies, and organizations nationwide. OSHA-compliant and industry-standard.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
-                <FaLaptop className="text-3xl text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Interactive & Practical</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Engage in hands-on practice with immediate feedback. Our scenario-based approach ensures you're ready to act confidently in real emergencies.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
-              <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
-                <FaAward className="text-3xl text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Award-Winning Programs</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Join over 5 million students who choose our trusted courses each year. Developed and refined over 40 years of excellence in safety training.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Courses Section - Red Cross Inspired Layout */}
-      <section id="courses" className="py-20 bg-gradient-to-br from-[#F5F6F7] to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
-              CPR, First Aid & AED Certification Programs
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From individuals to healthcare providers to workplace safety officers — we have the right training program for you
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* CPR Only */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all group">
-              <div className="bg-gradient-to-br from-[#C10E21] to-[#a00d1c] p-6">
-                <FaHeart className="text-4xl text-white mb-3" />
-                <h3 className="text-2xl font-bold text-white">CPR Certification</h3>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center space-x-2 mb-4">
-                  <FaStar className="text-[#00A5A8]" />
-                  <span className="text-sm font-semibold text-gray-600">Most Popular</span>
-                </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Learn life-saving CPR techniques for adults, children, and infants. Includes choking relief and barrier device usage.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">2-year certification</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">In-person or blended online</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Same-day certification card</span>
-                  </li>
-                </ul>
-                <button className="w-full px-6 py-3 bg-[#C10E21] text-white font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                  Find a Class
-                </button>
-              </div>
-            </div>
-
-            {/* First Aid */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all group">
-              <div className="bg-gradient-to-br from-[#C10E21] to-[#a00d1c] p-6">
-                <FaShieldAlt className="text-4xl text-white mb-3" />
-                <h3 className="text-2xl font-bold text-white">First Aid Certification</h3>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center space-x-2 mb-4">
-                  <FaCertificate className="text-[#00A5A8]" />
-                  <span className="text-sm font-semibold text-gray-600">OSHA Compliant</span>
-                </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Respond to common workplace and home emergencies with proper care techniques and injury management.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Bleeding, burns, fractures</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Medical emergencies</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Environmental emergencies</span>
-                  </li>
-                </ul>
-                <button className="w-full px-6 py-3 bg-[#C10E21] text-white font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                  Find a Class
-                </button>
-              </div>
-            </div>
-
-            {/* CPR + First Aid + AED Combo */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all group border-2 border-[#00A5A8] relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#00A5A8] text-white px-4 py-1 rounded-full text-sm font-bold">
-                BEST VALUE
-              </div>
-              <div className="bg-gradient-to-br from-[#C10E21] to-[#a00d1c] p-6">
-                <FaCheckCircle className="text-4xl text-white mb-3" />
-                <h3 className="text-2xl font-bold text-white">Complete Certification</h3>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center space-x-2 mb-4">
-                  <FaAward className="text-[#00A5A8]" />
-                  <span className="text-sm font-semibold text-gray-600">Comprehensive Package</span>
-                </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Full CPR, First Aid, and AED training in one comprehensive course. The complete package for workplace safety.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">All-in-one certification</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">AED training included</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Save 30% vs. separate</span>
-                  </li>
-                </ul>
-                <button className="w-full px-6 py-3 bg-[#00A5A8] text-white font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                  Find a Class
-                </button>
-              </div>
-            </div>
-
-            {/* Instructor Training */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all group">
-              <div className="bg-gradient-to-br from-[#00A5A8] to-[#008a8d] p-6">
-                <FaGraduationCap className="text-4xl text-white mb-3" />
-                <h3 className="text-2xl font-bold text-white">Instructor Certification</h3>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center space-x-2 mb-4">
-                  <FaUserMd className="text-[#C10E21]" />
-                  <span className="text-sm font-semibold text-gray-600">Professional Path</span>
-                </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Become a certified instructor and teach life-saving skills to your community or organization.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Nationally recognized credential</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Teaching materials included</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Ongoing support</span>
-                  </li>
-                </ul>
-                <button className="w-full px-6 py-3 bg-white border-2 border-[#00A5A8] text-[#00A5A8] font-bold uppercase rounded-lg hover:bg-[#00A5A8] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                  Learn More
-                </button>
-              </div>
-            </div>
-
-            {/* Corporate Training */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all group">
-              <div className="bg-gradient-to-br from-[#00A5A8] to-[#008a8d] p-6">
-                <FaUsers className="text-4xl text-white mb-3" />
-                <h3 className="text-2xl font-bold text-white">Corporate Solutions</h3>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center space-x-2 mb-4">
-                  <FaUsers className="text-[#C10E21]" />
-                  <span className="text-sm font-semibold text-gray-600">For Organizations</span>
-                </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Customized workplace safety programs for teams of any size, delivered on-site or remotely.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">On-site training available</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Volume discounts</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Compliance tracking</span>
-                  </li>
-                </ul>
-                <button className="w-full px-6 py-3 bg-white border-2 border-[#00A5A8] text-[#00A5A8] font-bold uppercase rounded-lg hover:bg-[#00A5A8] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                  Contact Sales
-                </button>
-              </div>
-            </div>
-
-            {/* Recertification */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all group">
-              <div className="bg-gradient-to-br from-[#00A5A8] to-[#008a8d] p-6">
-                <FaChartLine className="text-4xl text-white mb-3" />
-                <h3 className="text-2xl font-bold text-white">Recertification</h3>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center space-x-2 mb-4">
-                  <FaClock className="text-[#C10E21]" />
-                  <span className="text-sm font-semibold text-gray-600">Quick Renewal</span>
-                </div>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Keep your skills sharp and certification current with our streamlined renewal courses.
-                </p>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Shorter time commitment</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Skills review & updates</span>
-                  </li>
-                  <li className="flex items-start">
-                    <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700">Same-day renewal</span>
-                  </li>
-                </ul>
-                <button className="w-full px-6 py-3 bg-white border-2 border-[#00A5A8] text-[#00A5A8] font-bold uppercase rounded-lg hover:bg-[#00A5A8] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                  Renew Now
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
+      {/* Training Built for the People You Support */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
-              Getting Certified is Simple
+              {t.trainingBuilt.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Three easy steps to earning your life-saving certification
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t.trainingBuilt.subtitle}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="relative">
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-10 rounded-2xl text-center hover:shadow-xl transition-all">
-                <div className="w-24 h-24 bg-gradient-to-br from-[#C10E21] to-[#a00d1c] rounded-full flex items-center justify-center mx-auto mb-6 text-white text-4xl font-bold shadow-lg">
-                  1
-                </div>
-                <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Choose Your Course</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Select from in-person, blended online, or fully remote training options. Find a class that fits your schedule.
-                </p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Direct Support Professionals */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
+              <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+                <FaHandHoldingHeart className="text-3xl text-white" />
               </div>
-              <div className="hidden md:block absolute top-12 -right-4 w-8 h-1 bg-[#00A5A8]"></div>
+              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">{t.trainingBuilt.directSupport}</h3>
+              <p className="text-gray-600 leading-relaxed">
+                {t.trainingBuilt.directSupportDesc}
+              </p>
             </div>
 
-            <div className="relative">
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-10 rounded-2xl text-center hover:shadow-xl transition-all">
-                <div className="w-24 h-24 bg-gradient-to-br from-[#C10E21] to-[#a00d1c] rounded-full flex items-center justify-center mx-auto mb-6 text-white text-4xl font-bold shadow-lg">
-                  2
-                </div>
-                <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Complete Training</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Learn through interactive modules and hands-on practice with certified instructors. Master life-saving techniques.
-                </p>
+            {/* Healthcare Professionals */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
+              <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+                <FaUserMd className="text-3xl text-white" />
               </div>
-              <div className="hidden md:block absolute top-12 -right-4 w-8 h-1 bg-[#00A5A8]"></div>
+              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">{t.trainingBuilt.healthcare}</h3>
+              <p className="text-gray-600 leading-relaxed">
+                {t.trainingBuilt.healthcareDesc}
+              </p>
             </div>
 
-            <div className="relative">
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-10 rounded-2xl text-center hover:shadow-xl transition-all">
-                <div className="w-24 h-24 bg-gradient-to-br from-[#C10E21] to-[#a00d1c] rounded-full flex items-center justify-center mx-auto mb-6 text-white text-4xl font-bold shadow-lg">
-                  3
-                </div>
-                <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Get Certified</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Pass your skills assessment and receive your official 2-year certification card the same day.
-                </p>
+            {/* Educational & Community Roles */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
+              <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+                <FaChalkboardTeacher className="text-3xl text-white" />
               </div>
+              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">{t.trainingBuilt.education}</h3>
+              <p className="text-gray-600 leading-relaxed">
+                {t.trainingBuilt.educationDesc}
+              </p>
             </div>
           </div>
 
           <div className="text-center mt-12">
+            <p className="text-lg text-gray-700 font-medium">
+              {t.trainingBuilt.courseNote}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Emergency Preparedness for Everyone */}
+      <section className="py-20 bg-gradient-to-br from-[#00A5A8] to-[#008a8d] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {t.emergency.title}
+            </h2>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+              {t.emergency.subtitle}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center hover:bg-white/20 transition">
+              <FaUserMd className="text-3xl mx-auto mb-3" />
+              <p className="text-sm font-semibold">{t.emergency.healthcarePro}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center hover:bg-white/20 transition">
+              <FaHeart className="text-3xl mx-auto mb-3" />
+              <p className="text-sm font-semibold">{t.emergency.parents}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center hover:bg-white/20 transition">
+              <FaChalkboardTeacher className="text-3xl mx-auto mb-3" />
+              <p className="text-sm font-semibold">{t.emergency.teachers}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center hover:bg-white/20 transition">
+              <FaUsers className="text-3xl mx-auto mb-3" />
+              <p className="text-sm font-semibold">{t.emergency.coaches}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center hover:bg-white/20 transition">
+              <FaShieldAlt className="text-3xl mx-auto mb-3" />
+              <p className="text-sm font-semibold">{t.emergency.workplace}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center hover:bg-white/20 transition">
+              <FaHandsHelping className="text-3xl mx-auto mb-3" />
+              <p className="text-sm font-semibold">{t.emergency.community}</p>
+            </div>
+          </div>
+
+          <div className="text-center">
             <button
               onClick={() => router.push("/login")}
-              className="px-10 py-5 bg-[#C10E21] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg active:scale-95"
+              className="px-10 py-5 bg-white text-[#C10E21] text-lg font-bold uppercase rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
             >
-              Start Your Training Today
+              {t.emergency.findClass}
             </button>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] text-white">
+      {/* Instructor Program Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+                {t.instructor.title}
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                {t.instructor.subtitle}
+              </p>
+
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-[#2D2F33] mb-4">{t.instructor.resourcesTitle}</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <FaVideo className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.videos}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FaClipboardList className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.guides}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FaDesktop className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.presentations}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FaHandPaper className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.tools}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-[#2D2F33] mb-4">{t.instructor.pathsTitle}</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <FaCheckCircle className="text-[#C10E21] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.online}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FaCheckCircle className="text-[#C10E21] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.inPerson}</span>
+                  </li>
+                  <li className="flex items-start">
+                    <FaCheckCircle className="text-[#C10E21] mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700">{t.instructor.support}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-[#00A5A8] font-semibold mb-6">
+                {t.instructor.reciprocity}
+              </p>
+
+              <button
+                onClick={() => router.push("/login")}
+                className="px-8 py-4 bg-[#C10E21] text-white font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95"
+              >
+                {t.instructor.becomeInstructor}
+              </button>
+            </div>
+
+            <div className="relative hidden md:block">
+              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-12 rounded-3xl shadow-xl">
+                <div className="flex items-center justify-center w-full h-64 bg-gradient-to-br from-[#C10E21]/10 to-[#00A5A8]/10 rounded-2xl">
+                  <FaGraduationCap className="text-9xl text-[#C10E21]/30" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How We Teach - Instructional Methodology */}
+      <section className="py-20 bg-gradient-to-br from-[#F5F6F7] to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+              {t.howWeTeach.title}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t.howWeTeach.subtitle}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-6">
+                <FaPlayCircle className="text-3xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.howWeTeach.videoDriven}</h3>
+              <p className="text-gray-600">
+                {t.howWeTeach.videoDrivenDesc}
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-6">
+                <FaBrain className="text-3xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.howWeTeach.scenario}</h3>
+              <p className="text-gray-600">
+                {t.howWeTeach.scenarioDesc}
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-6">
+                <FaEye className="text-3xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.howWeTeach.learningStyles}</h3>
+              <p className="text-gray-600">
+                {t.howWeTeach.learningStylesDesc}
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-6">
+                <FaCertificate className="text-3xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.howWeTeach.compliance}</h3>
+              <p className="text-gray-600">
+                {t.howWeTeach.complianceDesc}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Certification That Builds Real Confidence */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+              {t.certification.title}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t.certification.subtitle}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+                <FaBook className="text-2xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.certification.library}</h3>
+              <p className="text-gray-600">
+                {t.certification.libraryDesc}
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+                <FaUserShield className="text-2xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.certification.realWorld}</h3>
+              <p className="text-gray-600">
+                {t.certification.realWorldDesc}
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+                <FaBrain className="text-2xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.certification.retention}</h3>
+              <p className="text-gray-600">
+                {t.certification.retentionDesc}
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+                <FaCertificate className="text-2xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.certification.beyond}</h3>
+              <p className="text-gray-600">
+                {t.certification.beyondDesc}
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={() => router.push("/login")}
+              className="px-10 py-5 bg-[#C10E21] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg active:scale-95"
+            >
+              {t.certification.startTraining}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Flexible Training Options */}
+      <section id="training-options" className="py-20 bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Trusted by Millions
+              {t.trainingOptions.title}
             </h2>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              Real stories from people who gained life-saving confidence through our training
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl border border-white/20 hover:bg-white/15 transition">
-              <div className="flex items-center mb-4">
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
+              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+                <FaLaptop className="text-2xl text-white" />
               </div>
-              <FaQuoteLeft className="text-3xl text-[#00A5A8] mb-4" />
-              <p className="text-lg mb-6 leading-relaxed">
-                "The training was professional, practical, and gave me real confidence. I feel prepared to act in an emergency now. Best decision I made this year."
+              <h3 className="text-2xl font-bold mb-4">{t.trainingOptions.remote}</h3>
+              <p className="text-white/80">
+                {t.trainingOptions.remoteDesc}
               </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  SM
-                </div>
-                <div>
-                  <div className="font-bold">Sarah Martinez</div>
-                  <div className="text-sm text-white/70">Office Manager</div>
-                </div>
-              </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl border border-white/20 hover:bg-white/15 transition">
-              <div className="flex items-center mb-4">
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
+              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+                <FaBuilding className="text-2xl text-white" />
               </div>
-              <FaQuoteLeft className="text-3xl text-[#00A5A8] mb-4" />
-              <p className="text-lg mb-6 leading-relaxed">
-                "We certified our entire 50-person team. The corporate package was seamless, instructors were outstanding, and the certification process was efficient."
+              <h3 className="text-2xl font-bold mb-4">{t.trainingOptions.inPerson}</h3>
+              <p className="text-white/80">
+                {t.trainingOptions.inPersonDesc}
               </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  JC
-                </div>
-                <div>
-                  <div className="font-bold">James Chen</div>
-                  <div className="text-sm text-white/70">HR Director, Tech Corp</div>
-                </div>
-              </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl border border-white/20 hover:bg-white/15 transition">
-              <div className="flex items-center mb-4">
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
-                <FaStar className="text-[#00A5A8]" />
+              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+                <FaUsers className="text-2xl text-white" />
               </div>
-              <FaQuoteLeft className="text-3xl text-[#00A5A8] mb-4" />
-              <p className="text-lg mb-6 leading-relaxed">
-                "The blended learning format was perfect for my busy teaching schedule. Online theory plus hands-on practice made learning efficient and thorough."
+              <h3 className="text-2xl font-bold mb-4">{t.trainingOptions.group}</h3>
+              <p className="text-white/80">
+                {t.trainingOptions.groupDesc}
               </p>
+            </div>
+          </div>
+
+          {/* What's Included */}
+          <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl border border-white/20 max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold mb-6 text-center">{t.trainingOptions.includedTitle}</h3>
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  RP
-                </div>
-                <div>
-                  <div className="font-bold">Rachel Patel</div>
-                  <div className="text-sm text-white/70">High School Teacher</div>
-                </div>
+                <FaCheckCircle className="text-[#00A5A8] mr-3 flex-shrink-0" />
+                <span>{t.trainingOptions.materials}</span>
               </div>
+              <div className="flex items-center">
+                <FaCheckCircle className="text-[#00A5A8] mr-3 flex-shrink-0" />
+                <span>{t.trainingOptions.videoAccess}</span>
+              </div>
+              <div className="flex items-center">
+                <FaCheckCircle className="text-[#00A5A8] mr-3 flex-shrink-0" />
+                <span>{t.trainingOptions.evaluation}</span>
+              </div>
+              <div className="flex items-center">
+                <FaCheckCircle className="text-[#00A5A8] mr-3 flex-shrink-0" />
+                <span>{t.trainingOptions.certCard}</span>
+              </div>
+              <div className="flex items-center md:col-span-2 justify-center">
+                <FaCheckCircle className="text-[#00A5A8] mr-3 flex-shrink-0" />
+                <span>{t.trainingOptions.validity}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              onClick={() => router.push("/login")}
+              className="px-10 py-5 bg-[#00A5A8] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
+            >
+              {t.trainingOptions.schedule}
+            </button>
+            <div className="flex items-center space-x-2 text-white/90">
+              <span>{t.trainingOptions.questions}</span>
+              <FaPhone className="text-[#00A5A8]" />
+              <span className="font-bold">1-800-555-0123</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20 bg-white">
+      {/* Leadership Section */}
+      <section id="acceptance" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
-              Simple, Transparent Pricing
+              {t.leadership.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Choose the certification package that fits your needs
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {t.leadership.subtitle}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Basic */}
-            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all border-2 border-gray-200">
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-2">Individual</h3>
-              <p className="text-gray-600 mb-6">Perfect for personal certification</p>
-              <div className="mb-6">
-                <span className="text-5xl font-bold text-[#C10E21]">$45</span>
-                <span className="text-gray-600 text-lg">/person</span>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                BB
               </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">CPR or First Aid certification</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">2-year validity</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">Digital certification card</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">Online or in-person options</span>
-                </li>
-              </ul>
-              <button className="w-full px-6 py-3 bg-white border-2 border-[#C10E21] text-[#C10E21] font-bold uppercase rounded-lg hover:bg-[#C10E21] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                Get Started
-              </button>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-1">Brittany Buchanan</h3>
+              <p className="text-[#00A5A8] font-semibold mb-2">{t.leadership.director}</p>
+              <p className="text-gray-600 text-sm">{t.leadership.certifiedEMT}</p>
             </div>
 
-            {/* Standard - Featured */}
-            <div className="bg-gradient-to-br from-[#C10E21] to-[#a00d1c] p-8 rounded-2xl shadow-2xl transform md:scale-105 relative border-2 border-[#00A5A8]">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#00A5A8] text-white px-6 py-2 rounded-full text-sm font-bold">
-                MOST POPULAR
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                MB
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Complete Package</h3>
-              <p className="text-white/90 mb-6">Best value for full certification</p>
-              <div className="mb-6">
-                <span className="text-5xl font-bold text-white">$75</span>
-                <span className="text-white/80 text-lg">/person</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-white">CPR + First Aid + AED combo</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-white">2-year validity</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-white">Physical + digital cards</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-white">Blended learning option</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-white">Free renewal reminder</span>
-                </li>
-              </ul>
-              <button className="w-full px-6 py-3 bg-[#00A5A8] text-white font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95">
-                Get Started
-              </button>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-1">Mr. Buchanan</h3>
+              <p className="text-[#00A5A8] font-semibold mb-2">{t.leadership.board}</p>
+              <p className="text-gray-600 text-sm">{t.leadership.certifiedEMT}</p>
             </div>
 
-            {/* Enterprise */}
-            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all border-2 border-gray-200">
-              <h3 className="text-2xl font-bold text-[#2D2F33] mb-2">Enterprise</h3>
-              <p className="text-gray-600 mb-6">For teams & organizations</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-[#C10E21]">Custom</span>
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 rounded-2xl shadow-lg text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+                MD
               </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">Unlimited team members</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">On-site training available</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">Dedicated account manager</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">Compliance tracking dashboard</span>
-                </li>
-                <li className="flex items-start">
-                  <FaCheckCircle className="text-[#00A5A8] mt-1 mr-3 flex-shrink-0" />
-                  <span className="text-gray-700">Volume discounts</span>
-                </li>
-              </ul>
-              <button className="w-full px-6 py-3 bg-white border-2 border-[#C10E21] text-[#C10E21] font-bold uppercase rounded-lg hover:bg-[#C10E21] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95">
-                Contact Sales
-              </button>
+              <h3 className="text-xl font-bold text-[#2D2F33] mb-1">Medical Director</h3>
+              <p className="text-[#00A5A8] font-semibold mb-2">{t.leadership.physician}</p>
+              <p className="text-gray-600 text-sm">{t.leadership.md}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-20 bg-[#F5F6F7]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-xl text-gray-600">
-              Everything you need to know about our training programs
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              {
-                question: "How long does the certification last?",
-                answer: "All certifications are valid for 2 years from the date of completion. We'll send you a reminder email before your certification expires so you can schedule your recertification course."
-              },
-              {
-                question: "Is the certification recognized nationally?",
-                answer: "Yes, our certifications are OSHA-compliant and recognized by employers, regulatory bodies, and organizations nationwide. Our training meets or exceeds all national standards set by ILCOR for CPR and First Aid certification."
-              },
-              {
-                question: "What's the difference between online and blended courses?",
-                answer: "Online courses include digital learning modules with virtual skills assessment. Blended courses combine online theory portions with in-person hands-on practice and skills testing with a certified instructor, providing the most comprehensive learning experience."
-              },
-              {
-                question: "Can I get a refund if I can't complete the course?",
-                answer: "We offer a full refund if you cancel at least 48 hours before your scheduled training session. For blended courses, online portions must be incomplete to qualify for a full refund."
-              },
-              {
-                question: "Do you offer corporate group training?",
-                answer: "Absolutely! We provide customized corporate training programs for teams of any size. We can deliver training on-site at your location or arrange group sessions at our training centers. Contact our sales team for volume pricing and custom scheduling."
-              },
-              {
-                question: "What happens if I don't pass the skills assessment?",
-                answer: "You can retake the skills assessment at no additional cost within 30 days of your original course date. Our instructors will provide additional coaching to ensure you're confident and prepared for your reassessment."
-              }
-            ].map((faq, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
-                <button
-                  onClick={() => toggleFaq(index)}
-                  className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-all"
-                >
-                  <span className="text-lg font-bold text-[#2D2F33] pr-4">{faq.question}</span>
-                  <FaChevronDown
-                    className={`text-[#C10E21] transition-transform flex-shrink-0 ${openFaq === index ? 'rotate-180' : ''}`}
-                  />
-                </button>
-                <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openFaq === index ? 'max-h-96' : 'max-h-0'
-                  }`}
-                >
-                  <div className="px-6 pb-5 text-gray-600 leading-relaxed">
-                    {faq.answer}
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Call to Action Section */}
+      <section className="py-20 bg-gradient-to-br from-[#C10E21] to-[#a00d1c] text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            {t.cta.title}
+          </h2>
+          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+            {t.cta.subtitle}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => router.push("/login")}
+              className="px-10 py-5 bg-white text-[#C10E21] text-lg font-bold uppercase rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
+            >
+              {t.cta.findCourse}
+            </button>
+            <button
+              onClick={() => router.push("/login")}
+              className="px-10 py-5 bg-[#00A5A8] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
+            >
+              {t.cta.becomeInstructor}
+            </button>
+            <button
+              onClick={() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-10 py-5 bg-transparent border-2 border-white text-white text-lg font-bold uppercase rounded-lg hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl active:scale-95"
+            >
+              {t.cta.contactUs}
+            </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#2D2F33] text-white py-16">
+      <footer id="footer" className="bg-[#2D2F33] text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-14 h-14 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-lg flex items-center justify-center">
-                  <FaShieldAlt className="text-2xl text-white" />
-                </div>
-                <span className="text-2xl font-bold">CPI Training</span>
+            {/* About */}
+            <div className="md:col-span-1">
+              <div className="mb-6">
+                <Image
+                  src="/logo.png"
+                  alt="CarePoint Institute"
+                  width={80}
+                  height={80}
+                  className="rounded-lg"
+                />
               </div>
-              <p className="text-white/80 mb-6 leading-relaxed max-w-md">
-                Empowering individuals and organizations with life-saving skills through professional CPR and First Aid training for over 100 years.
+              <p className="text-white/80 leading-relaxed">
+                {t.footer.about}
               </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-white/10 px-4 py-3 rounded-lg">
-                  <div className="font-bold text-[#00A5A8] text-lg">5M+</div>
-                  <div className="text-xs text-white/70">Trained Annually</div>
-                </div>
-                <div className="bg-white/10 px-4 py-3 rounded-lg">
-                  <div className="font-bold text-[#00A5A8] text-lg">OSHA</div>
-                  <div className="text-xs text-white/70">Compliant</div>
-                </div>
-                <div className="bg-white/10 px-4 py-3 rounded-lg">
-                  <div className="font-bold text-[#00A5A8] text-lg">2-Year</div>
-                  <div className="text-xs text-white/70">Certification</div>
-                </div>
-              </div>
             </div>
 
+            {/* Quick Links */}
             <div>
-              <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-bold mb-4">{t.footer.quickLinks}</h3>
               <ul className="space-y-3">
-                <li><a href="#courses" className="text-white/80 hover:text-[#00A5A8] transition">Courses</a></li>
-                <li><a href="#pricing" className="text-white/80 hover:text-[#00A5A8] transition">Pricing</a></li>
-                <li><a href="#about" className="text-white/80 hover:text-[#00A5A8] transition">About Us</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">Find a Class</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">Become an Instructor</a></li>
+                <li><a href="#courses" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.cprCourses}</a></li>
+                <li><a href="#training-options" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.firstAid}</a></li>
+                <li><button onClick={() => router.push("/acceptance")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.accreditation}</button></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.becomeInstructor}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.findClass}</a></li>
+                <li>
+                  <button
+                    onClick={() => router.push("/login")}
+                    className="text-white/80 hover:text-[#00A5A8] transition"
+                  >
+                    {t.footer.logIn}
+                  </button>
+                </li>
               </ul>
             </div>
 
+            {/* Contact */}
             <div>
-              <h3 className="text-lg font-bold mb-4">Contact & Support</h3>
+              <h3 className="text-lg font-bold mb-4">{t.footer.contactUs}</h3>
               <ul className="space-y-3 text-white/80">
-                <li>Email: info@cpitraining.com</li>
-                <li>Phone: (555) 123-4567</li>
-                <li>Hours: Mon-Fri 9AM - 6PM</li>
-                <li className="pt-3">
-                  <button
-                    onClick={() => router.push("/login")}
-                    className="px-6 py-2.5 bg-[#00A5A8] text-white font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-lg text-sm active:scale-95"
-                  >
-                    Student Login
-                  </button>
+                <li className="flex items-center">
+                  <FaPhone className="mr-3 text-[#00A5A8]" />
+                  1-800-555-0123
                 </li>
+                <li className="flex items-center">
+                  <FaEnvelope className="mr-3 text-[#00A5A8]" />
+                  info@carepointinstitute.com
+                </li>
+                <li className="flex items-start">
+                  <FaMapMarkerAlt className="mr-3 mt-1 text-[#00A5A8]" />
+                  <span>123 Training Center Dr<br />Suite 100<br />Your City, ST 12345</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h3 className="text-lg font-bold mb-4">{t.footer.legal}</h3>
+              <ul className="space-y-3">
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.privacy}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.dataProtection}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.security}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.refund}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.terms}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.cePrivacy}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.conflict}</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-white/10 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <div className="text-white/60 text-sm">
-                © 2025 CPI Training. All rights reserved. Charity Registration #1077265/1
-              </div>
-              <div className="flex space-x-6 text-sm text-white/60">
-                <a href="#" className="hover:text-white transition">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition">Terms of Service</a>
-                <a href="#" className="hover:text-white transition">Accessibility</a>
-              </div>
+            <div className="text-center text-white/60 text-sm">
+              {t.footer.copyright}
             </div>
           </div>
         </div>

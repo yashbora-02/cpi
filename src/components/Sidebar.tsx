@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth } from "@/lib/firebase";
@@ -33,7 +34,15 @@ export default function Sidebar() {
 
   return (
     <div className="w-64 min-h-screen bg-white shadow-md p-4 flex flex-col">
-      <h2 className="text-2xl font-bold text-blue-700 mb-6">CPI</h2>
+      <div className="mb-6">
+        <Image
+          src="/logo.png"
+          alt="CarePoint Institute"
+          width={100}
+          height={50}
+          className="object-contain"
+        />
+      </div>
 
       {/* General */}
       <DropdownSection
@@ -123,7 +132,7 @@ function DropdownSection({
     <div className="mb-4">
       <button
         onClick={onToggle}
-        className="w-full flex justify-between items-center text-left font-semibold text-gray-800 hover:text-blue-600"
+        className="w-full flex justify-between items-center text-left font-semibold text-gray-800 hover:text-[#C10E21]"
       >
         {label}
         <span className="text-xs">{isOpen ? "▲" : "▼"}</span>
@@ -134,9 +143,9 @@ function DropdownSection({
             <Link
               key={item.path}
               href={item.path}
-              className={`p-2 rounded hover:bg-blue-100 text-sm ${
+              className={`p-2 rounded hover:bg-[#00A5A8]/10 text-sm ${
                 currentPath === item.path
-                  ? "bg-blue-500 text-white"
+                  ? "bg-[#C10E21] text-white"
                   : "text-gray-700"
               }`}
             >

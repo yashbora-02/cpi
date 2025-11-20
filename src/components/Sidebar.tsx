@@ -18,7 +18,8 @@ import {
   FaGraduationCap,
   FaClipboardList,
   FaChevronDown,
-  FaChevronUp
+  FaChevronUp,
+  FaHeadset
 } from "react-icons/fa";
 
 export default function Sidebar() {
@@ -30,6 +31,7 @@ export default function Sidebar() {
     training: true,
     general: true,
     courses: true,
+    support: true,
   });
 
   const toggle = (key: keyof typeof open) =>
@@ -109,6 +111,18 @@ export default function Sidebar() {
           links={[
             { label: "Browse Courses", path: "/courses", icon: <FaClipboardList /> },
             { label: "My Enrolled Courses", path: "/courses/enrolled", icon: <FaGraduationCap /> },
+          ]}
+          currentPath={pathname}
+        />
+
+        {/* Support */}
+        <DropdownSection
+          label="Support"
+          icon={<FaHeadset className="text-lg" />}
+          isOpen={open.support}
+          onToggle={() => toggle("support")}
+          links={[
+            { label: "Support Center", path: "/support", icon: <FaHeadset /> },
           ]}
           currentPath={pathname}
         />

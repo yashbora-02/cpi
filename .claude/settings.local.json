@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(next dev)"
+      "Bash(next dev)",
+      "WebFetch(domain:cpi-demo-alpha.vercel.app)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

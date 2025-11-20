@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   FaCheckCircle,
@@ -29,11 +29,92 @@ import { useLanguage } from "@/lib/LanguageContext";
 export default function Acceptance() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { language, setLanguage, t } = useLanguage();
+
+  // Check for purchase verification on mount
+  useEffect(() => {
+    // Check URL parameters for purchase success
+    const params = new URLSearchParams(window.location.search);
+    const purchaseSuccess = params.get('purchase') === 'success';
+
+    // Also check localStorage for previous purchase
+    const previousPurchase = localStorage.getItem('cpi_purchase_complete');
+
+    if (purchaseSuccess) {
+      localStorage.setItem('cpi_purchase_complete', 'true');
+      setHasPurchased(true);
+    } else if (previousPurchase === 'true') {
+      setHasPurchased(true);
+    }
+
+    setIsLoading(false);
+  }, []);
 
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "es" : "en");
   };
+
+  // Show loading or redirect if not purchased
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00A5A8] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasPurchased) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-[#C10E21] to-[#a00d1c] px-6 py-8 text-center">
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[#C10E21]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Access Restricted
+              </h2>
+              <p className="text-white/90 text-sm">
+                This page is only available after completing a purchase
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-4">
+              <div className="bg-blue-50 border-l-4 border-[#00A5A8] p-4 rounded-r">
+                <p className="text-sm text-gray-700">
+                  To view acceptance information and guidelines, please complete your course purchase first.
+                </p>
+              </div>
+
+              <button
+                onClick={() => router.push('/courses')}
+                className="w-full px-6 py-3 bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white font-medium rounded-lg hover:from-[#008a8d] hover:to-[#00A5A8] transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
+              >
+                Browse Courses
+              </button>
+
+              <button
+                onClick={() => router.push('/')}
+                className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 font-medium"
+              >
+                Go to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">

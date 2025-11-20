@@ -5,10 +5,12 @@ import Sidebar from "@/components/Sidebar";
 import StudentEntryDrawer from "@/components/StudentEntryDrawer";
 import EnterBlendedDetails from "../blended-class/enter-details";
 import EnterDigitalDetails from "../digital-cert-card/enter-details";
+import { FaEdit, FaTrash, FaLink, FaFilePdf, FaEllipsisV } from "react-icons/fa";
 
 import ConfirmModal from "@/components/ConfirmModal";
 import AccessLinkModal from "@/components/AccessLinkModal";
 import SelectStudentDrawer from "@/components/SelectStudentDrawer";
+import SuccessModal from "@/components/SuccessModal";
 
 interface Student {
   firstName: string;
@@ -28,6 +30,7 @@ export default function CreateClassPage() {
   const [showModal, setShowModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [activeLink, setActiveLink] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const handleSaveStudents = (filled: Student[]) => {
     setStudents([...filled]);
     setShowDrawer(false);
@@ -462,13 +465,19 @@ export default function CreateClassPage() {
                         <td className="border px-4 py-2">{student.email}</td>
                         <td className="border px-4 py-2">Assigned</td>
                         <td className="border px-4 py-2">
-                          <div className="flex gap-2 text-gray-600">
-                            <span className="cursor-pointer hover:text-blue-600">
-                              ✎
-                            </span>
-                            <span className="cursor-pointer hover:text-red-600">
-                              🗑️
-                            </span>
+                          <div className="flex gap-3 text-gray-600">
+                            <button
+                              className="hover:text-[#00A5A8] transition-colors"
+                              title="Edit student"
+                            >
+                              <FaEdit className="w-4 h-4" />
+                            </button>
+                            <button
+                              className="hover:text-red-600 transition-colors"
+                              title="Remove student"
+                            >
+                              <FaTrash className="w-4 h-4" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -506,6 +515,9 @@ export default function CreateClassPage() {
                     setStep(4); // proceed
                   }}
                   onCancel={() => setShowModal(false)}
+                  availableCredits={28}
+                  creditsToUse={students.length}
+                  studentCount={students.length}
                 />
               )}
             </div>
@@ -576,38 +588,46 @@ export default function CreateClassPage() {
                           <td className="border px-4 py-2">Pending</td>
                           <td className="border px-4 py-2">--</td>
                           <td className="border px-4 py-2">--</td>
-                          <td className="border px-4 py-2 text-center text-gray-600 space-x-3">
-                            <span className="cursor-pointer hover:text-gray-800">
-                              ✏️
-                            </span>
-                            {programType === "blended" && (
+                          <td className="border px-4 py-2">
+                            <div className="flex gap-3 items-center justify-center text-gray-600">
                               <button
-                                onClick={() => {
-                                  setActiveLink(
-                                    "https://pcmblsiwgjfc3pmqyyzx.app.clientclub.net/courses/offers/9698431c-c263-40b1-84e1-8e55a700c794"
-                                  );
-                                  setShowLinkModal(true);
-                                }}
-                                className="text-gray-600 hover:text-blue-600"
+                                className="hover:text-[#00A5A8] transition-colors"
+                                title="Edit student"
                               >
-                                🔗
+                                <FaEdit className="w-4 h-4" />
                               </button>
-                            )}
-                            {programType === "digital" && (
+                              {programType === "blended" && (
+                                <button
+                                  onClick={() => {
+                                    setActiveLink(
+                                      "https://pcmblsiwgjfc3pmqyyzx.app.clientclub.net/courses/offers/9698431c-c263-40b1-84e1-8e55a700c794"
+                                    );
+                                    setShowLinkModal(true);
+                                  }}
+                                  className="hover:text-[#00A5A8] transition-colors"
+                                  title="Access Link"
+                                >
+                                  <FaLink className="w-4 h-4" />
+                                </button>
+                              )}
+                              {programType === "digital" && (
+                                <button
+                                  onClick={() => {
+                                    window.open("/cpi-cert.pdf", "_blank");
+                                  }}
+                                  className="hover:text-red-600 transition-colors"
+                                  title="View PDF Certificate"
+                                >
+                                  <FaFilePdf className="w-4 h-4" />
+                                </button>
+                              )}
                               <button
-                                onClick={() => {
-                                  window.open("/cpi-cert.pdf", "_blank");
-                                }}
-                                className="text-gray-600 hover:text-red-600"
-                                title="View PDF"
+                                className="hover:text-gray-800 transition-colors"
+                                title="More options"
                               >
-                                📄
+                                <FaEllipsisV className="w-4 h-4" />
                               </button>
-                            )}
-
-                            <span className="cursor-pointer hover:text-gray-800">
-                              ⋮
-                            </span>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -620,10 +640,10 @@ export default function CreateClassPage() {
               </div>
               <div className="flex justify-end mt-6">
                 <button
-                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-                  onClick={resetFields}
+                  className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-green-800 font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95"
+                  onClick={() => setShowSuccessModal(true)}
                 >
-                  Submit
+                  Submit Class
                 </button>
               </div>
             </div>
@@ -640,6 +660,19 @@ export default function CreateClassPage() {
           show={showLinkModal}
           onClose={() => setShowLinkModal(false)}
           link={activeLink}
+        />
+        <SuccessModal
+          show={showSuccessModal}
+          onClose={() => {
+            setShowSuccessModal(false);
+            resetFields();
+          }}
+          onCreateNew={() => {
+            setShowSuccessModal(false);
+            resetFields();
+          }}
+          studentCount={students.length}
+          programType={programType}
         />
       </main>
     </div>

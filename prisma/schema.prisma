@@ -38,6 +38,24 @@ model Video {
   video_url     String
   thumbnail_url String
 
-  @@map("videos") 
+  @@map("videos")
+}
+
+model Ticket {
+  id           Int      @id @default(autoincrement())
+  ticket_number String  @unique
+  type         String   // "General Request" or "Application Issue / Bug"
+  title        String
+  description  String   @db.Text
+  reported_by  String
+  email        String
+  phone        String
+  file_url     String?  // Optional file attachment URL
+  file_name    String?  // Original filename
+  status       String   @default("open") // open, in_progress, resolved, closed
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  @@map("tickets")
 }
 

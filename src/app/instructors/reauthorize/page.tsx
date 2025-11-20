@@ -20,10 +20,14 @@ export default function ReauthorizeInstructorsPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Reauthorize Instructors
-        </h1>
+      <main className="flex-1">
+        {/* Header */}
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold">Reauthorize Instructors</h1>
+          <p className="text-base mt-2 text-white/90">Manage instructor reauthorization</p>
+        </div>
+
+        <div className="p-8">
 
         <div className="bg-white p-6 rounded shadow">
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -69,6 +73,7 @@ export default function ReauthorizeInstructorsPage() {
 
         {/* Modal */}
         {showModal && <ReauthorizeModal onClose={() => setShowModal(false)} />}
+        </div>
       </main>
     </div>
   );

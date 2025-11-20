@@ -45,8 +45,9 @@ Required environment variables (see `.env.example`):
 - **Database:** PostgreSQL with Prisma ORM 6.11.0
 - **Auth:** Firebase Authentication (Email/Password + Google Sign-in)
 - **Styling:** Tailwind CSS 4.0
-- **UI Components:** React Icons
+- **UI Components:** React Icons, Headless UI
 - **Deployment:** Vercel
+- **Node.js:** 18+ required
 
 ### Directory Structure
 ```
@@ -168,16 +169,6 @@ The Prisma Client is generated to `src/generated/prisma` (not default node_modul
 ```typescript
 import { PrismaClient } from '@/generated/prisma';
 ```
-
-### Route Structure & Pages
-- **Landing Page** (`/`): Professional landing with course showcase, pricing, testimonials, FAQ
-- **Authentication**: `/login` (Email/Google), `/register` (with validation)
-- **Dashboard** (`/dashboard`): Credit overview cards (CPR Only, First Aid Only, Combo)
-- **Courses**: `/courses` (browse), `/courses/enrolled` (user's courses with progress)
-- **Instructors**: `/instructors/manage`, `/instructors/add`, `/instructors/reauthorize`, `/instructors/development`
-- **Training**: `/training/create-class` (multi-step Blended/Online class creation)
-- **Students**: `/students/search`
-- **Video Player**: `/video`
 
 ### Component Responsibilities
 - **Sidebar.tsx** - Main navigation with collapsible dropdown sections (General, Instructors, Training, Courses) and logout button

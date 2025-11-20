@@ -88,7 +88,7 @@ export default function CoursesPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#00A5A8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading courses...</p>
         </div>
       </div>
@@ -98,17 +98,19 @@ export default function CoursesPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <div className="flex-1 p-8">
+      <main className="flex-1">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-            <FaGraduationCap className="text-blue-600" />
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <FaGraduationCap />
             Available Courses
           </h1>
-          <p className="text-gray-600">
+          <p className="text-base mt-2 text-white/90">
             Explore our professional training courses
           </p>
         </div>
+
+        <div className="p-8">
 
         {/* Category Filter */}
         <div className="mb-6 flex flex-wrap gap-2">
@@ -118,7 +120,7 @@ export default function CoursesPage() {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition ${
                 selectedCategory === category
-                  ? "bg-blue-600 text-white"
+                  ? "bg-[#00A5A8] text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
               }`}
             >
@@ -144,7 +146,7 @@ export default function CoursesPage() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 {course.certification && (
-                  <div className="absolute top-1.5 right-1.5 bg-blue-600 text-white px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
+                  <div className="absolute top-1.5 right-1.5 bg-[#00A5A8] text-white px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
                     <FaCertificate className="text-[8px]" />
                     Certified
                   </div>
@@ -153,7 +155,7 @@ export default function CoursesPage() {
 
               {/* Course Content */}
               <div className="p-3">
-                <h3 className="text-base font-bold text-gray-800 mb-1.5 group-hover:text-blue-600 transition">
+                <h3 className="text-base font-bold text-gray-800 mb-1.5 group-hover:text-[#00A5A8] transition">
                   {course.title}
                 </h3>
 
@@ -164,11 +166,11 @@ export default function CoursesPage() {
                 {/* Course Meta */}
                 <div className="flex items-center gap-2.5 text-[11px] text-gray-500 mb-2.5">
                   <div className="flex items-center gap-1">
-                    <FaClock className="text-blue-600 text-[10px]" />
+                    <FaClock className="text-[#00A5A8] text-[10px]" />
                     {course.duration}
                   </div>
                   <div className="flex items-center gap-1">
-                    <FaUsers className="text-blue-600 text-[10px]" />
+                    <FaUsers className="text-[#00A5A8] text-[10px]" />
                     {course.studentsEnrolled.toLocaleString()}
                   </div>
                 </div>
@@ -176,7 +178,7 @@ export default function CoursesPage() {
                 {/* Enroll Button */}
                 <button
                   onClick={() => handleEnrollClick(course.ghlUrl)}
-                  className="w-full px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition flex items-center justify-center gap-1.5"
+                  className="w-full px-3 py-1.5 bg-[#00A5A8] text-white text-xs font-semibold rounded hover:bg-[#008a8d] transition flex items-center justify-center gap-1.5"
                 >
                   Enroll Now
                   <FaExternalLinkAlt className="text-[10px]" />
@@ -201,11 +203,12 @@ export default function CoursesPage() {
           <p className="mb-3 text-gray-600 text-xs">
             Our training specialists are here to help you find the perfect course.
           </p>
-          <button className="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition">
+          <button className="px-3 py-1.5 bg-[#00A5A8] text-white text-xs font-semibold rounded hover:bg-[#008a8d] transition">
             Contact Support
           </button>
         </div>
       </div>
+      </main>
     </div>
   );
 }

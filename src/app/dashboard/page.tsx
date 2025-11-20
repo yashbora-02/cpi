@@ -52,10 +52,16 @@ export default function Dashboard() {
     creditsData.find((c) => c.type === type)?.credits ?? 0;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1 p-6 bg-gray-100">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
+      <main className="flex-1">
+        {/* Header */}
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-base mt-2 text-white/90">Training Credits Overview</p>
+        </div>
+
+        <div className="p-8">
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <CreditCard title="CPR Only" credits={getCreditsByType("cpr_only")} />
@@ -68,7 +74,8 @@ export default function Dashboard() {
             credits={getCreditsByType("combo")}
           />
         </div>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
@@ -77,7 +84,7 @@ function CreditCard({ title, credits }: { title: string; credits: number }) {
   return (
     <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
       <h2 className="text-xl font-semibold text-gray-700 mb-2">{title}</h2>
-      <p className="text-5xl font-bold text-blue-600">{credits}</p>
+      <p className="text-5xl font-bold text-[#00A5A8]">{credits}</p>
       <p className="text-sm text-gray-500 mt-1">Credits Remaining</p>
     </div>
   );

@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { loginWithEmail, loginWithGoogle } from "@/lib/firebaseAuth";
+import { loginWithEmail } from "@/lib/firebaseAuth";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { FaLock, FaUser, FaGoogle } from "react-icons/fa";
+import { FaLock, FaUser } from "react-icons/fa";
 import Image from "next/image";
 
 export default function Login() {
@@ -55,32 +55,6 @@ export default function Login() {
         }
       } else if (user) {
         // Get the Firebase ID token for authenticated requests
-        const token = await user.getIdToken();
-        localStorage.setItem("firebaseToken", token);
-        router.push("/dashboard");
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setError("");
-    try {
-      setLoading(true);
-      const { user, error: firebaseError } = await loginWithGoogle();
-
-      if (firebaseError) {
-        if (firebaseError.includes("popup-closed-by-user")) {
-          setError("Login cancelled. Please try again.");
-        } else if (firebaseError.includes("network")) {
-          setError("Network error. Please check your connection.");
-        } else {
-          setError("Google login failed. Please try again.");
-        }
-      } else if (user) {
         const token = await user.getIdToken();
         localStorage.setItem("firebaseToken", token);
         router.push("/dashboard");
@@ -191,27 +165,6 @@ export default function Login() {
               ) : (
                 "Login to Portal"
               )}
-            </button>
-
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t-2 border-white/40"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-6 bg-[#2D2F33] text-white font-bold text-base tracking-wider">OR</span>
-              </div>
-            </div>
-
-            {/* Google Sign-In Button */}
-            <button
-              type="button"
-              onClick={handleGoogleLogin}
-              disabled={loading}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 py-4 rounded-lg font-bold flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg active:scale-95"
-            >
-              <FaGoogle className="text-xl text-[#C10E21] transition-transform group-hover:rotate-12" />
-              Sign in with Google
             </button>
 
             {/* Additional Links */}

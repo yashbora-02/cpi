@@ -24,12 +24,16 @@ const playlists = [
 
 export default function VideoPlayerPage() {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 p-8 bg-gray-50">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Video Playlist
-        </h1>
+      <main className="flex-1">
+        {/* Header */}
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold">Video Playlist</h1>
+          <p className="text-base mt-2 text-white/90">Training videos and resources</p>
+        </div>
+
+        <div className="p-8">
 
         <div className="flex flex-wrap gap-6">
           {playlists.map((playlist, index) => (
@@ -52,13 +56,14 @@ export default function VideoPlayerPage() {
                 <a
                   href={playlist.url}
                   target="_blank"
-                  className="text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 inline-block"
+                  className="text-white bg-[#00A5A8] px-4 py-2 rounded hover:bg-[#008a8d] inline-block"
                 >
                   ▶ Play
                 </a>
               </div>
             </div>
           ))}
+        </div>
         </div>
       </main>
     </div>

@@ -29,10 +29,14 @@ export default function ManageInstructorsPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Manage Instructors
-        </h1>
+      <main className="flex-1">
+        {/* Header */}
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold">Manage Instructors</h1>
+          <p className="text-base mt-2 text-white/90">View and manage all instructors</p>
+        </div>
+
+        <div className="p-8">
 
         <div className="bg-white p-4 rounded shadow max-w-6xl">
           <div className="mb-4 mb-4 flex justify-between items-center flex-wrap">
@@ -163,6 +167,7 @@ export default function ManageInstructorsPage() {
               // onContinue={handleContinue}
             />
           </div>
+        </div>
         </div>
       </main>
     </div>

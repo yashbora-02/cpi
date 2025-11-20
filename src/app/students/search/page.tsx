@@ -31,9 +31,15 @@ export default function StudentSearchPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-8 min-h-screen">
+      <main className="flex-1">
+        {/* Header */}
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold">Student Search</h1>
+          <p className="text-base mt-2 text-white/90">Find and manage student records</p>
+        </div>
+
+        <div className="p-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">Student Search</h1>
 
           {/* Search Form */}
           <div className="bg-white p-6 rounded-lg shadow mb-10">
@@ -84,6 +90,7 @@ export default function StudentSearchPage() {
               </div>
             </div>
           )}
+        </div>
         </div>
       </main>
     </div>

@@ -40,10 +40,14 @@ export default function InstructorDevelopmentPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Instructor Development
-        </h1>
+      <main className="flex-1">
+        {/* Header */}
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h1 className="text-3xl font-bold">Instructor Development</h1>
+          <p className="text-base mt-2 text-white/90">Training and development courses</p>
+        </div>
+
+        <div className="p-8">
 
         {/* Enrolled Courses */}
         <div className="bg-white p-6 rounded shadow mb-8">
@@ -124,6 +128,7 @@ export default function InstructorDevelopmentPage() {
               ))}
             </tbody>
           </table>
+        </div>
         </div>
       </main>
     </div>

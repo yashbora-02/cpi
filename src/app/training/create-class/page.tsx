@@ -23,6 +23,7 @@ export default function CreateClassPage() {
   const [dueDate, setDueDate] = useState("");
   const [rosterEntryType, setRosterEntryType] = useState("");
   const [showDrawer, setShowDrawer] = useState(false);
+  const [drawerMode, setDrawerMode] = useState<"enter" | "upload">("enter");
   const [students, setStudents] = useState<Student[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
@@ -40,6 +41,11 @@ export default function CreateClassPage() {
   const [assistingInstructor, setAssistingInstructor] = useState("");
   const [openEnrollment, setOpenEnrollment] = useState(false);
   const [showSelectDrawer, setShowSelectDrawer] = useState(false);
+
+  // Email toggle states
+  const [sendStudentEmail, setSendStudentEmail] = useState(true);
+  const [sendAdminEmail, setSendAdminEmail] = useState(false);
+  const [sendClassroomEmail, setSendClassroomEmail] = useState(true);
 
   const resetFields = () => {
     setStep(1);
@@ -99,11 +105,11 @@ export default function CreateClassPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-blue-700 text-white px-8 py-4 shadow">
-          <h2 className="text-xl font-semibold">
+        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+          <h2 className="text-3xl font-bold">
             Add Class/Blended Online Training
           </h2>
-          <p className="text-sm opacity-90">Create Class or Blended Training</p>
+          <p className="text-base mt-2 text-white/90">Create Class or Blended Training</p>
         </div>
 
         {/* Main Content */}
@@ -209,15 +215,24 @@ export default function CreateClassPage() {
                   onChange={(e) => {
                     const value = e.target.value;
                     setRosterEntryType(value);
+                    // Close all drawers first
+                    setShowDrawer(false);
+                    setShowSelectDrawer(false);
+                    // Then open the appropriate one
                     if (value === "enter") {
-                      setShowDrawer(true);
+                      setDrawerMode("enter");
+                      setTimeout(() => setShowDrawer(true), 50);
+                    } else if (value === "upload") {
+                      setDrawerMode("upload");
+                      setTimeout(() => setShowDrawer(true), 50);
                     } else if (value === "select") {
-                      setShowSelectDrawer(true);
+                      setTimeout(() => setShowSelectDrawer(true), 50);
                     }
                   }}
                 >
                   <option value="">-- Select --</option>
                   <option value="enter">Enter Student</option>
+                  <option value="upload">Upload Students (CSV)</option>
                   <option value="select">Select Student</option>
                 </select>
 
@@ -225,6 +240,7 @@ export default function CreateClassPage() {
                   <StudentEntryDrawer
                     onClose={() => setShowDrawer(false)}
                     onSave={handleSaveStudents}
+                    mode={drawerMode}
                   />
                 )}
 
@@ -291,37 +307,52 @@ export default function CreateClassPage() {
 
               {/* Email Toggles */}
               {programType === "blended" && (
-                <div className="flex items-center gap-8 mb-6">
-                  <label className="flex items-center gap-2">
-                    <input type="checkbox" className="w-5 h-5 text-blue-600" />
+                <div className="flex flex-col gap-4 mb-6">
+                  <label className="flex items-center gap-3">
+                    <div className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sendStudentEmail}
+                        onChange={(e) => setSendStudentEmail(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#00A5A8]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00A5A8]"></div>
+                    </div>
                     <span className="text-sm text-gray-800 font-medium">
                       Online Student Course Email
                     </span>
-                    <span className="cursor-pointer text-gray-500 hover:text-gray-800">
-                      ✎
-                    </span>
                   </label>
-                  <label className="flex items-center gap-2">
-                    <input type="checkbox" className="w-5 h-5 text-blue-600" />
+                  <label className="flex items-center gap-3">
+                    <div className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sendAdminEmail}
+                        onChange={(e) => setSendAdminEmail(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#00A5A8]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00A5A8]"></div>
+                    </div>
                     <span className="text-sm text-gray-800 font-medium">
                       Online Admin Training Email
-                    </span>
-                    <span className="cursor-pointer text-gray-500 hover:text-gray-800">
-                      ✎
                     </span>
                   </label>
                 </div>
               )}
 
               {programType === "digital" && (
-                <div className="flex items-center gap-8 mb-6">
-                  <label className="flex items-center gap-2">
-                    <input type="checkbox" className="w-5 h-5 text-blue-600" />
+                <div className="flex flex-col gap-4 mb-6">
+                  <label className="flex items-center gap-3">
+                    <div className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sendClassroomEmail}
+                        onChange={(e) => setSendClassroomEmail(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#00A5A8]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00A5A8]"></div>
+                    </div>
                     <span className="text-sm text-gray-800 font-medium">
                       Classroom Course Email
-                    </span>
-                    <span className="cursor-pointer text-gray-500 hover:text-gray-800">
-                      ✎
                     </span>
                   </label>
                 </div>
@@ -602,6 +633,7 @@ export default function CreateClassPage() {
           <StudentEntryDrawer
             onClose={() => setShowDrawer(false)}
             onSave={handleSaveStudents}
+            mode={drawerMode}
           />
         )}
         <AccessLinkModal

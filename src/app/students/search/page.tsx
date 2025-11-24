@@ -63,7 +63,7 @@ export default function StudentSearchPage() {
             </div>
             <button
               onClick={handleSearch}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded shadow"
+              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               Search Students
             </button>

@@ -114,7 +114,7 @@ export default function ConfirmModal({
         <div className="bg-gray-50 px-6 py-4 flex flex-col sm:flex-row gap-3 justify-end border-t border-gray-200">
           <button
             onClick={onCancel}
-            className="px-6 py-2.5 text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 font-medium text-sm shadow-sm hover:shadow flex items-center justify-center gap-2"
+            className="px-5 py-2 text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm flex items-center justify-center gap-2"
           >
             <span>✕</span>
             <span>Cancel</span>
@@ -122,10 +122,10 @@ export default function ConfirmModal({
           <button
             onClick={onConfirm}
             disabled={hasInsufficientCredits}
-            className={`px-6 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+            className={`px-5 py-2 rounded-lg font-medium text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 ${
               hasInsufficientCredits
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 transform hover:scale-105 active:scale-95'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
+                : 'bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white'
             }`}
           >
             <span>✓</span>

@@ -23,9 +23,9 @@ export default function SuccessModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all animate-slideUp">
         {/* Success Icon */}
-        <div className="bg-gradient-to-r from-green-600 to-green-700 px-6 py-8 text-center">
+        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] px-6 py-8 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-            <FaCheckCircle className="text-green-600 text-5xl" />
+            <FaCheckCircle className="text-[#00A5A8] text-5xl" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">
             Class Created Successfully!

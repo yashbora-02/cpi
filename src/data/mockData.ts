@@ -9,19 +9,19 @@ export const mockStudents: Student[] = [
     history: [
       {
         id: 'C-33015946',
-        program: 'HSI Adult First Aid | CPR AED All Ages (2020) - (Blended)-DC',
+        program: 'CPI Adult First Aid | CPR AED All Ages (2020) - (Blended)-DC',
         date: '05/30/2025',
         status: 'Completed',
       },
       {
         id: 'C-33041598',
-        program: 'HSI Adult First Aid | CPR AED All Ages (2020) -DC',
+        program: 'CPI Adult First Aid | CPR AED All Ages (2020) -DC',
         date: '05/30/2025',
         status: 'Completed',
       },
       {
         id: 'C-33043293',
-        program: 'HSI Adult First Aid | CPR AED All Ages (2020) -DC',
+        program: 'CPI Adult First Aid | CPR AED All Ages (2020) -DC',
         date: '06/03/2025',
         status: 'Digital Cert',
       },

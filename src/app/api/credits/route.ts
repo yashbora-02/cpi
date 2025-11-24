@@ -1,10 +1,38 @@
 import { NextResponse } from "next/server";
-// import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@/generated/prisma";
 // import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
+
+// Shared in-memory storage for mock mode - must be imported from the same module
+// This will be shared across the API routes during runtime
+declare global {
+  var mockCreditsStore: { [key: string]: number } | undefined;
+}
+
+// Initialize global mock storage if it doesn't exist
+if (!global.mockCreditsStore) {
+  global.mockCreditsStore = {
+    "CPI-FA-2020": 10,
+    "CPI-FA-CPR-AI-2020": 8,
+    "CPI-FA-CPR-AA-2020": 0,
+    "CPI-BLS-2020": 25,
+    "CPI-CPR-AA-2020": 8,
+    "CPI-ES-FA-CPR-2020": 0,
+  };
+}
+
+// Function to get mock credits array from the store
+function getMockCreditsArray() {
+  const store = global.mockCreditsStore || {};
+  return Object.entries(store).map(([type, credits], index) => ({
+    id: index + 1,
+    type,
+    credits,
+  }));
+}
 
 export async function GET() {
   // Skip auth verification in development for now
@@ -15,25 +43,19 @@ export async function GET() {
   // }
 
   try {
-    // Temporary mock data - replace with real database query when DB is set up
-    const credits = [
-      { id: 1, type: "cpr_only", credits: 25 },
-      { id: 2, type: "first_aid_only", credits: 15 },
-      { id: 3, type: "combo", credits: 10 },
-    ];
+    // Try to fetch from database
+    const credits = await prisma.credit.findMany({
+      orderBy: { id: "asc" },
+    });
 
+    console.log("✅ Fetched credits from database:", credits.length, "records");
     return NextResponse.json(credits);
-
-    // Uncomment this when database is running:
-    // const credits = await prisma.credit.findMany({
-    //   orderBy: { id: "asc" },
-    // });
-    // return NextResponse.json(credits);
   } catch (error) {
-    console.error("Error fetching credits:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch credit types" },
-      { status: 500 }
-    );
+    // Database not available - use mock mode with shared global storage
+    const mockCredits = getMockCreditsArray();
+    console.log("⚠️  Database not connected. Returning MOCK credits data.");
+    console.log("   Mock credits:", mockCredits.length, "courses");
+    console.log("   Current mock store:", global.mockCreditsStore);
+    return NextResponse.json(mockCredits);
   }
 }

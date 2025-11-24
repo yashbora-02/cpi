@@ -40,23 +40,23 @@ const EnterDigitalDetails: React.FC<DigitalCertCardsProps> = ({
           className="border w-full p-2 rounded text-gray-800"
         >
           <option value="">-- Select Program --</option>
-          <option value="HSI Adult First Aid (2020) -(Blended)-DC">
-            HSI Adult First Aid (2020) -(Blended)-DC
+          <option value="CPI Adult First Aid (2020) -(Blended)-DC">
+            CPI Adult First Aid (2020) -(Blended)-DC
           </option>
-          <option value="HSI Adult First Aid | CPR AED Adult Infant (2020) -(Blended)-DC">
-            HSI Adult First Aid | CPR AED Adult Infant (2020) -(Blended)-DC
+          <option value="CPI Adult First Aid | CPR AED Adult Infant (2020) -(Blended)-DC">
+            CPI Adult First Aid | CPR AED Adult Infant (2020) -(Blended)-DC
           </option>
-          <option value="HSI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC">
-            HSI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC
+          <option value="CPI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC">
+            CPI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC
           </option>
-          <option value="HSI Basic Life Support (2020) (Blended)-DC">
-            HSI Basic Life Support (2020) (Blended)-DC
+          <option value="CPI Basic Life Support (2020) (Blended)-DC">
+            CPI Basic Life Support (2020) (Blended)-DC
           </option>
-          <option value="HSI CPR AED All Ages (2020) -(Blended)-DC">
-            HSI CPR AED All Ages (2020) -(Blended)-DC
+          <option value="CPI CPR AED All Ages (2020) -(Blended)-DC">
+            CPI CPR AED All Ages (2020) -(Blended)-DC
           </option>
-          <option value="HSI Spanish Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC">
-            HSI Spanish Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC
+          <option value="CPI Spanish Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC">
+            CPI Spanish Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC
           </option>
         </select>
       </div>
@@ -144,7 +144,7 @@ const EnterDigitalDetails: React.FC<DigitalCertCardsProps> = ({
       <div className="col-span-2 flex justify-end mt-6">
         <button
           onClick={onContinue}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
         >
           Save and Continue
         </button>

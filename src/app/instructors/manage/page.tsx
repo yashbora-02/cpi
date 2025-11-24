@@ -66,7 +66,7 @@ export default function ManageInstructorsPage() {
 
             <button
               onClick={() => setShowModal(true)}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold mt-2 md:mt-0"
+              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm mt-2 md:mt-0"
             >
               + Add Instructor
             </button>
@@ -118,7 +118,7 @@ export default function ManageInstructorsPage() {
 
           <button
             onClick={handleSearch}
-            className="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"
+            className="mb-4 bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             Search Instructors
           </button>

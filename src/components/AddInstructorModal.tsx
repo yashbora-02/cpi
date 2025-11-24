@@ -64,7 +64,7 @@ export default function AddInstructorModal({
             <div className="flex justify-end mt-6">
               <button
                 onClick={() => setStep(2)}
-                className="bg-green-600 text-white px-4 py-2 rounded"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
               >
                 CONTINUE WITH SELECTION
               </button>
@@ -85,7 +85,7 @@ export default function AddInstructorModal({
             />
             <button
               onClick={() => setStep(3)}
-              className="bg-green-600 text-white px-4 py-2 rounded"
+              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               PURCHASE NOW
             </button>
@@ -103,7 +103,7 @@ export default function AddInstructorModal({
             <p className="mb-4">Subtotal: ${(quantity * 35).toFixed(2)}</p>
             <button
               onClick={() => setStep(4)}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               Continue Checkout
             </button>
@@ -119,16 +119,16 @@ export default function AddInstructorModal({
             <p className="mb-4 text-sm text-gray-700">
               The following items are on your order and are ready for purchase.
             </p>
-            <div className="flex justify-between">
+            <div className="flex justify-end gap-3">
               <button
                 onClick={close}
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="bg-white border-2 border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm"
               >
                 Decline
               </button>
               <button
                 onClick={() => setStep(5)}
-                className="bg-green-600 text-white px-4 py-2 rounded"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
               >
                 Accept
               </button>
@@ -158,19 +158,19 @@ export default function AddInstructorModal({
             <div className="flex flex-col gap-2 mb-4">
               <button
                 onClick={() => setStep(6)}
-                className="bg-green-600 text-white px-4 py-2 rounded"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
               >
                 Pay
               </button>
               <button
                 onClick={() => setStep(6)}
-                className="bg-green-700 text-white px-4 py-2 rounded"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
               >
                 Pay and Save Card
               </button>
               <button
                 onClick={() => setStep(6)}
-                className="bg-green-800 text-white px-4 py-2 rounded"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
               >
                 Pay with Saved Card
               </button>
@@ -193,7 +193,7 @@ export default function AddInstructorModal({
             </p>
             <button
               onClick={() => setStep(7)}
-              className="bg-green-600 text-white px-4 py-2 rounded"
+              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               Okay
             </button>
@@ -218,7 +218,7 @@ export default function AddInstructorModal({
                   <td className="py-2">
                     <button
                       onClick={close}
-                      className="bg-green-600 text-white px-3 py-1 rounded"
+                      className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all font-medium text-xs"
                     >
                       CONTINUE WITH APPLICATION
                     </button>

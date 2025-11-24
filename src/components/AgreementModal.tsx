@@ -28,13 +28,13 @@ export default function AgreementModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 flex flex-wrap justify-between gap-3">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <div className="mt-6 flex flex-wrap justify-end gap-3">
+          <button className="bg-white border-2 border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm">
             🖨 Print
           </button>
           <button
             onClick={onClose}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="bg-white border-2 border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm"
           >
             ❌ Decline
           </button>
@@ -43,7 +43,7 @@ export default function AgreementModal({ onClose }: { onClose: () => void }) {
               alert('✅ Purchase Accepted');
               onClose();
             }}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             ✅ Accept
           </button>

@@ -203,14 +203,14 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
         <div className="flex justify-end gap-4 p-6 border-t bg-gray-50">
           <button
             onClick={onClose}
-            className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all font-medium"
+            className="px-5 py-2 rounded-lg border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all font-medium text-sm"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={selectedIds.length === 0}
-            className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-green-800 flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg font-semibold disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <FaCheck /> Add Selected ({selectedIds.length})
           </button>

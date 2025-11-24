@@ -6,9 +6,26 @@ export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
+// Use global shared in-memory storage for mock mode (shared with credits GET API)
+declare global {
+  var mockCreditsStore: { [key: string]: number } | undefined;
+}
+
+// Initialize global mock storage if it doesn't exist
+if (!global.mockCreditsStore) {
+  global.mockCreditsStore = {
+    "CPI-FA-2020": 10,
+    "CPI-FA-CPR-AI-2020": 8,
+    "CPI-FA-CPR-AA-2020": 0,
+    "CPI-BLS-2020": 25,
+    "CPI-CPR-AA-2020": 8,
+    "CPI-ES-FA-CPR-2020": 0,
+  };
+}
+
 type PurchaseRequest = {
   packageId: string;
-  courseType: "cpr_only" | "first_aid_only" | "combo";
+  courseType: string; // Now accepts any course ID as the type
   credits: number;
   price: number;
 };
@@ -32,9 +49,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate course type
-    const validTypes = ["cpr_only", "first_aid_only", "combo"];
-    if (!validTypes.includes(courseType)) {
+    // Validate course type is not empty
+    if (typeof courseType !== 'string' || courseType.trim() === '') {
       return NextResponse.json(
         { error: "Invalid course type" },
         { status: 400 }
@@ -81,7 +97,7 @@ export async function POST(req: NextRequest) {
         price,
       });
     } catch (dbError) {
-      // Database not available - use mock mode
+      // Database not available - use mock mode with in-memory storage
       console.log("⚠️  Database not connected. Running in MOCK MODE.");
       console.log("💳 Purchase Details:");
       console.log("   - Package ID:", packageId);
@@ -90,12 +106,26 @@ export async function POST(req: NextRequest) {
       console.log("   - Price:", `$${price}`);
       console.log("   - User:", decoded.uid);
 
+      // Update global in-memory mock storage
+      if (!global.mockCreditsStore) {
+        global.mockCreditsStore = {};
+      }
+
+      if (global.mockCreditsStore[courseType] !== undefined) {
+        global.mockCreditsStore[courseType] += credits;
+        console.log(`   ✅ Updated mock credits for ${courseType}: ${global.mockCreditsStore[courseType]} total`);
+      } else {
+        global.mockCreditsStore[courseType] = credits;
+        console.log(`   ✅ Created new mock credit entry for ${courseType}: ${credits}`);
+      }
+
       return NextResponse.json({
         success: true,
         message: "Credits purchased successfully (Mock Mode - No database connected)",
         packageId,
         courseType,
         credits,
+        totalCredits: global.mockCreditsStore[courseType],
         price,
         mock: true,
       });

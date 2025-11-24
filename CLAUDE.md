@@ -29,6 +29,7 @@ npx prisma studio    # Open Prisma Studio GUI for database management
 ### Environment Setup
 Required environment variables (see `.env.example`):
 - `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - Secret key for JWT signing (used for additional auth mechanisms)
 - `NEXT_PUBLIC_FIREBASE_API_KEY` - Firebase client API key
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` - Firebase auth domain
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID` - Firebase project ID
@@ -36,6 +37,8 @@ Required environment variables (see `.env.example`):
 - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` - Firebase messaging sender ID
 - `NEXT_PUBLIC_FIREBASE_APP_ID` - Firebase app ID
 - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` - Firebase measurement ID
+- `WEB3FORMS_ACCESS_KEY` - Free email service API key from https://web3forms.com (optional)
+- `ADMIN_EMAIL` - Email address to receive support ticket notifications (optional)
 
 ## Architecture
 
@@ -54,11 +57,14 @@ Required environment variables (see `.env.example`):
 src/
 ├── app/                      # Next.js App Router
 │   ├── api/                  # API route handlers (protected with Firebase Auth)
-│   │   ├── credits/          # GET credits data
+│   │   ├── credits/          # GET credits data, POST purchase credits
+│   │   ├── tickets/          # GET/POST support tickets with file uploads
 │   │   └── videos/           # GET video playlist
+│   ├── acceptance/           # Acceptance/accreditation info page (protected, requires purchase)
 │   ├── courses/              # Course browsing and enrollment
 │   │   ├── enrolled/         # User's enrolled courses
 │   │   └── page.tsx          # Browse all courses
+│   ├── credits/purchase/     # Credit purchase page with checkout modal
 │   ├── dashboard/            # Main dashboard with credit overview
 │   ├── instructors/          # Instructor management
 │   │   ├── add/              # Add new instructors
@@ -68,6 +74,7 @@ src/
 │   ├── login/                # Login page (Email + Google)
 │   ├── register/             # Registration page
 │   ├── students/search/      # Student search functionality
+│   ├── support/              # Support Center with ticket creation
 │   ├── training/             # Multi-step class creation wizard
 │   │   └── create-class/     # Blended/Online class creation
 │   ├── video/                # Video player page
@@ -80,7 +87,8 @@ src/
 ├── lib/                      # Utility libraries
 │   ├── firebase.ts           # Firebase client config
 │   ├── firebaseAdmin.ts      # Firebase Admin SDK for server
-│   └── firebaseAuth.ts       # Auth helper functions
+│   ├── firebaseAuth.ts       # Auth helper functions
+│   └── LanguageContext.tsx   # i18n context for English/Spanish translations
 ├── generated/
 │   └── prisma/               # Generated Prisma Client (custom output)
 └── styles/                   # Global styles
@@ -90,6 +98,7 @@ src/
 1. **admins** - Admin user credentials (login_id, password, timestamps)
 2. **Credit** - Training credits by type (cpr_only, first_aid_only, combo)
 3. **Video** - Training video metadata (title, description, video_id, video_url, thumbnail_url)
+4. **Ticket** - Support tickets (ticket_number, type, title, description, reported_by, email, phone, file_url, file_name, status)
 
 ### Authentication Flow
 **Client-side** (`src/lib/firebase.ts`, `src/lib/firebaseAuth.ts`):
@@ -162,6 +171,22 @@ export default function ProtectedPage() {
 - State accumulation across steps using multiple useState hooks
 - Navigation buttons (BACK/CONTINUE) control flow between steps
 
+**Database Mock Mode Pattern:**
+- API routes include graceful fallback when database is unavailable
+- Wrap database operations in try-catch blocks
+- On database error, log warning and return mock data or continue with limited functionality
+- Used in tickets API (`src/app/api/tickets/route.ts`) for development without database
+- Example:
+```typescript
+try {
+  const data = await prisma.model.findMany();
+  return NextResponse.json(data);
+} catch (dbError) {
+  console.log("⚠️ Database not connected. Running in MOCK MODE.");
+  return NextResponse.json(mockData);
+}
+```
+
 ## Important Implementation Details
 
 ### Prisma Client Location
@@ -171,11 +196,44 @@ import { PrismaClient } from '@/generated/prisma';
 ```
 
 ### Component Responsibilities
-- **Sidebar.tsx** - Main navigation with collapsible dropdown sections (General, Instructors, Training, Courses) and logout button
+- **Sidebar.tsx** - Main navigation with collapsible dropdown sections (General, Instructors, Training, Courses, Support) and logout button
   - Logout flow: Signs out via Firebase, removes localStorage token, redirects to `/login`
-- **Modal Components** - Various modals for confirmations, agreements, access links, and instructor management
+- **Modal Components** - Various modals for confirmations, agreements, access links, checkout, and instructor management
 - **Drawer Components** - Side drawers for student entry and selection during class creation
 - **Student Components** - Reusable components for displaying student lists and history
+
+### Key Features
+
+**Support Ticket System** (`/support`, `/api/tickets`):
+- Create support tickets with form validation
+- File attachment upload (max 10MB, stored in `public/uploads/tickets/`)
+- Email notifications via Web3Forms (free service - https://web3forms.com)
+  - Admin notification sent to `ADMIN_EMAIL` with full ticket details
+  - User confirmation email sent with ticket number and 48hr response commitment
+  - Graceful degradation if `WEB3FORMS_ACCESS_KEY` not configured
+- Two ticket types: "General Request" and "Application Issue / Bug"
+- Auto-generated unique ticket numbers (format: `TICKET-{timestamp}-{random}`)
+- Graceful fallback to mock mode when database is unavailable
+- Email functions located in `src/lib/email.ts`
+
+**Credit Purchase System** (`/credits/purchase`, `/api/credits/purchase`):
+- Purchase packages for CPR Only, First Aid Only, or Combo credits
+- Pre-configured packages with 10, 25, or 50 credits
+- Checkout modal with purchase confirmation
+- Updates credit balance in database on successful purchase
+- Protected with Firebase authentication
+
+**Internationalization (i18n)**:
+- Language toggle between English and Spanish
+- Implemented via React Context (`src/lib/LanguageContext.tsx`)
+- Used on public pages like landing page and acceptance page
+- Translations stored in context provider with `t` object for lookups
+
+**Acceptance Page** (`/acceptance`):
+- Protected page requiring prior purchase (checked via localStorage)
+- Displays accreditation information, compliance standards, accepted organizations
+- Bilingual support (English/Spanish)
+- Access restricted unless user has completed a purchase
 
 ### Styling Conventions
 - Tailwind CSS 4 utility classes throughout
@@ -238,3 +296,49 @@ const response = await fetch('/api/endpoint', {
 });
 const data = await response.json();
 ```
+
+### Email Notifications
+Email functionality is implemented using Web3Forms (free service):
+
+**Setup:**
+1. Sign up at https://web3forms.com to get a free access key
+2. Add `WEB3FORMS_ACCESS_KEY` to environment variables
+3. Set `ADMIN_EMAIL` to receive ticket notifications
+
+**Available Functions** (`src/lib/email.ts`):
+- `sendTicketNotificationToAdmin(data)` - Send ticket details to admin email
+- `sendTicketConfirmationToUser(email, ticketNumber, name)` - Send confirmation to user
+
+**Implementation Pattern:**
+```typescript
+import { sendTicketNotificationToAdmin, sendTicketConfirmationToUser } from '@/lib/email';
+
+// Send notifications
+const adminResult = await sendTicketNotificationToAdmin({
+  ticketNumber, type, title, description,
+  reportedBy, email, phone, fileName
+});
+
+const userResult = await sendTicketConfirmationToUser(email, ticketNumber, name);
+
+// Check results
+if (adminResult.success) {
+  console.log('✅ Admin notification sent');
+}
+```
+
+**Alternative Providers:**
+To switch from Web3Forms to another provider (SendGrid, AWS SES, Resend):
+1. Update functions in `src/lib/email.ts`
+2. Replace Web3Forms API calls with new provider's SDK/API
+3. Update environment variables accordingly
+
+### Adding Internationalization
+The i18n system uses React Context for language switching:
+1. Wrap pages with `LanguageProvider` (see `src/lib/LanguageContext.tsx`)
+2. Use `useLanguage()` hook to access `language`, `setLanguage`, and `t` (translations)
+3. Add translations to both `en` and `es` objects in LanguageContext
+4. Use `t.section.key` to access translated strings
+5. Toggle language with button calling `setLanguage("en" | "es")`
+
+Current supported pages: Landing page, Acceptance page

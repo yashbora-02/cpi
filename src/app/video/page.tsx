@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 const playlists = [
   {
     title: "Why Your Organization Needs a CPR Trainer",
-    description: "HSI Adult First Aid Complete Class (2020) v1.0",
+    description: "CPI Adult First Aid Complete Class (2020) v1.0",
     videoId: "g7wMAg5Umho",
     url: "https://www.youtube.com/watch?v=g7wMAg5Umho&list=PL82rIucEVvOqNvao2Qhs6gXiwhoyk7Uy2",
   },

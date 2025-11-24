@@ -65,7 +65,7 @@ export default function ReauthorizeInstructorsPage() {
 
           <button
             onClick={handleSearch}
-            className="bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700"
+            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             SEARCH
           </button>

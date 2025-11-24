@@ -3,6 +3,7 @@ import { PrismaClient } from "@/generated/prisma";
 import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { sendTicketNotificationToAdmin, sendTicketConfirmationToUser } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -13,31 +14,6 @@ function generateTicketNumber(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `TICKET-${timestamp}-${random}`;
-}
-
-// Send confirmation email (placeholder - integrate with your email service)
-async function sendConfirmationEmail(email: string, ticketNumber: string, name: string) {
-  // TODO: Integrate with email service (SendGrid, AWS SES, etc.)
-  console.log(`Sending confirmation email to ${email}`);
-  console.log(`Ticket Number: ${ticketNumber}`);
-  console.log(`Message: Hey ${name}, we got your ticket! We are working on it and will answer within 48 hours.`);
-
-  // For now, just log. In production, use an email service:
-  /*
-  await emailService.send({
-    to: email,
-    subject: `Support Ticket Created: ${ticketNumber}`,
-    html: `
-      <h2>Support Ticket Confirmation</h2>
-      <p>Hey ${name},</p>
-      <p>We got your ticket! We are working on it and will answer within <strong>48 hours</strong>.</p>
-      <p><strong>Ticket Number:</strong> ${ticketNumber}</p>
-      <p>You can reference this ticket number in any future correspondence.</p>
-      <br>
-      <p>Best regards,<br>CPI Training Platform Support Team</p>
-    `
-  });
-  */
 }
 
 export async function POST(req: NextRequest) {
@@ -119,18 +95,49 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Send confirmation email
-      await sendConfirmationEmail(email, ticketNumber, reportedBy);
+      // Send email notifications
+      console.log("📧 Sending email notifications...");
+
+      // Send notification to admin (your email)
+      const adminEmailResult = await sendTicketNotificationToAdmin({
+        ticketNumber: ticket.ticket_number,
+        type: type || "General Request",
+        title,
+        description,
+        reportedBy,
+        email,
+        phone,
+        fileName,
+      });
+
+      if (adminEmailResult.success) {
+        console.log("✅ Admin notification sent successfully");
+      } else {
+        console.error("❌ Failed to send admin notification:", adminEmailResult.error);
+      }
+
+      // Send confirmation to user
+      const userEmailResult = await sendTicketConfirmationToUser(email, ticketNumber, reportedBy);
+
+      if (userEmailResult.success) {
+        console.log("✅ User confirmation sent successfully");
+      } else {
+        console.error("❌ Failed to send user confirmation:", userEmailResult.error);
+      }
 
       return NextResponse.json({
         success: true,
         ticketNumber: ticket.ticket_number,
         message: "Ticket created successfully",
+        emailsSent: {
+          admin: adminEmailResult.success,
+          user: userEmailResult.success,
+        },
       });
     } catch (dbError) {
       // Database not available - use mock mode
       console.log("⚠️  Database not connected. Running in MOCK MODE.");
-      console.log("📧 Confirmation email would be sent to:", email);
+      console.log("📧 Emails would be sent for ticket:", ticketNumber);
       console.log("🎫 Ticket Number:", ticketNumber);
       console.log("📝 Ticket Details:");
       console.log("   - Type:", type);
@@ -140,14 +147,29 @@ export async function POST(req: NextRequest) {
       console.log("   - Phone:", phone);
       if (fileName) console.log("   - Attachment:", fileName);
 
-      // Send confirmation email (will log to console)
-      await sendConfirmationEmail(email, ticketNumber, reportedBy);
+      // Still try to send emails even in mock mode
+      const adminEmailResult = await sendTicketNotificationToAdmin({
+        ticketNumber,
+        type: type || "General Request",
+        title,
+        description,
+        reportedBy,
+        email,
+        phone,
+        fileName,
+      });
+
+      const userEmailResult = await sendTicketConfirmationToUser(email, ticketNumber, reportedBy);
 
       // Return success in mock mode
       return NextResponse.json({
         success: true,
         ticketNumber: ticketNumber,
         message: "Ticket created successfully (Mock Mode - No database connected)",
+        emailsSent: {
+          admin: adminEmailResult.success,
+          user: userEmailResult.success,
+        },
       });
     }
   } catch (error) {

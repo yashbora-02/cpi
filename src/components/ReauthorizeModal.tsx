@@ -43,7 +43,7 @@ export default function ReauthorizeModal({ onClose }: { onClose: () => void }) {
                 <th className="p-2 text-left">Instructor</th>
                 <th className="p-2 text-left">Instructor ID</th>
                 <th className="p-2 text-left">Expiration</th>
-                <th className="p-2 text-center">HSI Instructor</th>
+                <th className="p-2 text-center">CPI Instructor</th>
                 <th className="p-2 text-center">AVERT</th>
               </tr>
             </thead>
@@ -68,22 +68,22 @@ export default function ReauthorizeModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 flex justify-between flex-wrap gap-2">
+        <div className="mt-6 flex justify-end flex-wrap gap-3">
           <button
             onClick={handleReauthorize}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             ✅ Reauthorize All
           </button>
           <button
             onClick={handleReauthorize}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             🔵 Reauthorize Selected
           </button>
           <button
             onClick={onClose}
-            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+            className="bg-white border-2 border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 transition-all font-medium text-sm"
           >
             ❌ Close
           </button>

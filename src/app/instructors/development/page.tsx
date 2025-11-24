@@ -5,12 +5,12 @@ import Sidebar from "@/components/Sidebar";
 
 const enrolledCourses = [
   {
-    name: "**Demo-HSI Basic Life Support (2020) (Blended)-DC",
+    name: "**Demo-CPI Basic Life Support (2020) (Blended)-DC",
     action: "Launch Course",
     status: "In Progress",
   },
   {
-    name: "**Demo-HSI Instructor Development Course IDC (Blended) 2020",
+    name: "**Demo-CPI Instructor Development Course IDC (Blended) 2020",
     action: "Launch Course",
     status: "In Progress",
   },
@@ -23,10 +23,10 @@ const enrolledCourses = [
 
 const enrichmentCourses = [
   {
-    name: "**Demo-HSI Adult First Aid (2020) -(Blended)-DC",
+    name: "**Demo-CPI Adult First Aid (2020) -(Blended)-DC",
   },
   {
-    name: "**Demo-HSI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC",
+    name: "**Demo-CPI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC",
   },
 ];
 
@@ -117,7 +117,7 @@ export default function InstructorDevelopmentPage() {
                       </span>
                     ) : (
                       <button
-                        className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                        className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all font-medium text-xs"
                         onClick={() => handleAddCourse(course.name)}
                       >
                         ADD COURSE

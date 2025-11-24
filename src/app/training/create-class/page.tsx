@@ -44,6 +44,10 @@ export default function CreateClassPage() {
   const [assistingInstructor, setAssistingInstructor] = useState("");
   const [openEnrollment, setOpenEnrollment] = useState(false);
   const [showSelectDrawer, setShowSelectDrawer] = useState(false);
+  const [editingStudentIndex, setEditingStudentIndex] = useState<number | null>(null);
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
+  const [studentToRemove, setStudentToRemove] = useState<number | null>(null);
 
   // Email toggle states
   const [sendStudentEmail, setSendStudentEmail] = useState(true);
@@ -101,6 +105,45 @@ export default function CreateClassPage() {
   const handleContinueFromDigitalDetails = () => {
     // Optionally validate required fields here
     setStep(2); // move to the next step
+  };
+
+  const handleEditStudent = (index: number) => {
+    setEditingStudentIndex(index);
+    setEditingStudent({ ...students[index] });
+  };
+
+  const handleSaveEdit = () => {
+    if (editingStudentIndex !== null && editingStudent) {
+      const updatedStudents = [...students];
+      updatedStudents[editingStudentIndex] = editingStudent;
+      setStudents(updatedStudents);
+      setEditingStudentIndex(null);
+      setEditingStudent(null);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingStudentIndex(null);
+    setEditingStudent(null);
+  };
+
+  const handleRemoveStudent = (index: number) => {
+    setStudentToRemove(index);
+    setShowRemoveConfirm(true);
+  };
+
+  const confirmRemoveStudent = () => {
+    if (studentToRemove !== null) {
+      const updatedStudents = students.filter((_, idx) => idx !== studentToRemove);
+      setStudents(updatedStudents);
+      setShowRemoveConfirm(false);
+      setStudentToRemove(null);
+    }
+  };
+
+  const cancelRemoveStudent = () => {
+    setShowRemoveConfirm(false);
+    setStudentToRemove(null);
   };
 
   return (
@@ -239,14 +282,6 @@ export default function CreateClassPage() {
                   <option value="select">Select Student</option>
                 </select>
 
-                {showDrawer && (
-                  <StudentEntryDrawer
-                    onClose={() => setShowDrawer(false)}
-                    onSave={handleSaveStudents}
-                    mode={drawerMode}
-                  />
-                )}
-
                 {showSelectDrawer && (
                   <SelectStudentDrawer
                     onClose={() => setShowSelectDrawer(false)}
@@ -254,22 +289,30 @@ export default function CreateClassPage() {
                   />
                 )}
 
-                {rosterEntryType && (
+                {rosterEntryType && students.length > 0 && (
                   <div className="mt-6 overflow-x-auto">
-                    <table className="min-w-full border border-gray-300 divide-y divide-gray-200">
+                    <div className="mb-3 flex items-center justify-between">
+                      <h4 className="text-md font-semibold text-gray-800">Student Roster</h4>
+                      <span className="bg-[#00A5A8] text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {students.length} {students.length === 1 ? 'Student' : 'Students'}
+                      </span>
+                    </div>
+                    <table className="min-w-full border border-gray-300 divide-y divide-gray-200 shadow-sm rounded-lg overflow-hidden">
                       <thead className="bg-gray-100 text-gray-800 text-sm uppercase tracking-wider">
                         <tr>
-                          <th className="px-4 py-2 text-left">Name</th>
-                          <th className="px-4 py-2 text-left">Email</th>
+                          <th className="px-4 py-3 text-left font-semibold">#</th>
+                          <th className="px-4 py-3 text-left font-semibold">Name</th>
+                          <th className="px-4 py-3 text-left font-semibold">Email</th>
                         </tr>
                       </thead>
-                      <tbody className="text-gray-700">
+                      <tbody className="text-gray-700 bg-white divide-y divide-gray-200">
                         {students.map((student, idx) => (
-                          <tr key={idx} className="hover:bg-gray-50 transition">
-                            <td className="px-4 py-2 border-t border-gray-200 font-medium">
+                          <tr key={idx} className="hover:bg-blue-50 transition">
+                            <td className="px-4 py-3 text-gray-500 font-medium">{idx + 1}</td>
+                            <td className="px-4 py-3 font-medium text-gray-800">
                               {student.firstName} {student.lastName}
                             </td>
-                            <td className="px-4 py-2 border-t border-gray-200">
+                            <td className="px-4 py-3 text-gray-600">
                               {student.email}
                             </td>
                           </tr>
@@ -277,8 +320,17 @@ export default function CreateClassPage() {
                       </tbody>
                     </table>
 
-                    <p className="text-sm text-gray-600 mt-2">
-                      Displaying {students.length} of {students.length}
+                    <p className="text-sm text-gray-500 mt-3">
+                      ✅ {students.length} {students.length === 1 ? 'student' : 'students'} ready for class
+                    </p>
+                  </div>
+                )}
+
+                {rosterEntryType && students.length === 0 && (
+                  <div className="mt-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                    <p className="text-gray-500 text-sm">No students added yet.</p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      {rosterEntryType === 'upload' ? 'Upload a CSV file to add students' : 'Use the form above to add students to the roster'}
                     </p>
                   </div>
                 )}
@@ -288,13 +340,13 @@ export default function CreateClassPage() {
               <div className="flex justify-between mt-6">
                 <button
                   onClick={() => setStep(1)}
-                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+                  className="bg-white text-gray-700 px-5 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-50 transition-colors font-medium text-sm"
                 >
                   BACK
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                 >
                   CONTINUE TO REVIEW
                 </button>
@@ -460,24 +512,74 @@ export default function CreateClassPage() {
                     {students.map((student, idx) => (
                       <tr key={idx} className="hover:bg-gray-50">
                         <td className="border px-4 py-2">
-                          {student.firstName} {student.lastName}
+                          {editingStudentIndex === idx ? (
+                            <input
+                              type="text"
+                              value={`${editingStudent?.firstName || ''} ${editingStudent?.lastName || ''}`}
+                              onChange={(e) => {
+                                const [firstName, ...lastNameParts] = e.target.value.split(' ');
+                                setEditingStudent({
+                                  ...editingStudent!,
+                                  firstName: firstName || '',
+                                  lastName: lastNameParts.join(' ') || ''
+                                });
+                              }}
+                              className="border rounded px-2 py-1 w-full"
+                            />
+                          ) : (
+                            `${student.firstName} ${student.lastName}`
+                          )}
                         </td>
-                        <td className="border px-4 py-2">{student.email}</td>
+                        <td className="border px-4 py-2">
+                          {editingStudentIndex === idx ? (
+                            <input
+                              type="email"
+                              value={editingStudent?.email || ''}
+                              onChange={(e) => setEditingStudent({ ...editingStudent!, email: e.target.value })}
+                              className="border rounded px-2 py-1 w-full"
+                            />
+                          ) : (
+                            student.email
+                          )}
+                        </td>
                         <td className="border px-4 py-2">Assigned</td>
                         <td className="border px-4 py-2">
                           <div className="flex gap-3 text-gray-600">
-                            <button
-                              className="hover:text-[#00A5A8] transition-colors"
-                              title="Edit student"
-                            >
-                              <FaEdit className="w-4 h-4" />
-                            </button>
-                            <button
-                              className="hover:text-red-600 transition-colors"
-                              title="Remove student"
-                            >
-                              <FaTrash className="w-4 h-4" />
-                            </button>
+                            {editingStudentIndex === idx ? (
+                              <>
+                                <button
+                                  onClick={handleSaveEdit}
+                                  className="hover:text-green-600 transition-colors text-sm px-2 py-1 bg-green-50 rounded"
+                                  title="Save"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={handleCancelEdit}
+                                  className="hover:text-gray-600 transition-colors text-sm px-2 py-1 bg-gray-100 rounded"
+                                  title="Cancel"
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() => handleEditStudent(idx)}
+                                  className="hover:text-[#00A5A8] transition-colors"
+                                  title="Edit student"
+                                >
+                                  <FaEdit className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleRemoveStudent(idx)}
+                                  className="hover:text-red-600 transition-colors"
+                                  title="Remove student"
+                                >
+                                  <FaTrash className="w-4 h-4" />
+                                </button>
+                              </>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -492,7 +594,7 @@ export default function CreateClassPage() {
                 {/* Pagination (Static) */}
                 <div className="flex justify-end mt-4 gap-2 text-sm text-gray-600">
                   <button className="hover:text-black">«</button>
-                  <span className="bg-green-600 text-white px-3 py-1 rounded">
+                  <span className="bg-[#00A5A8] text-white px-3 py-1 rounded">
                     1
                   </span>
                   <button className="hover:text-black">»</button>
@@ -501,7 +603,7 @@ export default function CreateClassPage() {
 
               <div className="text-right">
                 <button
-                  className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                   onClick={() => setShowModal(true)}
                 >
                   SEND CLASS NOTIFICATIONS
@@ -537,7 +639,7 @@ export default function CreateClassPage() {
                   <p>
                     <span className="font-bold">PROGRAM:</span>{" "}
                     {program ||
-                      "HSI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC (Blended)"}
+                      "CPI Adult First Aid | CPR AED All Ages (2020) -(Blended)-DC (Blended)"}
                   </p>
                   <p>
                     <span className="font-bold">PROGRAM TYPE:</span>{" "}
@@ -581,52 +683,103 @@ export default function CreateClassPage() {
                       {students.map((student, idx) => (
                         <tr key={idx} className="hover:bg-gray-50">
                           <td className="border px-4 py-2">
-                            {student.firstName} {student.lastName}
+                            {editingStudentIndex === idx ? (
+                              <input
+                                type="text"
+                                value={`${editingStudent?.firstName || ''} ${editingStudent?.lastName || ''}`}
+                                onChange={(e) => {
+                                  const [firstName, ...lastNameParts] = e.target.value.split(' ');
+                                  setEditingStudent({
+                                    ...editingStudent!,
+                                    firstName: firstName || '',
+                                    lastName: lastNameParts.join(' ') || ''
+                                  });
+                                }}
+                                className="border rounded px-2 py-1 w-full"
+                              />
+                            ) : (
+                              `${student.firstName} ${student.lastName}`
+                            )}
                           </td>
-                          <td className="border px-4 py-2">{student.email}</td>
+                          <td className="border px-4 py-2">
+                            {editingStudentIndex === idx ? (
+                              <input
+                                type="email"
+                                value={editingStudent?.email || ''}
+                                onChange={(e) => setEditingStudent({ ...editingStudent!, email: e.target.value })}
+                                className="border rounded px-2 py-1 w-full"
+                              />
+                            ) : (
+                              student.email
+                            )}
+                          </td>
                           <td className="border px-4 py-2">--</td>
                           <td className="border px-4 py-2">Pending</td>
                           <td className="border px-4 py-2">--</td>
                           <td className="border px-4 py-2">--</td>
                           <td className="border px-4 py-2">
                             <div className="flex gap-3 items-center justify-center text-gray-600">
-                              <button
-                                className="hover:text-[#00A5A8] transition-colors"
-                                title="Edit student"
-                              >
-                                <FaEdit className="w-4 h-4" />
-                              </button>
-                              {programType === "blended" && (
+                              {editingStudentIndex === idx ? (
+                                <>
+                                  <button
+                                    onClick={handleSaveEdit}
+                                    className="hover:text-green-600 transition-colors text-xs px-2 py-1 bg-green-50 rounded"
+                                    title="Save"
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    onClick={handleCancelEdit}
+                                    className="hover:text-gray-600 transition-colors text-xs px-2 py-1 bg-gray-100 rounded"
+                                    title="Cancel"
+                                  >
+                                    Cancel
+                                  </button>
+                                </>
+                              ) : (
                                 <button
-                                  onClick={() => {
-                                    setActiveLink(
-                                      "https://pcmblsiwgjfc3pmqyyzx.app.clientclub.net/courses/offers/9698431c-c263-40b1-84e1-8e55a700c794"
-                                    );
-                                    setShowLinkModal(true);
-                                  }}
+                                  onClick={() => handleEditStudent(idx)}
                                   className="hover:text-[#00A5A8] transition-colors"
-                                  title="Access Link"
+                                  title="Edit student"
                                 >
-                                  <FaLink className="w-4 h-4" />
+                                  <FaEdit className="w-4 h-4" />
                                 </button>
                               )}
-                              {programType === "digital" && (
-                                <button
-                                  onClick={() => {
-                                    window.open("/cpi-cert.pdf", "_blank");
-                                  }}
-                                  className="hover:text-red-600 transition-colors"
-                                  title="View PDF Certificate"
-                                >
-                                  <FaFilePdf className="w-4 h-4" />
-                                </button>
+                              {editingStudentIndex !== idx && (
+                                <>
+                                  {programType === "blended" && (
+                                    <button
+                                      onClick={() => {
+                                        setActiveLink(
+                                          "https://pcmblsiwgjfc3pmqyyzx.app.clientclub.net/courses/offers/9698431c-c263-40b1-84e1-8e55a700c794"
+                                        );
+                                        setShowLinkModal(true);
+                                      }}
+                                      className="hover:text-[#00A5A8] transition-colors"
+                                      title="Access Link"
+                                    >
+                                      <FaLink className="w-4 h-4" />
+                                    </button>
+                                  )}
+                                  {programType === "digital" && (
+                                    <button
+                                      onClick={() => {
+                                        window.open("/cpi-cert.pdf", "_blank");
+                                      }}
+                                      className="hover:text-red-600 transition-colors"
+                                      title="View PDF Certificate"
+                                    >
+                                      <FaFilePdf className="w-4 h-4" />
+                                    </button>
+                                  )}
+                                  <button
+                                    className="hover:text-gray-800 transition-colors"
+                                    title="More options"
+                                  >
+                                    <FaEllipsisV className="w-4 h-4" />
+                                  </button>
+                                </>
                               )}
-                              <button
-                                className="hover:text-gray-800 transition-colors"
-                                title="More options"
-                              >
-                                <FaEllipsisV className="w-4 h-4" />
-                              </button>
                             </div>
                           </td>
                         </tr>
@@ -640,7 +793,7 @@ export default function CreateClassPage() {
               </div>
               <div className="flex justify-end mt-6">
                 <button
-                  className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-green-800 font-medium shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95"
+                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                   onClick={() => setShowSuccessModal(true)}
                 >
                   Submit Class
@@ -651,6 +804,7 @@ export default function CreateClassPage() {
         </div>
         {showDrawer && (
           <StudentEntryDrawer
+            key={`drawer-${drawerMode}`}
             onClose={() => setShowDrawer(false)}
             onSave={handleSaveStudents}
             mode={drawerMode}
@@ -674,6 +828,46 @@ export default function CreateClassPage() {
           studentCount={students.length}
           programType={programType}
         />
+
+        {/* Remove Student Confirmation Modal */}
+        {showRemoveConfirm && studentToRemove !== null && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+              {/* Header */}
+              <div className="bg-[#00A5A8] px-6 py-4">
+                <h3 className="text-lg font-semibold text-white">
+                  Remove Student
+                </h3>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <p className="text-gray-700 text-sm mb-2">
+                  Are you sure you want to remove <span className="font-semibold">{students[studentToRemove].firstName} {students[studentToRemove].lastName}</span> from the roster?
+                </p>
+                <p className="text-gray-500 text-xs">
+                  This action cannot be undone.
+                </p>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="bg-gray-50 px-6 py-4 flex gap-3 justify-end border-t border-gray-200">
+                <button
+                  onClick={cancelRemoveStudent}
+                  className="px-5 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors font-medium text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmRemoveStudent}
+                  className="px-5 py-2 bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

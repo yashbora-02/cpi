@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaUpload, FaDownload, FaTimes, FaUserPlus, FaCloudUploadAlt } from "react-icons/fa";
 
 interface Student {
@@ -26,13 +26,30 @@ export default function StudentEntryDrawer({
     }))
   );
   const [uploadError, setUploadError] = useState<string>("");
+  const [uploadSuccess, setUploadSuccess] = useState<string>("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const processFile = (file: File) => {
 
     setUploadError("");
+    setUploadSuccess("");
+    setIsProcessing(true);
+
+    // Validate file type
+    if (!file.name.endsWith('.csv')) {
+      setUploadError("Please upload a CSV file");
+      setIsProcessing(false);
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("File size exceeds 5MB limit");
+      setIsProcessing(false);
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -67,15 +84,13 @@ export default function StudentEntryDrawer({
         }
 
         if (uploadedStudents.length === 0) {
-          setUploadError("No valid student data found in file.");
+          setUploadError("No valid student data found in file. Please check the format.");
+          setIsProcessing(false);
           return;
         }
 
-        // Merge uploaded students with existing empty slots
-        const existingFilled = students.filter(
-          s => s.firstName.trim() || s.lastName.trim() || s.email.trim()
-        );
-        const combined = [...existingFilled, ...uploadedStudents];
+        // Replace all students with uploaded ones
+        const combined = [...uploadedStudents];
 
         // Ensure we have at least 15 rows
         while (combined.length < 15) {
@@ -83,13 +98,17 @@ export default function StudentEntryDrawer({
         }
 
         setStudents(combined);
-      } catch {
+        setUploadSuccess(`Successfully uploaded ${uploadedStudents.length} student${uploadedStudents.length !== 1 ? 's' : ''}`);
+        setIsProcessing(false);
+      } catch (error) {
         setUploadError("Error parsing file. Please check the format.");
+        setIsProcessing(false);
       }
     };
 
     reader.onerror = () => {
-      setUploadError("Error reading file.");
+      setUploadError("Error reading file. Please try again.");
+      setIsProcessing(false);
     };
 
     reader.readAsText(file);
@@ -97,6 +116,36 @@ export default function StudentEntryDrawer({
     // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processFile(file);
     }
   };
 
@@ -163,41 +212,77 @@ export default function StudentEntryDrawer({
 
         {/* Upload Section - Only shown in upload mode */}
         {mode === "upload" && (
-          <div className="px-6 py-6 bg-gradient-to-b from-gray-50 to-white border-b">
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-[#00A5A8] transition-colors bg-white">
-              <FaCloudUploadAlt className="text-5xl text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">Drag and drop your CSV file here, or</p>
-              <div className="flex flex-wrap justify-center items-center gap-3">
+          <div className="px-8 py-8 bg-white">
+            <div
+              className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
+                isDragging
+                  ? 'border-[#00A5A8] bg-[#00A5A8]/5 scale-[1.01]'
+                  : 'border-gray-300 hover:border-[#00A5A8]/50'
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <div className={`inline-block p-5 rounded-full mb-5 transition-all duration-300 ${
+                isDragging ? 'bg-[#00A5A8]/10 scale-110' : 'bg-gray-50'
+              }`}>
+                <FaCloudUploadAlt className={`text-5xl transition-all duration-300 ${
+                  isDragging ? 'text-[#00A5A8] animate-bounce' : 'text-gray-400'
+                }`} />
+              </div>
+              <h3 className="text-lg font-semibold text-[#2D2F33] mb-2">
+                {isDragging ? 'Drop your CSV file here' : 'Upload Student Roster'}
+              </h3>
+              <p className="text-sm text-gray-600 mb-6">
+                {isDragging ? 'Release to upload' : 'Drag and drop your CSV file here, or click to browse'}
+              </p>
+              <div className="flex justify-center">
                 <input
                   type="file"
                   ref={fileInputRef}
-                  accept=".csv,.txt"
+                  accept=".csv"
                   onChange={handleFileUpload}
                   className="hidden"
                   id="csv-upload"
                 />
                 <label
                   htmlFor="csv-upload"
-                  className="bg-[#00A5A8] text-white px-6 py-3 rounded-lg cursor-pointer hover:bg-[#008f91] flex items-center gap-2 transition-all transform hover:scale-105 shadow-md"
+                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-8 py-3 rounded-lg cursor-pointer hover:shadow-lg flex items-center gap-2.5 transition-all transform hover:scale-[1.02] font-medium text-sm"
                 >
                   <FaUpload />
-                  Choose File
+                  Choose CSV File
                 </label>
-                <button
-                  onClick={downloadTemplate}
-                  className="bg-white text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 flex items-center gap-2 transition-all border border-gray-300 shadow-sm"
-                >
-                  <FaDownload />
-                  Download Template
-                </button>
               </div>
-              <p className="text-xs text-gray-500 mt-4">
-                CSV format: First Name, Last Name, Email
-              </p>
+              <div className="mt-5 pt-5 border-t border-gray-200">
+                <p className="text-xs text-gray-500">
+                  CSV file only • Max size: 5MB • Required columns: First Name, Last Name, Email
+                </p>
+              </div>
             </div>
             {uploadError && (
-              <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-red-600 text-sm text-center">{uploadError}</p>
+              <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                <div className="flex-shrink-0 w-5 h-5 bg-[#C10E21] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">!</span>
+                </div>
+                <div>
+                  <p className="text-[#C10E21] font-semibold text-sm">{uploadError}</p>
+                </div>
+              </div>
+            )}
+            {isProcessing && (
+              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center gap-3">
+                <div className="flex-shrink-0">
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-200 border-t-[#00A5A8]"></div>
+                </div>
+                <p className="text-gray-700 text-sm">Processing CSV file...</p>
+              </div>
+            )}
+            {uploadSuccess && !isProcessing && (
+              <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
+                <div className="flex-shrink-0 w-5 h-5 bg-[#00A5A8] rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">✓</span>
+                </div>
+                <p className="text-gray-700 text-sm">{uploadSuccess}</p>
               </div>
             )}
           </div>
@@ -205,37 +290,45 @@ export default function StudentEntryDrawer({
 
         {/* Manual Entry Grid - Only shown in enter mode */}
         {mode === "enter" && (
-          <div className="p-6">
-            <div className="mb-4">
-              <p className="text-sm text-gray-500">
-                Fill in the student details below. Empty rows will be ignored.
-              </p>
+          <div className="px-8 py-8 bg-gradient-to-b from-white to-gray-50">
+            <div className="mb-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                  <FaUserPlus className="text-white text-lg" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-blue-900">Manual Entry Mode</p>
+                  <p className="text-xs text-blue-700">Fill in student details below • Empty rows will be ignored</p>
+                </div>
+              </div>
             </div>
             <div className="space-y-3">
               {students.map((student, idx) => (
                 <div
                   key={idx}
-                  className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr] gap-3 items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr] gap-3 items-center p-4 bg-white rounded-xl hover:shadow-md transition-all border border-gray-200 hover:border-[#00A5A8]"
                 >
-                  <span className="text-sm font-medium text-gray-400 w-8">{idx + 1}</span>
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-bold text-gray-600">{idx + 1}</span>
+                  </div>
                   <input
                     type="text"
                     placeholder="First Name"
-                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all"
+                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                     value={student.firstName}
                     onChange={(e) => handleChange(idx, "firstName", e.target.value)}
                   />
                   <input
                     type="text"
                     placeholder="Last Name"
-                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all"
+                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                     value={student.lastName}
                     onChange={(e) => handleChange(idx, "lastName", e.target.value)}
                   />
                   <input
                     type="email"
                     placeholder="Email"
-                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all"
+                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                     value={student.email}
                     onChange={(e) => handleChange(idx, "email", e.target.value)}
                   />
@@ -244,12 +337,13 @@ export default function StudentEntryDrawer({
             </div>
 
             {/* Save Button */}
-            <div className="flex justify-end mt-6 pt-4 border-t">
+            <div className="flex justify-end items-center mt-6 pt-4 border-t border-gray-200">
               <button
                 onClick={handleSave}
-                className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-green-800 flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg font-semibold"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm"
               >
-                <FaUserPlus /> Save Students
+                <FaUserPlus />
+                Save Students
               </button>
             </div>
           </div>
@@ -257,58 +351,62 @@ export default function StudentEntryDrawer({
 
         {/* Upload Preview Table - Only shown in upload mode */}
         {mode === "upload" && (
-          <div className="p-6">
-            {students.filter(s => s.firstName || s.lastName || s.email).length > 0 ? (
-              <>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Preview ({students.filter(s => s.firstName || s.lastName || s.email).length} students)
-                  </h3>
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                    Ready to save
-                  </span>
-                </div>
-                <div className="overflow-x-auto max-h-96 rounded-lg border border-gray-200 shadow-sm">
-                  <table className="min-w-full text-sm">
-                    <thead className="bg-gray-100 sticky top-0">
-                      <tr>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700">#</th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700">First Name</th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Last Name</th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {students
-                        .filter(s => s.firstName || s.lastName || s.email)
-                        .map((student, idx) => (
-                          <tr key={idx} className="hover:bg-blue-50 transition-colors">
-                            <td className="px-4 py-3 text-gray-500 font-medium">{idx + 1}</td>
-                            <td className="px-4 py-3 text-gray-800">{student.firstName}</td>
-                            <td className="px-4 py-3 text-gray-800">{student.lastName}</td>
-                            <td className="px-4 py-3 text-gray-800">{student.email}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-16 text-gray-500">
-                <FaCloudUploadAlt className="text-6xl text-gray-300 mx-auto mb-4" />
-                <p className="text-lg font-medium mb-2">No students uploaded yet</p>
-                <p className="text-sm">Upload a CSV file above to see the preview here</p>
-              </div>
-            )}
+          <div className="px-8 py-6 bg-gray-50 border-t border-gray-200">
+            {(() => {
+              const filledStudents = students.filter(s => s.firstName || s.lastName || s.email);
+              const filledCount = filledStudents.length;
+
+              if (filledCount > 0) {
+                return (
+                  <>
+                    <div className="mb-4">
+                      <h3 className="text-sm font-semibold text-[#2D2F33] mb-1">
+                        Student Roster Preview
+                      </h3>
+                      <p className="text-xs text-gray-600">
+                        {filledCount} student{filledCount !== 1 ? 's' : ''} imported
+                      </p>
+                    </div>
+                    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+                      <div className="overflow-x-auto max-h-80">
+                        <table className="min-w-full">
+                          <thead className="bg-[#00A5A8] text-white sticky top-0">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase">#</th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase">First Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase">Last Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase">Email</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            {filledStudents.map((student, idx) => (
+                              <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                                <td className="px-4 py-3 text-xs text-gray-500">{idx + 1}</td>
+                                <td className="px-4 py-3 text-sm text-[#2D2F33]">{student.firstName}</td>
+                                <td className="px-4 py-3 text-sm text-[#2D2F33]">{student.lastName}</td>
+                                <td className="px-4 py-3 text-sm text-gray-600">{student.email}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                );
+              } else {
+                return null;
+              }
+            })()}
 
             {/* Save Button */}
-            <div className="flex justify-end mt-6 pt-4 border-t">
+            <div className="flex justify-end items-center mt-6 pt-4 border-t border-gray-200">
               <button
                 onClick={handleSave}
                 disabled={students.filter(s => s.firstName || s.lastName || s.email).length === 0}
-                className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-green-800 flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg font-semibold disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-8 py-2.5 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <FaUserPlus /> Save Students
+                <FaUserPlus />
+                Save Students
               </button>
             </div>
           </div>

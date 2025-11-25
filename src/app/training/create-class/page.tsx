@@ -21,6 +21,7 @@ interface Student {
   firstName: string;
   lastName: string;
   email: string;
+  certificate_url?: string;
 }
 
 export default function CreateClassPage() {

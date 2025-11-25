@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useRouter, useSearchParams } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
@@ -27,22 +27,32 @@ type Credit = {
   credits: number;
 };
 
-export default function Dashboard() {
+// Component that handles search params
+function RefreshHandler({ onRefresh }: { onRefresh: () => void }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const refreshParam = searchParams.get('refresh');
+    if (refreshParam) {
+      onRefresh();
+      // Clean up URL without refresh param
+      router.replace('/dashboard', { scroll: false });
+    }
+  }, [searchParams, router, onRefresh]);
+
+  return null;
+}
+
+function DashboardContent() {
+  const router = useRouter();
   const [creditsData, setCreditsData] = useState<Credit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Check for refresh parameter on mount
-  useEffect(() => {
-    const refreshParam = searchParams.get('refresh');
-    if (refreshParam) {
-      setRefreshTrigger(Date.now());
-      // Clean up URL without refresh param
-      router.replace('/dashboard', { scroll: false });
-    }
-  }, [searchParams, router]);
+  const handleRefresh = () => {
+    setRefreshTrigger(Date.now());
+  };
 
   // Fetch credits on auth change or refresh trigger
   useEffect(() => {
@@ -96,6 +106,9 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      <Suspense fallback={null}>
+        <RefreshHandler onRefresh={handleRefresh} />
+      </Suspense>
       <Sidebar />
       <main className="flex-1">
         {/* Modern Header with Stats */}
@@ -612,4 +625,8 @@ function ActivityItem({
       </div>
     </div>
   );
+}
+
+export default function Dashboard() {
+  return <DashboardContent />;
 }

@@ -349,17 +349,17 @@ function ShoppingCartModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full animate-slideUp max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-2xl w-full animate-slideUp shadow-xl">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008a8d] px-6 py-5 rounded-t-lg sticky top-0 z-10">
+        <div className="border-b border-gray-200 px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <FaShoppingCart className="text-white text-2xl" />
-              <h3 className="text-2xl font-bold text-white">Shopping Cart</h3>
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900">Review your order</h3>
+              <p className="text-sm text-gray-600 mt-1">Adjust quantity and review details</p>
             </div>
             <button
               onClick={onCancel}
-              className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+              className="text-gray-500 hover:text-gray-700 transition-colors"
             >
               <FaTimes className="text-xl" />
             </button>
@@ -367,114 +367,95 @@ function ShoppingCartModal({
         </div>
 
         {/* Cart Content */}
-        <div className="p-6">
-          {/* Product Details Table */}
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="text-left p-4 text-sm font-semibold text-gray-700">Product Description</th>
-                  <th className="text-center p-4 text-sm font-semibold text-gray-700">Quantity</th>
-                  <th className="text-right p-4 text-sm font-semibold text-gray-700">Price</th>
-                  <th className="text-right p-4 text-sm font-semibold text-gray-700">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-100">
-                  <td className="p-4">
-                    <div>
-                      <p className="font-bold text-gray-900 mb-1">{option.name}</p>
-                      <p className="text-sm text-gray-600">ID: {option.id}</p>
-                      <p className="text-sm text-gray-600">{option.courseType}</p>
-                      <div className="mt-2">
-                        <span className="inline-block px-3 py-1 bg-[#00A5A8]/10 text-[#00A5A8] text-xs font-semibold rounded-full">
-                          {option.credits} credits per package
-                        </span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        onClick={handleDecrement}
-                        disabled={quantity <= 1}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg border-2 ${
-                          quantity <= 1
-                            ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                            : "border-[#00A5A8] text-[#00A5A8] hover:bg-[#00A5A8] hover:text-white"
-                        } transition-all`}
-                      >
-                        <FaMinus className="text-xs" />
-                      </button>
-                      <input
-                        type="number"
-                        min="1"
-                        value={quantity}
-                        onChange={handleQuantityInput}
-                        className="w-16 text-center border-2 border-gray-200 rounded-lg py-2 font-semibold text-gray-900 focus:border-[#00A5A8] focus:outline-none"
-                      />
-                      <button
-                        onClick={handleIncrement}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-[#00A5A8] text-[#00A5A8] hover:bg-[#00A5A8] hover:text-white transition-all"
-                      >
-                        <FaPlus className="text-xs" />
-                      </button>
-                    </div>
-                  </td>
-                  <td className="p-4 text-right font-semibold text-gray-900">
-                    ${option.price.toFixed(2)}
-                  </td>
-                  <td className="p-4 text-right font-bold text-gray-900 text-lg">
-                    ${subtotal.toFixed(2)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div className="px-8 py-6">
+          {/* Product Details */}
+          <div className="mb-6">
+            <div className="pb-4 border-b border-gray-200">
+              <p className="text-sm font-medium text-gray-900 mb-1">{option.name}</p>
+              <p className="text-xs text-gray-600 mb-1">Course ID: {option.id}</p>
+              <p className="text-xs text-gray-600">{option.courseType}</p>
+              <div className="mt-3">
+                <span className="inline-block px-3 py-1 bg-[#00A5A8]/10 text-[#00A5A8] text-xs font-medium rounded-md">
+                  {option.credits} credits per package
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Summary Section */}
-          <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-6 mb-6">
-            <h4 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h4>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-semibold text-gray-900">${subtotal.toFixed(2)}</span>
+          {/* Quantity Selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-900 mb-3">Quantity</label>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleDecrement}
+                disabled={quantity <= 1}
+                className={`w-10 h-10 flex items-center justify-center rounded-md border transition-colors ${
+                  quantity <= 1
+                    ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <FaMinus className="text-sm" />
+              </button>
+              <input
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={handleQuantityInput}
+                className="w-20 text-center border border-gray-300 rounded-md py-2 font-medium text-gray-900 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none"
+              />
+              <button
+                onClick={handleIncrement}
+                className="w-10 h-10 flex items-center justify-center rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                <FaPlus className="text-sm" />
+              </button>
+            </div>
+          </div>
+
+          {/* Order Summary */}
+          <div className="bg-gray-50 rounded-lg p-5 mb-6">
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">Order summary</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-700">Price per package</span>
+                <span className="text-gray-900 font-medium">${option.price.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                <span className="text-gray-600">Total Credits</span>
-                <span className="font-bold text-[#00A5A8]">{totalCredits} credits</span>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Quantity</span>
+                <span className="text-gray-900 font-medium">{quantity}</span>
               </div>
-              <div className="flex justify-between items-center pt-2">
-                <span className="text-lg font-bold text-gray-900">Total</span>
-                <span className="text-2xl font-bold text-[#00A5A8]">${subtotal.toFixed(2)}</span>
+              <div className="flex justify-between">
+                <span className="text-gray-700">Total credits</span>
+                <span className="text-[#00A5A8] font-medium">{totalCredits} credits</span>
+              </div>
+              <div className="pt-3 mt-3 border-t border-gray-200 flex justify-between items-baseline">
+                <span className="text-sm font-semibold text-gray-900">Total</span>
+                <span className="text-2xl font-semibold text-gray-900">${subtotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
 
           {/* Info Note */}
-          <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <FaCheckCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-blue-800">
-              <strong>Free Digital Delivery:</strong> Your training credits will be instantly available after purchase confirmation.
-            </p>
+          <div className="flex items-start gap-2 text-xs text-gray-600 mb-6">
+            <FaCheckCircle className="mt-0.5 flex-shrink-0 text-[#00A5A8]" />
+            <p>Credits will be instantly available after purchase confirmation</p>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 p-6 pt-0 sticky bottom-0 bg-white">
+        <div className="border-t border-gray-200 px-8 py-6 flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all duration-200 flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
           >
-            <FaTimes />
             Cancel
           </button>
           <button
             onClick={onContinue}
-            className="flex-1 px-6 py-3 bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white rounded-lg font-bold hover:from-[#008a8d] hover:to-[#00A5A8] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 bg-[#00A5A8] text-white rounded-md font-medium hover:bg-[#008a8d] transition-colors text-sm"
           >
-            Continue to Checkout
-            <FaCheckCircle />
+            Continue to agreement
           </button>
         </div>
       </div>
@@ -508,18 +489,18 @@ function PurchaseAgreementModal({
   const purchaserName = user?.displayName || user?.email || "Valued Customer";
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-white rounded-lg shadow-2xl max-w-3xl w-full animate-slideUp max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-3xl w-full my-8 animate-slideUp shadow-xl">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#C10E21] to-[#00A5A8] px-6 py-5 rounded-t-lg sticky top-0 z-10">
+        <div className="border-b border-gray-200 px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <FaFileContract className="text-white text-2xl" />
-              <h3 className="text-2xl font-bold text-white">Purchase Agreement</h3>
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900">Purchase agreement</h3>
+              <p className="text-sm text-gray-600 mt-1">Review and accept the terms</p>
             </div>
             <button
               onClick={onCancel}
-              className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+              className="text-gray-500 hover:text-gray-700 transition-colors"
             >
               <FaTimes className="text-xl" />
             </button>
@@ -527,132 +508,121 @@ function PurchaseAgreementModal({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-5">
+        <div className="px-8 py-6 space-y-6">
           {/* Order Details Header */}
-          <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-lg p-5">
+          <div className="bg-gray-50 rounded-lg p-5">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Order Number</p>
-                <p className="text-sm font-bold text-gray-900">{orderNumber}</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Order number</p>
+                <p className="text-sm font-semibold text-gray-900">{orderNumber}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Purchaser</p>
-                <p className="text-sm font-bold text-gray-900">{purchaserName}</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Purchaser</p>
+                <p className="text-sm font-semibold text-gray-900">{purchaserName}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Date</p>
-                <p className="text-sm font-bold text-gray-900">{currentDate}</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Date</p>
+                <p className="text-sm font-semibold text-gray-900">{currentDate}</p>
               </div>
             </div>
           </div>
 
           {/* Training Program Information */}
-          <div className="border-2 border-[#00A5A8]/30 rounded-lg p-5 bg-[#00A5A8]/5">
-            <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <FaCheckCircle className="text-[#00A5A8]" />
-              Training Program Information
-            </h4>
-            <div className="space-y-3">
-              <div className="flex justify-between items-start pb-3 border-b border-gray-200">
-                <span className="text-sm text-gray-600 font-medium">Program Name</span>
-                <span className="text-sm font-bold text-gray-900 text-right max-w-xs">{option.name}</span>
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">Order details</h4>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Program name</span>
+                <span className="font-medium text-gray-900 text-right max-w-xs">{option.name}</span>
               </div>
-              <div className="flex justify-between items-start pb-3 border-b border-gray-200">
-                <span className="text-sm text-gray-600 font-medium">Course ID</span>
-                <span className="text-sm font-semibold text-gray-900">{option.id}</span>
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Course ID</span>
+                <span className="font-medium text-gray-900">{option.id}</span>
               </div>
-              <div className="flex justify-between items-start pb-3 border-b border-gray-200">
-                <span className="text-sm text-gray-600 font-medium">Course Type</span>
-                <span className="text-sm font-semibold text-gray-900">{option.courseType}</span>
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Course type</span>
+                <span className="font-medium text-gray-900">{option.courseType}</span>
               </div>
-              <div className="flex justify-between items-start pb-3 border-b border-gray-200">
-                <span className="text-sm text-gray-600 font-medium">Quantity</span>
-                <span className="text-sm font-semibold text-gray-900">{quantity} {quantity === 1 ? 'package' : 'packages'}</span>
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Quantity</span>
+                <span className="font-medium text-gray-900">{quantity} {quantity === 1 ? 'package' : 'packages'}</span>
               </div>
-              <div className="flex justify-between items-start pb-3 border-b border-gray-200">
-                <span className="text-sm text-gray-600 font-medium">Total Credits</span>
-                <span className="text-sm font-bold text-[#00A5A8]">{totalCredits} Training Credits</span>
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Total credits</span>
+                <span className="font-medium text-[#00A5A8]">{totalCredits} credits</span>
               </div>
-              <div className="flex justify-between items-start pt-2">
-                <span className="text-base text-gray-700 font-semibold">Total Price</span>
-                <span className="text-2xl font-bold text-[#00A5A8]">${totalPrice.toFixed(2)}</span>
+              <div className="flex justify-between items-baseline pt-2">
+                <span className="font-semibold text-gray-900">Total price</span>
+                <span className="text-2xl font-semibold text-gray-900">${totalPrice.toFixed(2)}</span>
               </div>
             </div>
           </div>
 
           {/* Purchase Agreement */}
-          <div className="border-2 border-gray-300 rounded-lg p-5 bg-gray-50">
-            <h4 className="text-lg font-bold text-gray-900 mb-3">Purchase Intent Confirmation</h4>
-            <div className="text-sm text-gray-700 space-y-2 leading-relaxed">
+          <div className="bg-gray-50 rounded-lg p-5">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3">Terms & conditions</h4>
+            <div className="text-xs text-gray-700 space-y-3 leading-relaxed">
               <p>
-                By proceeding with this purchase, I, <strong>{purchaserName}</strong>, hereby confirm my intent to purchase the training program(s) listed above for the total amount of <strong>${totalPrice.toFixed(2)}</strong>.
+                By proceeding with this purchase, I, <strong>{purchaserName}</strong>, confirm my intent to purchase the training program listed above for <strong>${totalPrice.toFixed(2)}</strong>.
               </p>
               <p>
-                I understand that this purchase grants me access to <strong>{totalCredits} digital training credits</strong> for the <strong>{option.name}</strong> program, which will be immediately available upon successful payment confirmation.
+                I understand that this purchase grants me access to <strong>{totalCredits} digital training credits</strong> for the <strong>{option.name}</strong> program, which will be immediately available upon payment confirmation.
               </p>
               <p>
-                I acknowledge that I have reviewed the program details, pricing, and quantity before proceeding with this transaction.
+                I acknowledge that I have reviewed the program details, pricing, and quantity before proceeding.
               </p>
             </div>
           </div>
 
           {/* Return Policy */}
-          <div className="border-2 border-orange-200 rounded-lg p-5 bg-orange-50">
-            <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <FaFileContract className="text-orange-600" />
-              Return & Refund Policy
-            </h4>
-            <div className="text-sm text-gray-700 space-y-3 leading-relaxed">
-              <p className="font-semibold text-gray-900">Digital Products - No Returns on Used Credits:</p>
-              <ul className="list-disc list-inside space-y-1.5 ml-2">
-                <li>Training credits are digital products and are <strong>non-refundable once accessed or used</strong>.</li>
-                <li>If you have not yet accessed or assigned any credits from your purchase, you may request a refund within <strong>7 days</strong> of purchase.</li>
-                <li>Refund requests must be submitted in writing to our support team with your order number.</li>
-                <li>Once credits are assigned to students or instructors, they cannot be refunded or exchanged.</li>
-                <li>All refunds will be processed within 5-10 business days to the original payment method.</li>
+          <div className="bg-gray-50 rounded-lg p-5">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3">Refund policy</h4>
+            <div className="text-xs text-gray-700 space-y-2 leading-relaxed">
+              <p className="font-medium text-gray-900">Digital products - No returns on used credits</p>
+              <ul className="list-disc list-inside space-y-1 ml-2">
+                <li>Training credits are <strong>non-refundable once accessed or used</strong></li>
+                <li>Unused credits may be refunded within <strong>7 days</strong> of purchase</li>
+                <li>Refund requests require written submission with your order number</li>
+                <li>Assigned credits cannot be refunded or exchanged</li>
+                <li>Refunds processed within 5-10 business days</li>
               </ul>
-              <p className="mt-3 text-xs text-gray-600 italic">
-                For questions about our return policy, please contact customer support before completing your purchase.
-              </p>
             </div>
           </div>
 
           {/* Agreement Checkbox */}
-          <div className="border-2 border-[#C10E21] rounded-lg p-4 bg-red-50">
+          <div className="border border-gray-300 rounded-lg p-4">
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={agreedToTerms}
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="mt-1 w-5 h-5 text-[#C10E21] border-gray-300 rounded focus:ring-[#C10E21] cursor-pointer"
+                className="mt-0.5 w-4 h-4 text-[#00A5A8] border-gray-300 rounded focus:ring-[#00A5A8] cursor-pointer"
               />
-              <span className="text-sm text-gray-900 flex-1">
-                <strong>I have read and agree to the purchase terms and return policy stated above.</strong> I confirm my intent to proceed with this purchase and understand that by clicking "Accept & Continue," I am entering into a binding transaction.
+              <span className="text-xs text-gray-900 flex-1">
+                I have read and agree to the purchase terms and refund policy. I understand that clicking "Continue to payment" creates a binding transaction.
               </span>
             </label>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 p-6 pt-0 sticky bottom-0 bg-white border-t border-gray-200">
+        <div className="border-t border-gray-200 px-8 py-6 flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all duration-200 flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors"
           >
-            <FaTimes />
-            Cancel
+            Back
           </button>
           <button
             onClick={onAccept}
             disabled={!agreedToTerms}
-            className={`flex-1 px-6 py-3 rounded-lg font-bold transition-all duration-200 shadow-md flex items-center justify-center gap-2 ${
+            className={`flex-1 px-6 py-3 rounded-md font-medium text-sm transition-colors ${
               agreedToTerms
-                ? "bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white hover:from-[#008a8d] hover:to-[#00A5A8] hover:shadow-lg"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                ? "bg-[#00A5A8] text-white hover:bg-[#008a8d]"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
-            <FaCheckCircle />
-            Accept & Continue
+            Continue to payment
           </button>
         </div>
       </div>
@@ -773,311 +743,258 @@ function CheckoutModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-start justify-center z-50 p-4 animate-fadeIn overflow-y-auto pt-8 pb-8">
-      <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full animate-slideUp">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008a8d] px-8 py-6 rounded-t-xl">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-5xl w-full my-8 animate-slideUp shadow-xl">
+        {/* Minimal Header */}
+        <div className="border-b border-gray-200 px-8 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 p-3 rounded-lg">
-                <FaCreditCard className="text-white text-2xl" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold text-white">Payment Information</h3>
-                <p className="text-sm text-white/90 mt-1">Secure checkout powered by SSL encryption</p>
-              </div>
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900">Payment</h3>
+              <p className="text-sm text-gray-600 mt-1">Complete your purchase securely</p>
             </div>
             <button
               onClick={onCancel}
-              className="text-white hover:bg-white/20 rounded-full p-2.5 transition-colors"
+              className="text-gray-500 hover:text-gray-700 transition-colors"
             >
-              <FaTimes className="text-2xl" />
+              <FaTimes className="text-xl" />
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Payment Form - Left Side (2/3) */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 px-8 py-6 space-y-8">
             {/* Card Information */}
-            <div className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-6 shadow-sm">
-              <h4 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-3 border-b-2 border-gray-200">
-                <div className="bg-[#00A5A8]/10 p-2 rounded-lg">
-                  <FaCreditCard className="text-[#00A5A8] text-xl" />
-                </div>
-                Card Information
-              </h4>
-              <div className="space-y-5">
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">Card details</h4>
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Card Number
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                    Card number
                   </label>
                   <input
                     type="text"
                     value={cardNumber}
                     onChange={handleCardNumberChange}
                     placeholder="1234 5678 9012 3456"
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Cardholder Name
-                  </label>
-                  <input
-                    type="text"
-                    value={cardName}
-                    onChange={(e) => setCardName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      Expiry Date
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Expiry
                     </label>
                     <input
                       type="text"
                       value={expiryDate}
                       onChange={handleExpiryChange}
-                      placeholder="MM/YY"
-                      className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
+                      placeholder="MM / YY"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      CVV
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      CVC
                     </label>
                     <input
                       type="text"
                       value={cvv}
                       onChange={handleCvvChange}
                       placeholder="123"
-                      className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
                     />
                   </div>
                 </div>
-                <div className="flex items-center gap-3 pt-2 bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
-                  <input
-                    type="checkbox"
-                    id="saveCard"
-                    checked={saveCard}
-                    onChange={(e) => setSaveCard(e.target.checked)}
-                    className="w-5 h-5 text-[#00A5A8] border-gray-300 rounded focus:ring-[#00A5A8] cursor-pointer"
-                  />
-                  <label htmlFor="saveCard" className="text-sm font-semibold text-gray-800 cursor-pointer">
-                    Save this card for future purchases
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                    Cardholder name
                   </label>
+                  <input
+                    type="text"
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
+                    placeholder="Full name on card"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Billing Address */}
-            <div className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-6 shadow-sm">
-              <h4 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-3 border-b-2 border-gray-200">
-                <div className="bg-purple-100 p-2 rounded-lg">
-                  <FaCreditCard className="text-purple-600 text-xl" />
-                </div>
-                Billing Address
-              </h4>
-              <div className="space-y-5">
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">Billing address</h4>
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Street Address
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                    Address
                   </label>
                   <input
                     type="text"
                     value={billingAddress}
                     onChange={(e) => setBillingAddress(e.target.value)}
-                    placeholder="123 Main Street"
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
+                    placeholder="Street address"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
                       City
                     </label>
                     <input
                       type="text"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      placeholder="Phoenix"
-                      className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
+                      placeholder="City"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
                       State
                     </label>
                     <input
                       type="text"
                       value={state}
                       onChange={(e) => setState(e.target.value)}
-                      placeholder="AZ"
-                      className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
+                      placeholder="State"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
                     />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">
-                    ZIP Code
-                  </label>
-                  <input
-                    type="text"
-                    value={zipCode}
-                    onChange={(e) => setZipCode(e.target.value)}
-                    placeholder="85001"
-                    className="w-full px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-[#00A5A8] focus:ring-2 focus:ring-[#00A5A8]/20 focus:outline-none transition-all text-base font-semibold text-gray-900 bg-white placeholder:text-gray-400"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      ZIP
+                    </label>
+                    <input
+                      type="text"
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                      placeholder="ZIP"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Promo Code */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-6 shadow-sm">
-              <h4 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-3 border-b-2 border-orange-200">
-                <div className="bg-orange-100 p-2 rounded-lg">
-                  <FaTag className="text-orange-600 text-xl" />
-                </div>
-                Promo Code
-              </h4>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">Promo code</h4>
               {!promoApplied ? (
-                <div className="space-y-3">
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                      placeholder="Enter promo code"
-                      className="flex-1 px-4 py-3.5 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none transition-all text-base font-bold text-gray-900 bg-white placeholder:text-gray-400"
-                    />
-                    <button
-                      onClick={applyPromoCode}
-                      disabled={!promoCode.trim()}
-                      className={`px-8 py-3.5 rounded-lg font-bold transition-all ${
-                        promoCode.trim()
-                          ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 shadow-md"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                      }`}
-                    >
-                      Apply
-                    </button>
-                  </div>
-                  <div className="bg-white/70 border border-orange-300 rounded-lg p-3">
-                    <p className="text-sm font-semibold text-orange-800">
-                      💡 Try these codes: <span className="font-mono">SAVE10</span>, <span className="font-mono">SAVE20</span>, <span className="font-mono">WELCOME</span>, or <span className="font-mono">TRAINING25</span>
-                    </p>
-                  </div>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                    placeholder="Enter code"
+                    className="flex-1 px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                  />
+                  <button
+                    onClick={applyPromoCode}
+                    disabled={!promoCode.trim()}
+                    className={`px-6 py-2.5 rounded-md font-medium text-sm transition-colors ${
+                      promoCode.trim()
+                        ? "bg-gray-900 text-white hover:bg-gray-800"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    Apply
+                  </button>
                 </div>
               ) : (
-                <div className="flex items-center justify-between bg-green-50 border-2 border-green-500 rounded-xl p-5 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                      <FaCheckCircle className="text-green-600 text-2xl" />
-                    </div>
+                <div className="flex items-center justify-between px-4 py-3 bg-green-50 border border-green-200 rounded-md">
+                  <div className="flex items-center gap-2">
+                    <FaCheckCircle className="text-green-600 text-sm" />
                     <div>
-                      <p className="font-bold text-green-900 text-lg">Code Applied: {promoCode}</p>
-                      <p className="text-sm text-green-700 mt-1">You saved {discount}% (${discountAmount.toFixed(2)})</p>
+                      <p className="text-sm font-medium text-green-900">{promoCode}</p>
+                      <p className="text-xs text-green-700">-${discountAmount.toFixed(2)}</p>
                     </div>
                   </div>
                   <button
                     onClick={removePromoCode}
-                    className="text-red-600 hover:text-red-800 p-2 hover:bg-red-100 rounded-lg transition-colors"
-                    title="Remove promo code"
+                    className="text-gray-500 hover:text-gray-700"
                   >
-                    <FaTrashAlt className="text-xl" />
+                    <FaTimes className="text-sm" />
                   </button>
                 </div>
               )}
             </div>
+
+            {/* Security Notice */}
+            <div className="flex items-start gap-2 text-xs text-gray-600 pt-2">
+              <FaLock className="mt-0.5 flex-shrink-0" />
+              <p>Payments are secure and encrypted</p>
+            </div>
           </div>
 
           {/* Order Summary - Right Side (1/3) */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 bg-gray-50 px-8 py-6 border-l border-gray-200">
             <div className="space-y-6">
-              {/* Order Summary */}
-              <div className="bg-gradient-to-br from-[#00A5A8]/5 to-teal-50 border-2 border-[#00A5A8] rounded-xl p-6 shadow-lg">
-                <h4 className="text-2xl font-bold text-gray-900 mb-5 flex items-center gap-2 pb-3 border-b-2 border-[#00A5A8]/30">
-                  <FaShoppingCart className="text-[#00A5A8]" />
-                  Order Summary
-                </h4>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4">Order summary</h4>
                 <div className="space-y-4">
-                  <div className="pb-4 border-b-2 border-gray-200 bg-white/50 rounded-lg p-4">
-                    <p className="text-base font-bold text-gray-900 mb-2">{option.name}</p>
-                    <p className="text-xs text-gray-600 mb-1">ID: <span className="font-semibold">{option.id}</span></p>
-                    <p className="text-xs text-gray-600">{option.courseType}</p>
+                  <div className="pb-4 border-b border-gray-200">
+                    <p className="text-sm font-medium text-gray-900 mb-1">{option.name}</p>
+                    <p className="text-xs text-gray-600">{option.id}</p>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-300">
-                    <span className="text-sm font-semibold text-gray-700">Quantity</span>
-                    <span className="text-base font-bold text-gray-900">{quantity}x</span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-300">
-                    <span className="text-sm font-semibold text-gray-700">Credits</span>
-                    <span className="text-base font-bold text-[#00A5A8]">{totalCredits}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-300">
-                    <span className="text-sm font-semibold text-gray-700">Subtotal</span>
-                    <span className="text-base font-bold text-gray-900">${totalPrice.toFixed(2)}</span>
-                  </div>
-                  {promoApplied && (
-                    <div className="flex justify-between items-center py-3 border-b border-gray-300 bg-green-50 -mx-6 px-6 rounded-lg">
-                      <span className="text-sm font-bold text-green-700">Discount ({discount}%)</span>
-                      <span className="text-base font-bold text-green-600">-${discountAmount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between items-center pt-4 bg-gradient-to-r from-[#00A5A8]/10 to-teal-100/50 -mx-6 px-6 py-4 rounded-lg mt-4">
-                    <span className="text-lg font-bold text-gray-900">Total</span>
-                    <span className="text-3xl font-bold text-[#00A5A8]">${finalPrice.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Security Notice */}
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-300 rounded-xl p-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <FaLock className="text-blue-600 text-xl" />
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-700">Quantity</span>
+                      <span className="text-gray-900 font-medium">{quantity}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-700">Credits</span>
+                      <span className="text-gray-900 font-medium">{totalCredits}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-700">Subtotal</span>
+                      <span className="text-gray-900 font-medium">${totalPrice.toFixed(2)}</span>
+                    </div>
+                    {promoApplied && (
+                      <div className="flex justify-between text-green-600">
+                        <span className="font-medium">Discount</span>
+                        <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-blue-900 mb-1">Secure Payment</p>
-                    <p className="text-xs text-blue-700 leading-relaxed">
-                      Your payment information is encrypted with SSL and processed securely. We never store your full card details.
-                    </p>
+
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-sm font-semibold text-gray-900">Total</span>
+                      <span className="text-2xl font-semibold text-gray-900">${finalPrice.toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-3 pt-2">
                 <button
                   onClick={handleSubmit}
                   disabled={isProcessing}
-                  className={`w-full px-6 py-5 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg flex items-center justify-center gap-3 ${
+                  className={`w-full px-4 py-3 rounded-md font-medium text-sm transition-all ${
                     isProcessing
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#00A5A8] via-teal-500 to-[#008a8d] text-white hover:from-[#008a8d] hover:via-teal-600 hover:to-[#00A5A8] hover:shadow-2xl hover:scale-105 transform"
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : "bg-gray-900 text-white hover:bg-gray-800"
                   }`}
                 >
                   {isProcessing ? (
-                    <>
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                      <span>Processing Payment...</span>
-                    </>
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Processing...
+                    </span>
                   ) : (
-                    <>
-                      <FaLock className="text-xl" />
-                      <span>Complete Purchase ${finalPrice.toFixed(2)}</span>
-                    </>
+                    `Pay $${finalPrice.toFixed(2)}`
                   )}
                 </button>
                 <button
                   onClick={onCancel}
                   disabled={isProcessing}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-xl font-bold hover:from-gray-200 hover:to-gray-300 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors disabled:opacity-50"
                 >
-                  Back to Agreement
+                  Back
                 </button>
               </div>
             </div>
@@ -1102,68 +1019,68 @@ function SuccessModal({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fadeIn">
-      <div className="bg-white rounded-lg shadow-2xl max-w-lg w-full animate-slideUp">
-        {/* Success Icon */}
-        <div className="bg-gradient-to-br from-green-500 to-emerald-600 px-6 py-8 rounded-t-lg text-center">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-            <FaCheckCircle className="text-green-500 text-5xl" />
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+      <div className="bg-white rounded-lg max-w-lg w-full animate-slideUp shadow-xl">
+        {/* Header with Success Icon */}
+        <div className="border-b border-gray-200 px-8 py-8 text-center">
+          <div className="w-16 h-16 bg-[#00A5A8]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FaCheckCircle className="text-[#00A5A8] text-4xl" />
           </div>
-          <h3 className="text-3xl font-bold text-white mb-2">Purchase Successful!</h3>
-          <p className="text-white/90">Your training credits are now available</p>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-1">Purchase complete</h3>
+          <p className="text-sm text-gray-600">Your credits are now available</p>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4">
+        <div className="px-8 py-6 space-y-6">
           {/* Order Info */}
-          <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4">
-            <p className="text-xs text-gray-500 mb-1">Order Number</p>
-            <p className="text-lg font-bold text-gray-900">{orderNumber}</p>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="text-xs font-medium text-gray-600 mb-1">Order number</p>
+            <p className="text-sm font-semibold text-gray-900">{orderNumber}</p>
           </div>
 
           {/* Purchase Details */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-              <span className="text-sm text-gray-600">Package</span>
-              <span className="text-sm font-semibold text-gray-900 text-right max-w-xs">{option.name}</span>
-            </div>
-            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-              <span className="text-sm text-gray-600">Quantity</span>
-              <span className="text-sm font-semibold text-gray-900">{quantity} {quantity === 1 ? 'package' : 'packages'}</span>
-            </div>
-            <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-              <span className="text-sm text-gray-600">Credits Added</span>
-              <span className="text-lg font-bold text-green-600">{credits} Credits</span>
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">Order details</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Package</span>
+                <span className="font-medium text-gray-900 text-right max-w-xs">{option.name}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Quantity</span>
+                <span className="font-medium text-gray-900">{quantity} {quantity === 1 ? 'package' : 'packages'}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-gray-200">
+                <span className="text-gray-700">Credits added</span>
+                <span className="font-medium text-[#00A5A8]">{credits} credits</span>
+              </div>
             </div>
           </div>
 
           {/* Success Message */}
-          <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4 flex items-start gap-3">
-            <FaCheckCircle className="text-green-600 text-xl mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-sm font-bold text-green-900 mb-1">Credits Added to Your Account</p>
-              <p className="text-xs text-green-700">
-                Your {credits} training credits have been added to your account and are ready to use immediately. Check your dashboard to see the updated balance.
+          <div className="bg-[#00A5A8]/5 border border-[#00A5A8]/20 rounded-lg p-4">
+            <div className="flex items-start gap-2">
+              <FaCheckCircle className="text-[#00A5A8] text-sm mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-gray-700">
+                Your {credits} training credits have been added to your account and are ready to use. Visit your dashboard to view your updated balance.
               </p>
             </div>
           </div>
 
           {/* Receipt Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-xs text-blue-800">
-              📧 A confirmation email with your receipt and order details has been sent to your registered email address.
-            </p>
+          <div className="flex items-start gap-2 text-xs text-gray-600">
+            <span>📧</span>
+            <p>A confirmation email has been sent to your registered email address.</p>
           </div>
         </div>
 
         {/* Action Button */}
-        <div className="p-6 pt-0">
+        <div className="border-t border-gray-200 px-8 py-6">
           <button
             onClick={onClose}
-            className="w-full px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+            className="w-full px-6 py-3 bg-[#00A5A8] text-white rounded-md font-medium hover:bg-[#008a8d] transition-colors text-sm"
           >
-            Go to Dashboard
-            <FaCheckCircle />
+            Go to dashboard
           </button>
         </div>
       </div>

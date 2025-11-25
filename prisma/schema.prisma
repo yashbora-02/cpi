@@ -44,7 +44,7 @@ model Video {
 model Ticket {
   id           Int      @id @default(autoincrement())
   ticket_number String  @unique
-  type         String   // "General Request" or "Application Issue / Bug"
+  type         String   // "General Request" or "Application Issue / Bug" or "Digital Card Change Request"
   title        String
   description  String   @db.Text
   reported_by  String
@@ -57,5 +57,49 @@ model Ticket {
   updated_at   DateTime @updatedAt
 
   @@map("tickets")
+}
+
+model DigitalCard {
+  id                     Int      @id @default(autoincrement())
+  class_id               String   @unique
+  program                String
+  site                   String
+  class_type             String
+  start_date             DateTime
+  end_date               DateTime
+  accrediting_instructor String
+  assisting_instructor   String?
+  open_enrollment        Boolean  @default(false)
+
+  // Locking fields
+  is_locked              Boolean  @default(false)
+  submitted_at           DateTime?
+  submitted_by           String?  // User email or ID
+
+  // Credit tracking
+  credits_used           Int
+
+  // Relationships
+  students               DigitalCardStudent[]
+
+  created_at             DateTime @default(now())
+  updated_at             DateTime @updatedAt
+
+  @@map("digital_cards")
+}
+
+model DigitalCardStudent {
+  id              Int         @id @default(autoincrement())
+  digital_card_id Int
+  digital_card    DigitalCard @relation(fields: [digital_card_id], references: [id], onDelete: Cascade)
+
+  first_name      String
+  last_name       String
+  email           String
+  certificate_url String?     // Path to generated certificate PDF
+
+  created_at      DateTime    @default(now())
+
+  @@map("digital_card_students")
 }
 

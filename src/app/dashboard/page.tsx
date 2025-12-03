@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useRouter, useSearchParams } from "next/navigation";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import {
   FaShoppingCart,
   FaChevronRight,
@@ -49,21 +47,43 @@ function DashboardContent() {
   const [creditsData, setCreditsData] = useState<Credit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [userRole, setUserRole] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setRefreshTrigger(Date.now());
-  };
+  }, []);
 
-  // Fetch credits on auth change or refresh trigger
+  // Auth check - check localStorage instead of Firebase
   useEffect(() => {
-    const fetchCredits = async (user: any) => {
+    const userStr = localStorage.getItem("currentUser");
+    if (!userStr) {
+      router.replace("/login");
+    } else {
+      const user = JSON.parse(userStr);
+      setUserRole(user.role);
+      setUserName(user.full_name || user.username);
+    }
+  }, [router]);
+
+  const isAdmin = userRole === 'admin';
+  const isInstructor = userRole === 'instructor';
+
+  // Fetch credits - runs on mount and when refresh is triggered
+  useEffect(() => {
+    const fetchCredits = async () => {
+      const userStr = localStorage.getItem("currentUser");
+      if (!userStr) {
+        router.replace("/login");
+        return;
+      }
+
       setIsLoading(true);
       try {
-        const token = await user.getIdToken();
-        const res = await fetch("/api/credits", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        // For now, since we switched auth systems, use mock data
+        // In production, you'd call an API that uses the new auth system
+        const res = await fetch(`/api/credits?t=${Date.now()}`, {
+          cache: 'no-store', // Prevent browser caching
         });
         const data = await res.json();
 
@@ -82,18 +102,8 @@ function DashboardContent() {
       }
     };
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        router.replace("/login");
-        return;
-      }
-
-      // Fetch credits when authenticated
-      await fetchCredits(user);
-    });
-
-    return () => unsubscribe();
-  }, [router, refreshTrigger]);
+    fetchCredits();
+  }, [refreshTrigger, router]);
 
   const getCreditsByType = (type: string) =>
     creditsData.find((c) => c.type === type)?.credits ?? 0;
@@ -121,84 +131,131 @@ function DashboardContent() {
 
           <div className="relative z-10">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold mb-2">Welcome Back!</h1>
-              <p className="text-base text-white/90">Here's your training overview at a glance</p>
+              <h1 className="text-4xl font-bold mb-2">Welcome Back{userName ? `, ${userName}` : ''}!</h1>
+              <p className="text-base text-white/90">
+                {isInstructor ? "Your instructor dashboard at a glance" : "Here's your training overview at a glance"}
+              </p>
             </div>
 
             {/* Quick Stats in Header */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <QuickStat icon={<FaGraduationCap />} value="1,911" label="Total Classes" />
-              <QuickStat icon={<FaUsers />} value="15" label="Active Students" />
-              <QuickStat icon={<FaShoppingCart />} value={isLoading ? "..." : totalCredits.toString()} label="Total Credits" />
+              <QuickStat icon={<FaUsers />} value="15" label={isInstructor ? "Your Students" : "Active Students"} />
+              {isAdmin && <QuickStat icon={<FaShoppingCart />} value={isLoading ? "..." : totalCredits.toString()} label="Total Credits" />}
+              {isInstructor && <QuickStat icon={<FaChalkboardTeacher />} value="32" label="Classes Taught" />}
               <QuickStat icon={<FaTrophy />} value="98%" label="Success Rate" />
             </div>
           </div>
         </div>
 
         <div className="p-8 -mt-6 relative z-20">
-          {/* Credits Overview - Featured Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">Training Credits</h2>
-                <p className="text-sm text-gray-500 mt-0.5">Manage your course credits and availability</p>
+          {/* Credits Overview - Featured Section - Admin Only */}
+          {isAdmin && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Training Credits</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">Manage your course credits and availability</p>
+                </div>
+                {isLoading && (
+                  <FaSpinner className="animate-spin text-xl text-gray-400" />
+                )}
               </div>
-              {isLoading && (
-                <FaSpinner className="animate-spin text-xl text-gray-400" />
-              )}
-            </div>
 
-            {/* Credits Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 items-stretch">
-              <CreditCard
-                title="CPI Adult First Aid (2020)"
-                subtitle="Blended - DC"
-                credits={getCreditsByType("CPI-FA-2020")}
-                isLoading={isLoading}
-              />
-              <CreditCard
-                title="CPI Adult First Aid | CPR AED Adult Infant"
-                subtitle="Blended - DC"
-                credits={getCreditsByType("CPI-FA-CPR-AI-2020")}
-                isLoading={isLoading}
-              />
-              <CreditCard
-                title="CPI Adult First Aid | CPR AED All Ages"
-                subtitle="Blended - DC"
-                credits={getCreditsByType("CPI-FA-CPR-AA-2020")}
-                isLoading={isLoading}
-              />
-              <CreditCard
-                title="CPI Basic Life Support (2020)"
-                subtitle="Blended - DC"
-                credits={getCreditsByType("CPI-BLS-2020")}
-                isLoading={isLoading}
-              />
-              <CreditCard
-                title="CPI CPR AED All Ages (2020)"
-                subtitle="Blended - DC"
-                credits={getCreditsByType("CPI-CPR-AA-2020")}
-                isLoading={isLoading}
-              />
-              <CreditCard
-                title="CPI Spanish Adult First Aid | CPR AED All Ages"
-                subtitle="Blended - DC"
-                credits={getCreditsByType("CPI-ES-FA-CPR-2020")}
-                isLoading={isLoading}
-              />
-            </div>
+              {/* Credits Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 items-stretch">
+                <CreditCard
+                  title="CPI Adult First Aid (2020)"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-FA-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Adult First Aid | CPR AED Adult Infant"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-FA-CPR-AI-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Adult First Aid | CPR AED All Ages"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-FA-CPR-AA-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Basic Life Support (2020)"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-BLS-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI CPR AED All Ages (2020)"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-CPR-AA-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Spanish Adult First Aid | CPR AED All Ages"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-ES-FA-CPR-2020")}
+                  isLoading={isLoading}
+                />
+              </div>
 
-            {/* Purchase Credits CTA */}
-            <div className="flex justify-center pt-2">
-              <button
-                onClick={() => router.push("/credits/purchase")}
-                className="bg-[#00A5A8] text-white px-8 py-2.5 rounded-md font-medium hover:bg-[#008a8d] transition-colors duration-200 flex items-center gap-2"
-              >
-                <FaShoppingCart className="text-sm" />
-                Purchase Credits
-              </button>
+              {/* Purchase Credits CTA */}
+              <div className="flex justify-center pt-2">
+                <button
+                  onClick={() => router.push("/credits/purchase")}
+                  className="bg-[#00A5A8] text-white px-8 py-2.5 rounded-md font-medium hover:bg-[#008a8d] transition-colors duration-200 flex items-center gap-2"
+                >
+                  <FaShoppingCart className="text-sm" />
+                  Purchase Credits
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Instructor Overview - Instructor Only */}
+          {isInstructor && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Your Teaching Overview</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">Track your classes and student progress</p>
+                </div>
+              </div>
+
+              {/* Instructor Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-[#00A5A8]/10 to-[#00A5A8]/5 rounded-lg p-6 border border-[#00A5A8]/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-gray-600">Classes This Month</h3>
+                    <FaGraduationCap className="text-2xl text-[#00A5A8]" />
+                  </div>
+                  <p className="text-3xl font-bold text-gray-900">12</p>
+                  <p className="text-xs text-gray-500 mt-1">+3 from last month</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-[#C10E21]/10 to-[#C10E21]/5 rounded-lg p-6 border border-[#C10E21]/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-gray-600">Students Trained</h3>
+                    <FaUsers className="text-2xl text-[#C10E21]" />
+                  </div>
+                  <p className="text-3xl font-bold text-gray-900">156</p>
+                  <p className="text-xs text-gray-500 mt-1">Across all programs</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-lg p-6 border border-green-500/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-gray-600">Certification Rate</h3>
+                    <FaCheckCircle className="text-2xl text-green-600" />
+                  </div>
+                  <p className="text-3xl font-bold text-gray-900">98%</p>
+                  <p className="text-xs text-gray-500 mt-1">Above target of 95%</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Quick Actions */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">

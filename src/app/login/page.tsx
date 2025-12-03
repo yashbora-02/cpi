@@ -2,28 +2,23 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { loginWithEmail } from "@/lib/firebaseAuth";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { FaLock, FaUser } from "react-icons/fa";
+import { FaLock, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 
 export default function Login() {
   const router = useRouter();
-  const [loginId, setLoginId] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    // Check if user is already authenticated
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.replace("/dashboard");
-      }
-    });
-
-    return () => unsubscribe();
+    // Check if user is already logged in
+    const userStr = localStorage.getItem("currentUser");
+    if (userStr) {
+      router.replace("/dashboard");
+    }
   }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -31,35 +26,45 @@ export default function Login() {
     setError("");
 
     // Simple form validation
-    if (!loginId || !password) {
-      setError("Email and password are required.");
+    if (!username || !password) {
+      setError("Username and password are required.");
       return;
     }
 
     try {
       setLoading(true);
 
-      // Use Firebase authentication
-      const { user, error: firebaseError } = await loginWithEmail(loginId, password);
+      // Call login API
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username.toLowerCase(),
+          password: password,
+        }),
+      });
 
-      if (firebaseError) {
-        // Provide user-friendly error messages
-        if (firebaseError.includes("invalid-credential") || firebaseError.includes("user-not-found") || firebaseError.includes("wrong-password")) {
-          setError("Invalid email or password. Please try again.");
-        } else if (firebaseError.includes("too-many-requests")) {
-          setError("Too many failed attempts. Please try again later.");
-        } else if (firebaseError.includes("network")) {
-          setError("Network error. Please check your connection.");
-        } else {
-          setError("Login failed. Please try again.");
-        }
-      } else if (user) {
-        // Get the Firebase ID token for authenticated requests
-        const token = await user.getIdToken();
-        localStorage.setItem("firebaseToken", token);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Login failed. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      if (data.success && data.user) {
+        // Store user info in localStorage
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+
+        // Redirect to dashboard
         router.push("/dashboard");
+      } else {
+        setError("Login failed. Please try again.");
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -95,28 +100,29 @@ export default function Login() {
               className="object-contain"
             />
           </div>
-          <p className="text-white/80 text-lg">Instructor Portal Login</p>
+          <p className="text-white/80 text-lg">Training Portal Login</p>
         </div>
 
         {/* Login Form Card */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8">
           <form onSubmit={handleLogin} className="space-y-6">
-            {/* Email Field */}
+            {/* Username Field */}
             <div>
               <label className="block text-sm font-semibold text-white mb-2">
-                Email
+                Username
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <FaUser className="text-white/50" />
                 </div>
                 <input
-                  type="email"
-                  value={loginId}
-                  onChange={(e) => setLoginId(e.target.value)}
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                   required
+                  autoComplete="username"
                 />
               </div>
             </div>
@@ -131,13 +137,21 @@ export default function Login() {
                   <FaLock className="text-white/50" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
+                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
                   placeholder="Enter your password"
                   required
+                  autoComplete="current-password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/50 hover:text-white transition-colors"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
               </div>
             </div>
 
@@ -167,21 +181,29 @@ export default function Login() {
               )}
             </button>
 
+            {/* Demo Credentials Helper */}
+            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+              <p className="text-white/60 text-xs text-center mb-2">Demo Credentials:</p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-white/5 rounded p-2">
+                  <p className="text-[#00A5A8] font-semibold mb-1">Admin</p>
+                  <p className="text-white/70">admin / admin123</p>
+                </div>
+                <div className="bg-white/5 rounded p-2">
+                  <p className="text-[#00A5A8] font-semibold mb-1">Instructor</p>
+                  <p className="text-white/70">instructor / instructor123</p>
+                </div>
+              </div>
+            </div>
+
             {/* Additional Links */}
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-center text-sm">
               <button
                 type="button"
                 onClick={() => router.push("/")}
                 className="text-[#00A5A8] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
               >
                 ← Back to Home
-              </button>
-              <button
-                type="button"
-                onClick={() => router.push("/register")}
-                className="text-[#00A5A8] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
-              >
-                Create Account →
               </button>
             </div>
           </form>

@@ -1,8 +1,10 @@
 'use client';
 
 import { Student } from '@/types';
+import { useRouter } from 'next/navigation';
 
 export default function StudentHistory({ student }: { student: Student }) {
+  const router = useRouter();
   return (
     <div className="bg-white rounded shadow p-4 max-w-4xl overflow-x-auto">
       <h2 className="text-lg font-semibold text-gray-700 mb-4">
@@ -26,7 +28,10 @@ export default function StudentHistory({ student }: { student: Student }) {
                 idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                 } border-b border-gray-200 hover:bg-blue-50 transition`}
             >
-                <td className="p-3 text-blue-600 font-medium cursor-pointer hover:underline whitespace-nowrap">
+                <td
+                  className="p-3 text-blue-600 font-medium cursor-pointer hover:underline whitespace-nowrap"
+                  onClick={() => router.push(`/class/${entry.id}`)}
+                >
                 {entry.id}
                 </td>
                 <td className="p-3 text-gray-800">{entry.program}</td>

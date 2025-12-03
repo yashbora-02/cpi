@@ -3,9 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import { auth } from "@/lib/firebase";
-import { signOut } from "firebase/auth";
+import { useState, useEffect } from "react";
 import {
   FaSignOutAlt,
   FaChartLine,
@@ -25,6 +23,7 @@ import {
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [userRole, setUserRole] = useState<string>('');
 
   const [open, setOpen] = useState({
     instructors: true,
@@ -34,18 +33,31 @@ export default function Sidebar() {
     support: true,
   });
 
+  useEffect(() => {
+    // Get user role from localStorage
+    const userStr = localStorage.getItem("currentUser");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setUserRole(user.role);
+    }
+  }, []);
+
   const toggle = (key: keyof typeof open) =>
     setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      localStorage.removeItem("currentUser");
       localStorage.removeItem("firebaseToken");
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
+
+  // Define sections based on role
+  const isAdmin = userRole === 'admin';
+  const isInstructor = userRole === 'instructor';
 
   return (
     <div className="w-64 min-h-screen bg-gradient-to-b from-[#2D2F33] to-[#1a1b1d] shadow-2xl p-4 flex flex-col border-r border-white/10">
@@ -62,70 +74,80 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-2">
-        {/* General */}
-        <DropdownSection
-          label="General"
-          icon={<FaChartLine className="text-lg" />}
-          isOpen={open.general}
-          onToggle={() => toggle("general")}
-          links={[
-            { label: "Dashboard", path: "/dashboard", icon: <FaChartLine /> },
-            { label: "Video Player", path: "/video", icon: <FaVideo /> },
-          ]}
-          currentPath={pathname}
-        />
+        {/* General Section - Both see Dashboard and Video Player */}
+        {(isAdmin || isInstructor) && (
+          <DropdownSection
+            label="General"
+            icon={<FaChartLine className="text-lg" />}
+            isOpen={open.general}
+            onToggle={() => toggle("general")}
+            links={[
+              { label: "Dashboard", path: "/dashboard", icon: <FaChartLine /> },
+              { label: "Video Player", path: "/video", icon: <FaVideo /> },
+            ]}
+            currentPath={pathname}
+          />
+        )}
 
-        {/* Instructors */}
-        <DropdownSection
-          label="Instructors"
-          icon={<FaUsersCog className="text-lg" />}
-          isOpen={open.instructors}
-          onToggle={() => toggle("instructors")}
-          links={[
-            { label: "Manage Instructors", path: "/instructors/manage", icon: <FaUsersCog /> },
-            { label: "Reauthorize Instructors", path: "/instructors/reauthorize", icon: <FaUserCheck /> },
-            { label: "Instructor Development", path: "/instructors/development", icon: <FaBrain /> },
-          ]}
-          currentPath={pathname}
-        />
+        {/* Instructors Section - Admin only */}
+        {isAdmin && (
+          <DropdownSection
+            label="Instructors"
+            icon={<FaUsersCog className="text-lg" />}
+            isOpen={open.instructors}
+            onToggle={() => toggle("instructors")}
+            links={[
+              { label: "Manage Instructors", path: "/instructors/manage", icon: <FaUsersCog /> },
+              { label: "Reauthorize Instructors", path: "/instructors/reauthorize", icon: <FaUserCheck /> },
+              { label: "Instructor Development", path: "/instructors/development", icon: <FaBrain /> },
+            ]}
+            currentPath={pathname}
+          />
+        )}
 
-        {/* Training */}
-        <DropdownSection
-          label="Training"
-          icon={<FaGraduationCap className="text-lg" />}
-          isOpen={open.training}
-          onToggle={() => toggle("training")}
-          links={[
-            { label: "Create Class - Blended/Online", path: "/training/create-class", icon: <FaPlusCircle /> },
-            { label: "Student Search", path: "/students/search", icon: <FaSearch /> },
-          ]}
-          currentPath={pathname}
-        />
+        {/* Training Section - Both see it, but different links */}
+        {(isAdmin || isInstructor) && (
+          <DropdownSection
+            label="Training"
+            icon={<FaGraduationCap className="text-lg" />}
+            isOpen={open.training}
+            onToggle={() => toggle("training")}
+            links={[
+              { label: "Create Class - Blended/Online", path: "/training/create-class", icon: <FaPlusCircle /> },
+              { label: "Student Search", path: "/students/search", icon: <FaSearch /> },
+            ]}
+            currentPath={pathname}
+          />
+        )}
 
-        {/* Courses */}
-        <DropdownSection
-          label="Courses"
-          icon={<FaGraduationCap className="text-lg" />}
-          isOpen={open.courses}
-          onToggle={() => toggle("courses")}
-          links={[
-            { label: "Browse Courses", path: "/courses", icon: <FaClipboardList /> },
-            { label: "My Enrolled Courses", path: "/courses/enrolled", icon: <FaGraduationCap /> },
-          ]}
-          currentPath={pathname}
-        />
+        {/* Courses Section - Admin only */}
+        {isAdmin && (
+          <DropdownSection
+            label="Courses"
+            icon={<FaGraduationCap className="text-lg" />}
+            isOpen={open.courses}
+            onToggle={() => toggle("courses")}
+            links={[
+              { label: "Browse Courses", path: "/courses", icon: <FaClipboardList /> },
+              { label: "My Enrolled Courses", path: "/courses/enrolled", icon: <FaGraduationCap /> },
+            ]}
+            currentPath={pathname}
+          />
+        )}
 
-        {/* Support */}
-        <DropdownSection
-          label="Support"
-          icon={<FaHeadset className="text-lg" />}
-          isOpen={open.support}
-          onToggle={() => toggle("support")}
-          links={[
-            { label: "Support Center", path: "/support", icon: <FaHeadset /> },
-          ]}
-          currentPath={pathname}
-        />
+        {/* Support Section - Admin only */}
+        {isAdmin && (
+          <DropdownSection
+            label="Support"
+            icon={<FaHeadset className="text-lg" />}
+            isOpen={open.support}
+            onToggle={() => toggle("support")}
+            links={[
+              { label: "Support Center", path: "/support", icon: <FaHeadset /> },
+            ]}
+            currentPath={pathname}
+          />
+        )}
       </nav>
 
       {/* Logout Button */}

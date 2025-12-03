@@ -95,7 +95,7 @@ export default function EnterBlendedDetails({
           </label>
         </div>
 
-        <div className="flex gap-4 mt-6">
+        <div className="flex justify-end mt-6">
           <button
             onClick={() => {
               if (!program) return alert("Please select a program");
@@ -105,9 +105,6 @@ export default function EnterBlendedDetails({
             className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             SAVE & CONTINUE
-          </button>
-          <button className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm">
-            SAVE & ADD NEW CLASS
           </button>
         </div>
       </div>

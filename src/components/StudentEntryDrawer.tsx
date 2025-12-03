@@ -213,6 +213,32 @@ export default function StudentEntryDrawer({
         {/* Upload Section - Only shown in upload mode */}
         {mode === "upload" && (
           <div className="px-8 py-8 bg-white">
+            {/* Sample CSV Download Section */}
+            <div className="mb-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-300 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <FaCloudUploadAlt className="text-white text-xl" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-blue-900 mb-1">
+                      Need a Template?
+                    </h4>
+                    <p className="text-sm text-blue-800">
+                      Download our sample CSV file to see the correct format
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={downloadTemplate}
+                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-200 font-semibold text-sm flex items-center gap-2 transform hover:scale-[1.02] active:scale-95 flex-shrink-0"
+                >
+                  <FaDownload />
+                  Download Sample CSV
+                </button>
+              </div>
+            </div>
+
             <div
               className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
                 isDragging

@@ -8,6 +8,7 @@ export interface ClassRecord {
   export interface Student {
     firstName: string;
     lastName: string;
+    email: string;
     site: string;
     status: string;
     history: ClassRecord[];

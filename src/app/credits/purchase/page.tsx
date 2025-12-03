@@ -630,6 +630,16 @@ function PurchaseAgreementModal({
   );
 }
 
+interface SavedCard {
+  id: number;
+  card_last_four: string;
+  card_type: string;
+  cardholder_name: string;
+  expiry_month: string;
+  expiry_year: string;
+  is_default: boolean;
+}
+
 function CheckoutModal({
   option,
   quantity,
@@ -654,6 +664,74 @@ function CheckoutModal({
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
+  const [selectedSavedCard, setSelectedSavedCard] = useState<SavedCard | null>(null);
+  const [useNewCard, setUseNewCard] = useState(true);
+
+  // Fetch saved cards on mount
+  useEffect(() => {
+    fetchSavedCards();
+  }, []);
+
+  const fetchSavedCards = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const token = await user.getIdToken();
+      const response = await fetch('/api/payment/cards', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSavedCards(data.cards || []);
+      }
+    } catch (error) {
+      console.error('Error fetching saved cards:', error);
+    }
+  };
+
+  const handleSelectSavedCard = (card: SavedCard) => {
+    setSelectedSavedCard(card);
+    setUseNewCard(false);
+    setCardName(card.cardholder_name);
+    setExpiryDate(`${card.expiry_month}/${card.expiry_year}`);
+  };
+
+  const handleDeleteCard = async (cardId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!confirm('Are you sure you want to delete this card?')) {
+      return;
+    }
+
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const token = await user.getIdToken();
+      const response = await fetch(`/api/payment/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setSavedCards(savedCards.filter(card => card.id !== cardId));
+        if (selectedSavedCard?.id === cardId) {
+          setSelectedSavedCard(null);
+          setUseNewCard(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting card:', error);
+      alert('Failed to delete card');
+    }
+  };
 
   const totalPrice = option.price * quantity;
   const totalCredits = option.credits * quantity;
@@ -711,40 +789,77 @@ function CheckoutModal({
     setPromoApplied(false);
   };
 
-  const handleSubmit = () => {
-    // Validate fields
-    if (!cardNumber || cardNumber.replace(/\s/g, "").length < 13) {
-      alert("Please enter a valid card number");
-      return;
-    }
-    if (!cardName.trim()) {
-      alert("Please enter the cardholder name");
-      return;
-    }
-    if (!expiryDate || expiryDate.length < 5) {
-      alert("Please enter a valid expiry date (MM/YY)");
-      return;
-    }
-    if (!cvv || cvv.length < 3) {
-      alert("Please enter a valid CVV");
-      return;
-    }
-    if (!billingAddress.trim() || !city.trim() || !state.trim() || !zipCode.trim()) {
-      alert("Please complete the billing address");
-      return;
+  const handleSubmit = async () => {
+    // If using a saved card, only validate CVV
+    if (!useNewCard && selectedSavedCard) {
+      if (!cvv || cvv.length < 3) {
+        alert("Please enter your CVV");
+        return;
+      }
+    } else {
+      // Validate all fields for new card
+      if (!cardNumber || cardNumber.replace(/\s/g, "").length < 13) {
+        alert("Please enter a valid card number");
+        return;
+      }
+      if (!cardName.trim()) {
+        alert("Please enter the cardholder name");
+        return;
+      }
+      if (!expiryDate || expiryDate.length < 5) {
+        alert("Please enter a valid expiry date (MM/YY)");
+        return;
+      }
+      if (!cvv || cvv.length < 3) {
+        alert("Please enter a valid CVV");
+        return;
+      }
+      if (!billingAddress.trim() || !city.trim() || !state.trim() || !zipCode.trim()) {
+        alert("Please complete the billing address");
+        return;
+      }
     }
 
     setIsProcessing(true);
-    // Simulate payment processing
-    setTimeout(() => {
+
+    try {
+      // If saveCard is checked and using new card, save it
+      if (saveCard && useNewCard && cardNumber && cardName && expiryDate) {
+        const user = auth.currentUser;
+        if (user) {
+          const token = await user.getIdToken();
+          await fetch('/api/payment/cards', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              cardNumber: cardNumber,
+              cardholderName: cardName,
+              expiryDate: expiryDate,
+              setAsDefault: savedCards.length === 0, // Set as default if it's the first card
+            }),
+          });
+        }
+      }
+
+      // Simulate payment processing
+      setTimeout(() => {
+        setIsProcessing(false);
+        onConfirm();
+      }, 2000);
+    } catch (error) {
+      console.error('Error during payment:', error);
       setIsProcessing(false);
-      onConfirm();
-    }, 2000);
+      alert('Payment failed. Please try again.');
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fadeIn overflow-y-auto">
-      <div className="bg-white rounded-lg max-w-5xl w-full my-8 animate-slideUp shadow-xl">
+    <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto animate-fadeIn">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg max-w-5xl w-full my-8 animate-slideUp shadow-xl">
         {/* Minimal Header */}
         <div className="border-b border-gray-200 px-8 py-6">
           <div className="flex items-center justify-between">
@@ -764,22 +879,80 @@ function CheckoutModal({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Payment Form - Left Side (2/3) */}
           <div className="lg:col-span-2 px-8 py-6 space-y-8">
-            {/* Card Information */}
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-4">Card details</h4>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Card number
-                  </label>
-                  <input
-                    type="text"
-                    value={cardNumber}
-                    onChange={handleCardNumberChange}
-                    placeholder="1234 5678 9012 3456"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
-                  />
+            {/* Saved Cards Section */}
+            {savedCards.length > 0 && (
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4">Saved payment methods</h4>
+                <div className="space-y-2 mb-4">
+                  {savedCards.map((card) => (
+                    <div
+                      key={card.id}
+                      onClick={() => handleSelectSavedCard(card)}
+                      className={`flex items-center justify-between p-3 border rounded-md cursor-pointer transition-all ${
+                        selectedSavedCard?.id === card.id
+                          ? 'border-gray-900 bg-gray-50'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <FaCreditCard className="text-gray-600" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {card.card_type} •••• {card.card_last_four}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            {card.cardholder_name} • Expires {card.expiry_month}/{card.expiry_year}
+                          </p>
+                        </div>
+                        {card.is_default && (
+                          <span className="ml-2 px-2 py-0.5 bg-[#00A5A8] text-white text-xs rounded">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={(e) => handleDeleteCard(card.id, e)}
+                        className="text-gray-400 hover:text-red-600 transition-colors"
+                      >
+                        <FaTrashAlt className="text-sm" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
+                <button
+                  onClick={() => {
+                    setUseNewCard(true);
+                    setSelectedSavedCard(null);
+                    setCardNumber('');
+                    setCardName('');
+                    setExpiryDate('');
+                  }}
+                  className="text-sm text-[#00A5A8] hover:underline font-medium"
+                >
+                  + Use a new payment method
+                </button>
+              </div>
+            )}
+
+            {/* Card Information */}
+            {(useNewCard || savedCards.length === 0) && (
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4">
+                  {savedCards.length > 0 ? 'New card details' : 'Card details'}
+                </h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Card number
+                    </label>
+                    <input
+                      type="text"
+                      value={cardNumber}
+                      onChange={handleCardNumberChange}
+                      placeholder="1234 5678 9012 3456"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                    />
+                  </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-900 mb-1.5">
@@ -806,77 +979,120 @@ function CheckoutModal({
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Cardholder name
-                  </label>
-                  <input
-                    type="text"
-                    value={cardName}
-                    onChange={(e) => setCardName(e.target.value)}
-                    placeholder="Full name on card"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
-                  />
-                </div>
-              </div>
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Cardholder name
+                    </label>
+                    <input
+                      type="text"
+                      value={cardName}
+                      onChange={(e) => setCardName(e.target.value)}
+                      placeholder="Full name on card"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                    />
+                  </div>
 
-            {/* Billing Address */}
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-4">Billing address</h4>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    value={billingAddress}
-                    onChange={(e) => setBillingAddress(e.target.value)}
-                    placeholder="Street address"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      City
+                  {/* Save Card Checkbox */}
+                  <div className="border-t pt-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={saveCard}
+                        onChange={(e) => setSaveCard(e.target.checked)}
+                        className="w-4 h-4 text-[#00A5A8] border-gray-300 rounded focus:ring-[#00A5A8] cursor-pointer"
+                      />
+                      <span className="text-sm text-gray-900">
+                        Save this card for future purchases
+                      </span>
                     </label>
-                    <input
-                      type="text"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      placeholder="City"
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      State
-                    </label>
-                    <input
-                      type="text"
-                      value={state}
-                      onChange={(e) => setState(e.target.value)}
-                      placeholder="State"
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                      ZIP
-                    </label>
-                    <input
-                      type="text"
-                      value={zipCode}
-                      onChange={(e) => setZipCode(e.target.value)}
-                      placeholder="ZIP"
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
-                    />
+                    <p className="text-xs text-gray-500 mt-1 ml-6">
+                      We securely store your card details for faster checkout
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* CVV Field - Always shown */}
+            {!useNewCard && selectedSavedCard && (
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4">Security verification</h4>
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                    CVV / CVC
+                  </label>
+                  <input
+                    type="text"
+                    value={cvv}
+                    onChange={handleCvvChange}
+                    placeholder="123"
+                    className="w-24 px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Enter the 3-digit security code for {selectedSavedCard.card_type} •••• {selectedSavedCard.card_last_four}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Billing Address - Only for new cards */}
+            {(useNewCard || savedCards.length === 0) && (
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4">Billing address</h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      value={billingAddress}
+                      onChange={(e) => setBillingAddress(e.target.value)}
+                      placeholder="Street address"
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        City
+                      </label>
+                      <input
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="City"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        State
+                      </label>
+                      <input
+                        type="text"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        placeholder="State"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-1.5">
+                        ZIP
+                      </label>
+                      <input
+                        type="text"
+                        value={zipCode}
+                        onChange={(e) => setZipCode(e.target.value)}
+                        placeholder="ZIP"
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors text-sm text-gray-900"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Promo Code */}
             <div>
@@ -999,6 +1215,7 @@ function CheckoutModal({
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

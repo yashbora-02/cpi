@@ -103,3 +103,33 @@ model DigitalCardStudent {
   @@map("digital_card_students")
 }
 
+model SavedCard {
+  id              Int      @id @default(autoincrement())
+  user_email      String   // User's email address
+  card_last_four  String   // Last 4 digits of card number
+  card_type       String   // Visa, Mastercard, Amex, Discover, etc.
+  cardholder_name String   // Name on card
+  expiry_month    String   // MM format
+  expiry_year     String   // YY format
+  is_default      Boolean  @default(false)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@map("saved_cards")
+  @@index([user_email])
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  password   String   // Hashed password
+  role       String   // "admin" or "instructor"
+  full_name  String?  // Optional full name
+  email      String?  // Optional email for notifications
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+  @@index([username])
+}
+

@@ -57,9 +57,10 @@ Required environment variables (see `.env.example`):
 src/
 ├── app/                      # Next.js App Router
 │   ├── api/                  # API route handlers (protected with Firebase Auth)
-│   │   ├── credits/          # GET credits data, POST purchase credits
+│   │   ├── credits/          # GET credits data, POST purchase credits, GET balance
 │   │   ├── tickets/          # GET/POST support tickets with file uploads
-│   │   └── videos/           # GET video playlist
+│   │   ├── videos/           # GET video playlist
+│   │   └── digital-cards/    # POST submit digital card with students
 │   ├── acceptance/           # Acceptance/accreditation info page (protected, requires purchase)
 │   ├── courses/              # Course browsing and enrollment
 │   │   ├── enrolled/         # User's enrolled courses
@@ -88,7 +89,9 @@ src/
 │   ├── firebase.ts           # Firebase client config
 │   ├── firebaseAdmin.ts      # Firebase Admin SDK for server
 │   ├── firebaseAuth.ts       # Auth helper functions
-│   └── LanguageContext.tsx   # i18n context for English/Spanish translations
+│   ├── LanguageContext.tsx   # i18n context for English/Spanish translations
+│   ├── translations.ts       # Translation strings for i18n
+│   └── email.ts              # Email notification functions (Web3Forms)
 ├── generated/
 │   └── prisma/               # Generated Prisma Client (custom output)
 └── styles/                   # Global styles
@@ -99,6 +102,8 @@ src/
 2. **Credit** - Training credits by type (cpr_only, first_aid_only, combo)
 3. **Video** - Training video metadata (title, description, video_id, video_url, thumbnail_url)
 4. **Ticket** - Support tickets (ticket_number, type, title, description, reported_by, email, phone, file_url, file_name, status)
+5. **DigitalCard** - Class/training session records (class_id, program, site, class_type, dates, instructors, locking fields, credit tracking)
+6. **DigitalCardStudent** - Students enrolled in digital card classes (first_name, last_name, email, certificate_url) - one-to-many relationship with DigitalCard
 
 ### Authentication Flow
 **Client-side** (`src/lib/firebase.ts`, `src/lib/firebaseAuth.ts`):
@@ -119,6 +124,25 @@ src/
 - Use `"use client"` directive for components with hooks, event handlers, or browser APIs
 - Server components by default (no directive needed)
 - Props drilling for state management (no global state library)
+- **IMPORTANT:** Wrap `useSearchParams()` in a Suspense boundary to avoid hydration warnings:
+  ```typescript
+  import { Suspense } from 'react';
+
+  function SearchParamsHandler() {
+    const searchParams = useSearchParams(); // Must be inside Suspense
+    // ... use searchParams
+    return null;
+  }
+
+  export default function Page() {
+    return (
+      <Suspense fallback={null}>
+        <SearchParamsHandler />
+        {/* rest of page */}
+      </Suspense>
+    );
+  }
+  ```
 
 **API Route Pattern:**
 ```typescript
@@ -128,15 +152,22 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
 
+const prisma = new PrismaClient();
+
 export async function GET(req: Request) {
   const decoded = await verifyTokenFromRequest(req);
   if (!decoded) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const prisma = new PrismaClient();
-  // ... query logic
-  return NextResponse.json(data);
+  try {
+    // ... query logic
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 ```
 
@@ -150,6 +181,7 @@ import { auth } from '@/lib/firebase';
 export default function ProtectedPage() {
   const router = useRouter();
 
+  // Auth check - separate from data fetching
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -158,6 +190,24 @@ export default function ProtectedPage() {
     });
     return () => unsubscribe();
   }, [router]);
+
+  // Data fetching - separate useEffect
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const token = await user.getIdToken();
+      // Add cache-busting for fresh data after purchases/updates
+      const res = await fetch(`/api/endpoint?t=${Date.now()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store', // Prevent browser caching
+      });
+      // ... handle response
+    };
+    fetchData();
+  }, []); // Add dependencies as needed for refresh triggers
+
   // ... component logic
 }
 ```
@@ -195,6 +245,19 @@ The Prisma Client is generated to `src/generated/prisma` (not default node_modul
 import { PrismaClient } from '@/generated/prisma';
 ```
 
+**Important:** Instantiate PrismaClient at the top of API route files (outside request handlers) and disconnect in finally blocks:
+```typescript
+const prisma = new PrismaClient();
+
+export async function POST(req: Request) {
+  try {
+    // ... database operations
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+```
+
 ### Component Responsibilities
 - **Sidebar.tsx** - Main navigation with collapsible dropdown sections (General, Instructors, Training, Courses, Support) and logout button
   - Logout flow: Signs out via Firebase, removes localStorage token, redirects to `/login`
@@ -211,7 +274,7 @@ import { PrismaClient } from '@/generated/prisma';
   - Admin notification sent to `ADMIN_EMAIL` with full ticket details
   - User confirmation email sent with ticket number and 48hr response commitment
   - Graceful degradation if `WEB3FORMS_ACCESS_KEY` not configured
-- Two ticket types: "General Request" and "Application Issue / Bug"
+- Three ticket types: "General Request", "Application Issue / Bug", and "Digital Card Change Request"
 - Auto-generated unique ticket numbers (format: `TICKET-{timestamp}-{random}`)
 - Graceful fallback to mock mode when database is unavailable
 - Email functions located in `src/lib/email.ts`
@@ -234,6 +297,16 @@ import { PrismaClient } from '@/generated/prisma';
 - Displays accreditation information, compliance standards, accepted organizations
 - Bilingual support (English/Spanish)
 - Access restricted unless user has completed a purchase
+
+**Digital Card Submission** (`/training/create-class`, `/api/digital-cards/submit`):
+- Multi-step wizard for creating training classes
+- Generates unique class IDs (format: `DC-{timestamp}-{random}`)
+- Creates locked digital card records with student roster
+- Automatically deducts credits based on student count
+- Validates credit availability before submission
+- Stores student certificates and class metadata
+- Once locked, digital cards cannot be edited
+- Graceful fallback to mock mode when database is unavailable
 
 ### Styling Conventions
 - Tailwind CSS 4 utility classes throughout
@@ -297,6 +370,37 @@ const response = await fetch('/api/endpoint', {
 const data = await response.json();
 ```
 
+### Data Refresh Pattern
+When redirecting back to a page after an action (e.g., purchase), use query params to trigger refresh:
+```typescript
+// After successful action
+router.push('/dashboard?refresh=true');
+
+// In dashboard, wrap searchParams handler in Suspense
+function RefreshHandler({ onRefresh }: { onRefresh: () => void }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('refresh')) {
+      onRefresh();
+      router.replace('/dashboard', { scroll: false }); // Clean URL
+    }
+  }, [searchParams]);
+
+  return null;
+}
+
+// In main component
+export default function Dashboard() {
+  return (
+    <Suspense fallback={null}>
+      <RefreshHandler onRefresh={handleRefresh} />
+      {/* rest of page */}
+    </Suspense>
+  );
+}
+```
+
 ### Email Notifications
 Email functionality is implemented using Web3Forms (free service):
 
@@ -337,8 +441,28 @@ To switch from Web3Forms to another provider (SendGrid, AWS SES, Resend):
 The i18n system uses React Context for language switching:
 1. Wrap pages with `LanguageProvider` (see `src/lib/LanguageContext.tsx`)
 2. Use `useLanguage()` hook to access `language`, `setLanguage`, and `t` (translations)
-3. Add translations to both `en` and `es` objects in LanguageContext
+3. Add translations to both `en` and `es` objects in LanguageContext or `src/lib/translations.ts`
 4. Use `t.section.key` to access translated strings
 5. Toggle language with button calling `setLanguage("en" | "es")`
 
 Current supported pages: Landing page, Acceptance page
+
+### Working with Digital Cards
+Digital cards represent completed training classes and are immutable once submitted:
+
+**Creating a Digital Card:**
+1. User fills out multi-step form in `/training/create-class`
+2. System validates credit availability (students.length <= available credits)
+3. POST to `/api/digital-cards/submit` with class data and student roster
+4. API generates unique class ID: `DC-{timestamp}-{random}`
+5. Creates DigitalCard record with `is_locked: true` and `submitted_at: timestamp`
+6. Creates related DigitalCardStudent records via nested create
+7. Deducts credits from user's balance
+8. Returns class ID and confirmation
+
+**Important Constraints:**
+- Digital cards are locked upon creation (`is_locked: true`)
+- Locked cards cannot be edited or deleted
+- Each student consumes one credit
+- Submission fails if insufficient credits available
+- Use support tickets (type: "Digital Card Change Request") for modifications

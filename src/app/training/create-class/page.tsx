@@ -412,7 +412,10 @@ export default function CreateClassPage() {
 
                 {showSelectDrawer && (
                   <SelectStudentDrawer
-                    onClose={() => setShowSelectDrawer(false)}
+                    onClose={() => {
+                      setShowSelectDrawer(false);
+                      setRosterEntryType(""); // Reset dropdown so it can be selected again
+                    }}
                     onSave={(selected) => setStudents(selected)}
                   />
                 )}
@@ -1006,7 +1009,10 @@ export default function CreateClassPage() {
         {showDrawer && (
           <StudentEntryDrawer
             key={`drawer-${drawerMode}`}
-            onClose={() => setShowDrawer(false)}
+            onClose={() => {
+              setShowDrawer(false);
+              setRosterEntryType(""); // Reset dropdown so it can be selected again
+            }}
             onSave={handleSaveStudents}
             mode={drawerMode}
           />

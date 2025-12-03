@@ -53,10 +53,7 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
 
   const filteredStudents = mockStudents.filter((student) => {
     const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
-    return (
-      fullName.includes(search.name.toLowerCase()) &&
-      student.site.toLowerCase().includes(search.site.toLowerCase())
-    );
+    return fullName.includes(search.name.toLowerCase());
   });
 
   const toggleSelect = (id: string) => {
@@ -108,20 +105,13 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
             <FaSearch className="text-gray-400" />
             <span className="text-sm font-medium text-gray-700">Search Filters</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
               placeholder="Search by name..."
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all"
               value={search.name}
               onChange={(e) => handleSearchChange("name", e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Site Assignment..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all"
-              value={search.site}
-              onChange={(e) => handleSearchChange("site", e.target.value)}
             />
             <input
               type="text"
@@ -155,7 +145,6 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">ID</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">First Name</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">Last Name</th>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-700">Site Assignment</th>
                   <th className="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
                 </tr>
               </thead>
@@ -182,7 +171,6 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
                     <td className="px-4 py-3 text-gray-500">{student.id}</td>
                     <td className="px-4 py-3 text-gray-800 font-medium">{student.firstName}</td>
                     <td className="px-4 py-3 text-gray-800 font-medium">{student.lastName}</td>
-                    <td className="px-4 py-3 text-gray-600">{student.site}</td>
                     <td className="px-4 py-3 text-gray-600">{student.email}</td>
                   </tr>
                 ))}

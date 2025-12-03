@@ -136,6 +136,8 @@ export async function POST(req: NextRequest) {
       { error: "Failed to process purchase" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -180,5 +182,7 @@ export async function GET(req: NextRequest) {
       { error: "Failed to fetch purchase history" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

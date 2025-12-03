@@ -529,6 +529,63 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Courses Section - Placeholder for navigation anchor */}
+      <section id="courses" className="py-20 bg-gradient-to-br from-[#F5F6F7] to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+              {t.nav.cprCourses}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Browse our comprehensive CPR and First Aid training programs
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+              <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+                <FaHeart className="text-3xl text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">CPR & AED Certification</h3>
+              <p className="text-gray-600 mb-6">
+                Learn life-saving CPR and AED techniques for adults, children, and infants. Get nationally recognized 2-year certification.
+              </p>
+              <button
+                onClick={() => router.push("/login")}
+                className="px-6 py-3 bg-[#C10E21] text-white font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition-all duration-300 transform hover:scale-105"
+              >
+                View Course
+              </button>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+              <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+                <FaShieldAlt className="text-3xl text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">First Aid Training</h3>
+              <p className="text-gray-600 mb-6">
+                Comprehensive first aid training covering emergency response, wound care, and medical emergencies. Build confidence to respond.
+              </p>
+              <button
+                onClick={() => router.push("/login")}
+                className="px-6 py-3 bg-[#00A5A8] text-white font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105"
+              >
+                View Course
+              </button>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <button
+              onClick={() => router.push("/login")}
+              className="px-10 py-5 bg-gradient-to-r from-[#C10E21] to-[#00A5A8] text-white text-lg font-bold uppercase rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg active:scale-95"
+            >
+              Browse All Courses
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Flexible Training Options */}
       <section id="training-options" className="py-20 bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

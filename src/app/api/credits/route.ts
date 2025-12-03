@@ -57,5 +57,7 @@ export async function GET() {
     console.log("   Mock credits:", mockCredits.length, "courses");
     console.log("   Current mock store:", global.mockCreditsStore);
     return NextResponse.json(mockCredits);
+  } finally {
+    await prisma.$disconnect();
   }
 }

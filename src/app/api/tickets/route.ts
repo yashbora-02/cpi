@@ -178,6 +178,8 @@ export async function POST(req: NextRequest) {
       { error: "Failed to create ticket" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -223,5 +225,7 @@ export async function GET(req: NextRequest) {
       { error: "Failed to fetch tickets" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 }

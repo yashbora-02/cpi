@@ -21,10 +21,18 @@ npm install          # Install dependencies (automatically runs prisma generate 
 ```bash
 npx prisma generate  # Generate Prisma Client (outputs to src/generated/prisma)
 npx prisma db push   # Push schema changes to database (creates tables if they don't exist)
+npm run db:push      # Push schema AND run seed script (creates default users)
+npm run db:seed      # Run seed script only (creates admin and instructor users)
 npx prisma studio    # Open Prisma Studio GUI for database management
 ```
 
 **Note:** `prisma generate` runs automatically when you run `npm install` due to the postinstall script.
+
+**Default Seeded Users** (created by `npm run db:seed` or `npm run db:push`):
+- **Admin**: Username: `admin` | Password: `admin123` | Email: admin@cpi-training.com
+- **Instructor**: Username: `instructor` | Password: `instructor123` | Email: instructor@cpi-training.com
+
+**Important:** The seed script uses simple base64 encoding for passwords. In production, implement proper bcrypt hashing.
 
 ### Environment Setup
 Required environment variables (see `.env.example`):
@@ -99,11 +107,13 @@ src/
 
 ### Database Models (prisma/schema.prisma)
 1. **admins** - Admin user credentials (login_id, password, timestamps)
-2. **Credit** - Training credits by type (cpr_only, first_aid_only, combo)
-3. **Video** - Training video metadata (title, description, video_id, video_url, thumbnail_url)
-4. **Ticket** - Support tickets (ticket_number, type, title, description, reported_by, email, phone, file_url, file_name, status)
-5. **DigitalCard** - Class/training session records (class_id, program, site, class_type, dates, instructors, locking fields, credit tracking)
-6. **DigitalCardStudent** - Students enrolled in digital card classes (first_name, last_name, email, certificate_url) - one-to-many relationship with DigitalCard
+2. **User** - User accounts with role-based access (username, password, role, full_name, email) - created by seed script
+3. **Credit** - Training credits by type (cpr_only, first_aid_only, combo)
+4. **Video** - Training video metadata (title, description, video_id, video_url, thumbnail_url)
+5. **Ticket** - Support tickets (ticket_number, type, title, description, reported_by, email, phone, file_url, file_name, status)
+6. **DigitalCard** - Class/training session records (class_id, program, site, class_type, dates, instructors, locking fields, credit tracking)
+7. **DigitalCardStudent** - Students enrolled in digital card classes (first_name, last_name, email, certificate_url) - one-to-many relationship with DigitalCard
+8. **SavedCard** - Saved payment cards for users (user_email, card_last_four, card_type, cardholder_name, expiry, is_default)
 
 ### Authentication Flow
 **Client-side** (`src/lib/firebase.ts`, `src/lib/firebaseAuth.ts`):

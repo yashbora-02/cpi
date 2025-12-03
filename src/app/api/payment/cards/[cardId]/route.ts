@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 // DELETE - Remove a saved card
 export async function DELETE(
   req: Request,
-  { params }: { params: { cardId: string } }
+  { params }: { params: Promise<{ cardId: string }> }
 ) {
   const decoded = await verifyTokenFromRequest(req);
   if (!decoded) {
@@ -22,7 +22,8 @@ export async function DELETE(
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
     }
 
-    const cardId = parseInt(params.cardId);
+    const { cardId: cardIdParam } = await params;
+    const cardId = parseInt(cardIdParam);
 
     // Verify card belongs to user before deleting
     const card = await prisma.savedCard.findFirst({
@@ -59,7 +60,7 @@ export async function DELETE(
 // PUT - Update card (set as default)
 export async function PUT(
   req: Request,
-  { params }: { params: { cardId: string } }
+  { params }: { params: Promise<{ cardId: string }> }
 ) {
   const decoded = await verifyTokenFromRequest(req);
   if (!decoded) {
@@ -72,7 +73,8 @@ export async function PUT(
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
     }
 
-    const cardId = parseInt(params.cardId);
+    const { cardId: cardIdParam } = await params;
+    const cardId = parseInt(cardIdParam);
     const body = await req.json();
     const { setAsDefault } = body;
 
@@ -118,10 +120,11 @@ export async function PUT(
 
     // Mock mode fallback
     console.log("⚠️ Database not connected. Running in MOCK MODE.");
+    const { cardId: cardIdParam } = await params;
     return NextResponse.json({
       success: true,
       card: {
-        id: parseInt(params.cardId),
+        id: parseInt(cardIdParam),
         is_default: true,
       },
     });

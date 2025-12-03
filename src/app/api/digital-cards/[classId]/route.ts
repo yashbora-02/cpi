@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 export async function GET(
   req: Request,
-  { params }: { params: { classId: string } }
+  { params }: { params: Promise<{ classId: string }> }
 ) {
   const decoded = await verifyTokenFromRequest(req);
   if (!decoded) {
@@ -16,7 +16,7 @@ export async function GET(
   }
 
   try {
-    const { classId } = params;
+    const { classId } = await params;
 
     // Fetch digital card with students
     const digitalCard = await prisma.digitalCard.findUnique({
@@ -43,9 +43,10 @@ export async function GET(
     console.log("⚠️ Database not connected. Running in MOCK MODE.");
 
     // Return mock data for development
+    const { classId } = await params;
     const mockData = {
       id: 1,
-      class_id: params.classId,
+      class_id: classId,
       program: "CPI Adult First Aid | CPR AED All Ages (2020) -DC",
       site: "Arizona Provider Training, LLC",
       class_type: "Initial",

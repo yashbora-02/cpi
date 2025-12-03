@@ -412,12 +412,14 @@ export default function CreateClassPage() {
 
                 {showSelectDrawer && (
                   <SelectStudentDrawer
+                    existingStudents={students}
                     onClose={() => {
                       setShowSelectDrawer(false);
                       setRosterEntryType(""); // Reset dropdown so it can be selected again
                     }}
                     onSave={(selected) => {
-                      setStudents(selected);
+                      // Append new students to existing ones
+                      setStudents([...students, ...selected]);
                       setShowSelectDrawer(false);
                       setRosterEntryType(""); // Reset dropdown after save
                     }}

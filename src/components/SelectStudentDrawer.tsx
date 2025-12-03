@@ -4,6 +4,13 @@ import React, { useState } from "react";
 import { FaTimes, FaUsers, FaSearch, FaCheck } from "react-icons/fa";
 
 interface Student {
+  firstName: string;
+  lastName: string;
+  email: string;
+  certificate_url?: string;
+}
+
+interface MockStudent {
   id: string;
   firstName: string;
   lastName: string;
@@ -14,9 +21,10 @@ interface Student {
 interface SelectStudentDrawerProps {
   onClose: () => void;
   onSave: (selectedStudents: Student[]) => void;
+  existingStudents?: Student[];
 }
 
-const mockStudents: Student[] = [
+const mockStudents: MockStudent[] = [
   {
     id: "7711089",
     firstName: "Carrie",
@@ -43,9 +51,11 @@ const mockStudents: Student[] = [
 const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
   onClose,
   onSave,
+  existingStudents = [],
 }) => {
   const [search, setSearch] = useState({ name: "", site: "", active: "" });
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleSearchChange = (field: keyof typeof search, value: string) => {
     setSearch({ ...search, [field]: value });
@@ -63,9 +73,29 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
   };
 
   const handleSave = () => {
-    const selectedStudents = mockStudents.filter((s) =>
+    const selectedMockStudents = mockStudents.filter((s) =>
       selectedIds.includes(s.id)
     );
+
+    // Check for duplicates based on email
+    const existingEmails = existingStudents.map(s => s.email.toLowerCase());
+    const duplicates = selectedMockStudents.filter(s =>
+      existingEmails.includes(s.email.toLowerCase())
+    );
+
+    if (duplicates.length > 0) {
+      const duplicateNames = duplicates.map(s => `${s.firstName} ${s.lastName}`).join(', ');
+      setErrorMessage(`The following student(s) are already added: ${duplicateNames}`);
+      return;
+    }
+
+    // Convert MockStudent to Student (remove id and site fields)
+    const selectedStudents: Student[] = selectedMockStudents.map(s => ({
+      firstName: s.firstName,
+      lastName: s.lastName,
+      email: s.email,
+    }));
+
     onSave(selectedStudents);
     onClose();
   };
@@ -123,6 +153,28 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
           </div>
         </div>
 
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mx-6 mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/>
+                </svg>
+              </div>
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-medium text-red-800">{errorMessage}</p>
+              </div>
+              <button
+                onClick={() => setErrorMessage("")}
+                className="ml-3 flex-shrink-0 text-red-500 hover:text-red-700"
+              >
+                <FaTimes className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Results Section */}
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -149,31 +201,53 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
+                {filteredStudents.map((student) => {
+                  const isAlreadyAdded = existingStudents.some(
+                    s => s.email.toLowerCase() === student.email.toLowerCase()
+                  );
+                  return (
                   <tr
                     key={student.id}
-                    className={`hover:bg-[#00A5A8]/5 transition-colors cursor-pointer ${
-                      selectedIds.includes(student.id) ? "bg-[#00A5A8]/10" : ""
+                    className={`transition-colors ${
+                      isAlreadyAdded
+                        ? "bg-gray-100 opacity-60 cursor-not-allowed"
+                        : "hover:bg-[#00A5A8]/5 cursor-pointer"
+                    } ${
+                      selectedIds.includes(student.id) && !isAlreadyAdded ? "bg-[#00A5A8]/10" : ""
                     }`}
-                    onClick={() => toggleSelect(student.id)}
+                    onClick={() => !isAlreadyAdded && toggleSelect(student.id)}
                   >
                     <td className="px-4 py-3">
-                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                        selectedIds.includes(student.id)
-                          ? "bg-[#00A5A8] border-[#00A5A8]"
-                          : "border-gray-300"
-                      }`}>
-                        {selectedIds.includes(student.id) && (
-                          <FaCheck className="text-white text-xs" />
-                        )}
-                      </div>
+                      {isAlreadyAdded ? (
+                        <div className="w-5 h-5 rounded border-2 border-gray-400 flex items-center justify-center bg-gray-200">
+                          <FaCheck className="text-gray-500 text-xs" />
+                        </div>
+                      ) : (
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                          selectedIds.includes(student.id)
+                            ? "bg-[#00A5A8] border-[#00A5A8]"
+                            : "border-gray-300"
+                        }`}>
+                          {selectedIds.includes(student.id) && (
+                            <FaCheck className="text-white text-xs" />
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-gray-500">{student.id}</td>
-                    <td className="px-4 py-3 text-gray-800 font-medium">{student.firstName}</td>
+                    <td className="px-4 py-3 text-gray-800 font-medium">
+                      {student.firstName}
+                      {isAlreadyAdded && (
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                          Already Added
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-gray-800 font-medium">{student.lastName}</td>
                     <td className="px-4 py-3 text-gray-600">{student.email}</td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

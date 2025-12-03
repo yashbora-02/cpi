@@ -667,6 +667,8 @@ function CheckoutModal({
   const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
   const [selectedSavedCard, setSelectedSavedCard] = useState<SavedCard | null>(null);
   const [useNewCard, setUseNewCard] = useState(true);
+  const [loadingCards, setLoadingCards] = useState(true);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
 
   // Fetch saved cards on mount
   useEffect(() => {
@@ -674,9 +676,13 @@ function CheckoutModal({
   }, []);
 
   const fetchSavedCards = async () => {
+    setLoadingCards(true);
     try {
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) {
+        setLoadingCards(false);
+        return;
+      }
 
       const token = await user.getIdToken();
       const response = await fetch('/api/payment/cards', {
@@ -691,6 +697,8 @@ function CheckoutModal({
       }
     } catch (error) {
       console.error('Error fetching saved cards:', error);
+    } finally {
+      setLoadingCards(false);
     }
   };
 
@@ -828,7 +836,7 @@ function CheckoutModal({
         const user = auth.currentUser;
         if (user) {
           const token = await user.getIdToken();
-          await fetch('/api/payment/cards', {
+          const saveResponse = await fetch('/api/payment/cards', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -841,6 +849,19 @@ function CheckoutModal({
               setAsDefault: savedCards.length === 0, // Set as default if it's the first card
             }),
           });
+
+          if (saveResponse.ok) {
+            console.log('Card saved successfully');
+            // Refresh the saved cards list
+            await fetchSavedCards();
+            // Show success notification
+            setShowSaveSuccess(true);
+            setTimeout(() => setShowSaveSuccess(false), 3000);
+          } else {
+            console.error('Failed to save card');
+            const errorData = await saveResponse.json();
+            alert(`Failed to save card: ${errorData.error || 'Unknown error'}`);
+          }
         }
       }
 
@@ -876,11 +897,53 @@ function CheckoutModal({
           </div>
         </div>
 
+        {/* Success Toast Notification */}
+        {showSaveSuccess && (
+          <div className="mx-8 mt-4 mb-0 animate-fadeIn">
+            <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg shadow-md">
+              <div className="flex items-center">
+                <FaCheckCircle className="text-green-500 text-lg flex-shrink-0" />
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-green-800">
+                    Card saved successfully!
+                  </p>
+                  <p className="text-xs text-green-700 mt-0.5">
+                    Your payment method has been securely saved for future purchases.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowSaveSuccess(false)}
+                  className="ml-auto text-green-500 hover:text-green-700"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Payment Form - Left Side (2/3) */}
           <div className="lg:col-span-2 px-8 py-6 space-y-8">
             {/* Saved Cards Section */}
-            {savedCards.length > 0 && (
+            {loadingCards ? (
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 mb-4">Saved payment methods</h4>
+                <div className="space-y-2 mb-4">
+                  {/* Loading skeleton */}
+                  {[1, 2].map((i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 border border-gray-200 rounded-md animate-pulse">
+                      <div className="w-5 h-5 bg-gray-200 rounded"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-32"></div>
+                        <div className="h-3 bg-gray-200 rounded w-48"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-4 bg-gray-200 rounded w-40 animate-pulse"></div>
+              </div>
+            ) : savedCards.length > 0 ? (
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-4">Saved payment methods</h4>
                 <div className="space-y-2 mb-4">
@@ -912,9 +975,10 @@ function CheckoutModal({
                       </div>
                       <button
                         onClick={(e) => handleDeleteCard(card.id, e)}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        className="p-2 rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all"
+                        title="Delete this card"
                       >
-                        <FaTrashAlt className="text-sm" />
+                        <FaTrashAlt className="text-base" />
                       </button>
                     </div>
                   ))}
@@ -932,10 +996,10 @@ function CheckoutModal({
                   + Use a new payment method
                 </button>
               </div>
-            )}
+            ) : null}
 
             {/* Card Information */}
-            {(useNewCard || savedCards.length === 0) && (
+            {!loadingCards && (useNewCard || savedCards.length === 0) && (
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-4">
                   {savedCards.length > 0 ? 'New card details' : 'Card details'}
@@ -1036,7 +1100,7 @@ function CheckoutModal({
             )}
 
             {/* Billing Address - Only for new cards */}
-            {(useNewCard || savedCards.length === 0) && (
+            {!loadingCards && (useNewCard || savedCards.length === 0) && (
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 mb-4">Billing address</h4>
                 <div className="space-y-4">
@@ -1095,7 +1159,7 @@ function CheckoutModal({
             )}
 
             {/* Promo Code */}
-            <div>
+            {!loadingCards && <div>
               <h4 className="text-sm font-semibold text-gray-900 mb-4">Promo code</h4>
               {!promoApplied ? (
                 <div className="flex gap-3">
@@ -1135,13 +1199,13 @@ function CheckoutModal({
                   </button>
                 </div>
               )}
-            </div>
+            </div>}
 
             {/* Security Notice */}
-            <div className="flex items-start gap-2 text-xs text-gray-600 pt-2">
+            {!loadingCards && <div className="flex items-start gap-2 text-xs text-gray-600 pt-2">
               <FaLock className="mt-0.5 flex-shrink-0" />
               <p>Payments are secure and encrypted</p>
-            </div>
+            </div>}
           </div>
 
           {/* Order Summary - Right Side (1/3) */}

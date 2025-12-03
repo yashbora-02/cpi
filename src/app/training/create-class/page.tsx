@@ -416,11 +416,15 @@ export default function CreateClassPage() {
                       setShowSelectDrawer(false);
                       setRosterEntryType(""); // Reset dropdown so it can be selected again
                     }}
-                    onSave={(selected) => setStudents(selected)}
+                    onSave={(selected) => {
+                      setStudents(selected);
+                      setShowSelectDrawer(false);
+                      setRosterEntryType(""); // Reset dropdown after save
+                    }}
                   />
                 )}
 
-                {rosterEntryType && students.length > 0 && (
+                {students.length > 0 && (
                   <div className="mt-6 overflow-x-auto">
                     <div className="mb-3 flex items-center justify-between">
                       <h4 className="text-md font-semibold text-gray-800">Student Roster</h4>
@@ -457,11 +461,11 @@ export default function CreateClassPage() {
                   </div>
                 )}
 
-                {rosterEntryType && students.length === 0 && (
+                {students.length === 0 && rosterEntryType && (
                   <div className="mt-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                     <p className="text-gray-500 text-sm">No students added yet.</p>
                     <p className="text-gray-400 text-xs mt-1">
-                      {rosterEntryType === 'upload' ? 'Upload a CSV file to add students' : 'Use the form above to add students to the roster'}
+                      {rosterEntryType === 'upload' ? 'Upload a CSV file to add students' : 'Select a roster entry method above to add students'}
                     </p>
                   </div>
                 )}

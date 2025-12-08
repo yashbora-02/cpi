@@ -84,8 +84,8 @@ export default function Login() {
 
       {/* Gradient Overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#2D2F33]/90 via-[#2D2F33]/85 to-[#2D2F33]/90"></div>
-      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#C10E21]/20 to-transparent"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00A5A8]/15 to-transparent"></div>
+      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#1E90FF]/20 to-transparent"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00D4E0]/15 to-transparent"></div>
 
       {/* Login Card */}
       <div className="relative z-10 w-full max-w-md px-4">
@@ -93,10 +93,10 @@ export default function Login() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <Image
-              src="/logo.png"
+              src="/cpi logo.png"
               alt="CarePoint Institute"
-              width={120}
-              height={60}
+              width={160}
+              height={70}
               className="object-contain"
             />
           </div>
@@ -119,7 +119,7 @@ export default function Login() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
                   placeholder="Enter your username"
                   required
                   autoComplete="username"
@@ -140,7 +140,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition"
+                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
                   placeholder="Enter your password"
                   required
                   autoComplete="current-password"
@@ -157,7 +157,7 @@ export default function Login() {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-[#C10E21]/20 border border-[#C10E21]/50 rounded-lg p-4">
+              <div className="bg-[#1E90FF]/20 border border-[#1E90FF]/50 rounded-lg p-4">
                 <p className="text-white text-sm text-center font-medium">{error}</p>
               </div>
             )}
@@ -166,7 +166,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#C10E21] to-[#a00d1c] hover:from-[#a00d1c] hover:to-[#C10E21] text-white py-4 rounded-lg font-bold uppercase tracking-wide transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+              className="w-full bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] hover:from-[#00D4E0] hover:to-[#1E90FF] text-white py-4 rounded-lg font-bold uppercase tracking-wide transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -186,11 +186,11 @@ export default function Login() {
               <p className="text-white/60 text-xs text-center mb-2">Demo Credentials:</p>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-white/5 rounded p-2">
-                  <p className="text-[#00A5A8] font-semibold mb-1">Admin</p>
+                  <p className="text-[#00D4E0] font-semibold mb-1">Admin</p>
                   <p className="text-white/70">admin / admin123</p>
                 </div>
                 <div className="bg-white/5 rounded p-2">
-                  <p className="text-[#00A5A8] font-semibold mb-1">Instructor</p>
+                  <p className="text-[#00D4E0] font-semibold mb-1">Instructor</p>
                   <p className="text-white/70">instructor / instructor123</p>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="text-[#00A5A8] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
+                className="text-[#00D4E0] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
               >
                 ← Back to Home
               </button>

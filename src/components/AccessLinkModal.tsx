@@ -26,7 +26,7 @@ export default function AccessLinkModal({
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center animate-fadeIn">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008a8d] px-6 py-5">
+        <div className="bg-gradient-to-r from-[#00D4E0] to-[#008a8d] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-white/20 p-2 rounded-lg">
@@ -63,7 +63,7 @@ export default function AccessLinkModal({
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 text-[#00A5A8] hover:text-[#008a8d] break-all text-sm font-mono transition-colors"
+                  className="flex-1 text-[#00D4E0] hover:text-[#008a8d] break-all text-sm font-mono transition-colors"
                 >
                   {link}
                 </a>
@@ -93,7 +93,7 @@ export default function AccessLinkModal({
           )}
 
           {/* Info Message */}
-          <div className="bg-blue-50 border-l-4 border-[#00A5A8] p-4 rounded-r">
+          <div className="bg-blue-50 border-l-4 border-[#00D4E0] p-4 rounded-r">
             <p className="text-sm text-gray-700">
               This link provides access to the online course materials. Students should use this link to begin their training.
             </p>
@@ -112,7 +112,7 @@ export default function AccessLinkModal({
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 px-6 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white hover:from-[#008a8d] hover:to-[#00A5A8] transform hover:scale-105 active:scale-95"
+            className="flex-1 px-6 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white hover:from-[#008a8d] hover:to-[#00D4E0] transform hover:scale-105 active:scale-95"
           >
             <FaExternalLinkAlt />
             <span>Open Link</span>

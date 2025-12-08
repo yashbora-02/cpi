@@ -21,23 +21,23 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-[#2D2F33]/65 via-[#2D2F33]/55 to-[#2D2F33]/70"></div>
 
       {/* Red Accent Gradient on Left */}
-      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#C10E21]/30 via-[#C10E21]/15 to-transparent"></div>
+      <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#1E90FF]/30 via-[#1E90FF]/15 to-transparent"></div>
 
       {/* Teal Accent Gradient on Right */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00A5A8]/25 via-[#00A5A8]/10 to-transparent"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00D4E0]/25 via-[#00D4E0]/10 to-transparent"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
         <div className="text-center max-w-4xl mx-auto">
           {/* Trust Badge */}
           <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full border border-white/30 mb-8">
-            <FaAward className="text-[#00A5A8]" />
+            <FaAward className="text-[#00D4E0]" />
             <span className="text-sm font-bold">America's Trusted First Aid & CPR Training Provider</span>
           </div>
 
           {/* Main Headline */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
             Learn to Save a Life with<br />
-            <span className="text-[#00A5A8]">the Nation's Experts</span>
+            <span className="text-[#00D4E0]">the Nation's Experts</span>
           </h1>
 
           {/* Subheadline */}
@@ -49,13 +49,13 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <button
               onClick={() => router.push("/login")}
-              className="px-10 py-5 bg-[#00A5A8] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all transform hover:scale-105 shadow-2xl"
+              className="px-10 py-5 bg-[#00D4E0] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all transform hover:scale-105 shadow-2xl"
             >
               Find a Class Near You
             </button>
             <button
               onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-10 py-5 bg-white text-[#C10E21] text-lg font-bold uppercase rounded-lg hover:bg-gray-100 transition-all shadow-2xl"
+              className="px-10 py-5 bg-white text-[#1E90FF] text-lg font-bold uppercase rounded-lg hover:bg-gray-100 transition-all shadow-2xl"
             >
               Explore Courses
             </button>
@@ -64,19 +64,19 @@ export default function HeroSection() {
           {/* Trust Statistics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-              <div className="text-4xl font-bold text-[#00A5A8] mb-2">5M+</div>
+              <div className="text-4xl font-bold text-[#00D4E0] mb-2">5M+</div>
               <div className="text-sm text-white/90 font-semibold">Students Trained Annually</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-              <div className="text-4xl font-bold text-[#00A5A8] mb-2">100+</div>
+              <div className="text-4xl font-bold text-[#00D4E0] mb-2">100+</div>
               <div className="text-sm text-white/90 font-semibold">Years of Excellence</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-              <div className="text-4xl font-bold text-[#00A5A8] mb-2">98%</div>
+              <div className="text-4xl font-bold text-[#00D4E0] mb-2">98%</div>
               <div className="text-sm text-white/90 font-semibold">Student Pass Rate</div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20">
-              <div className="text-4xl font-bold text-[#00A5A8] mb-2">OSHA</div>
+              <div className="text-4xl font-bold text-[#00D4E0] mb-2">OSHA</div>
               <div className="text-sm text-white/90 font-semibold">Compliant Certified</div>
             </div>
           </div>

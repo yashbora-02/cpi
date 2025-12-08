@@ -191,7 +191,7 @@ export default function DigitalCardFinalPage({
                     <div className="flex gap-2">
                       <button
                         onClick={() => onViewCertificate(student)}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-[#00A5A8] text-white rounded hover:bg-[#008a8d] transition-colors text-xs font-medium"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-[#00D4E0] text-white rounded hover:bg-[#008a8d] transition-colors text-xs font-medium"
                       >
                         <FaEye /> View
                       </button>
@@ -242,7 +242,7 @@ export default function DigitalCardFinalPage({
         </button>
         <button
           onClick={onCreateNew}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
         >
           <FaPlusCircle /> Create New Class
         </button>

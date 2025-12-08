@@ -42,7 +42,7 @@ export default function CheckoutModal({ onClose }: { onClose: () => void }) {
         <div className="text-right">
           <button
             onClick={() => setShowAgreement(true)}
-            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+            className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             Continue Checkout
           </button>

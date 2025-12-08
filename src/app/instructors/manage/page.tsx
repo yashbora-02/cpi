@@ -31,7 +31,7 @@ export default function ManageInstructorsPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Manage Instructors</h1>
           <p className="text-base mt-2 text-white/90">View and manage all instructors</p>
         </div>
@@ -66,7 +66,7 @@ export default function ManageInstructorsPage() {
 
             <button
               onClick={() => setShowModal(true)}
-              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm mt-2 md:mt-0"
+              className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm mt-2 md:mt-0"
             >
               + Add Instructor
             </button>
@@ -118,7 +118,7 @@ export default function ManageInstructorsPage() {
 
           <button
             onClick={handleSearch}
-            className="mb-4 bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+            className="mb-4 bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             Search Instructors
           </button>

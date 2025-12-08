@@ -24,7 +24,7 @@ export default function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all animate-slideUp">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008a8d] px-6 py-5">
+        <div className="bg-gradient-to-r from-[#00D4E0] to-[#008a8d] px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <FaEnvelope className="text-white text-2xl" />
@@ -43,7 +43,7 @@ export default function ConfirmModal({
         {/* Content */}
         <div className="p-6 space-y-5">
           {/* Message */}
-          <div className="bg-blue-50 border-l-4 border-[#00A5A8] p-4 rounded-r">
+          <div className="bg-blue-50 border-l-4 border-[#00D4E0] p-4 rounded-r">
             <p className="text-gray-800 text-sm leading-relaxed">
               Email notifications will be sent to <span className="font-semibold">{studentCount} student{studentCount !== 1 ? 's' : ''}</span>.
               This action will deduct <span className="font-semibold">{creditsToUse} credit{creditsToUse !== 1 ? 's' : ''}</span> from your account.
@@ -125,7 +125,7 @@ export default function ConfirmModal({
             className={`px-5 py-2 rounded-lg font-medium text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 ${
               hasInsufficientCredits
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
-                : 'bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white'
+                : 'bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white'
             }`}
           >
             <span>✓</span>

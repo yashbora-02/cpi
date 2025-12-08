@@ -99,7 +99,7 @@ export default function ClassDetailPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#C10E21] to-[#00A5A8] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Class Details</h1>
           <p className="text-base mt-2 text-white/90">
             Viewing details for {classId}

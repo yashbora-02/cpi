@@ -42,7 +42,7 @@ export default function InstructorDevelopmentPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Instructor Development</h1>
           <p className="text-base mt-2 text-white/90">Training and development courses</p>
         </div>
@@ -117,7 +117,7 @@ export default function InstructorDevelopmentPage() {
                       </span>
                     ) : (
                       <button
-                        className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all font-medium text-xs"
+                        className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all font-medium text-xs"
                         onClick={() => handleAddCourse(course.name)}
                       >
                         ADD COURSE

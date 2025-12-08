@@ -11,18 +11,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#C10E21] to-[#00A5A8] rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#1E90FF] to-[#00D4E0] rounded-lg flex items-center justify-center">
               <FaHeart className="text-2xl text-white" />
             </div>
             <span className="text-2xl font-bold text-[#2D2F33]">CPI Training</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#courses" className="text-[#2D2F33] hover:text-[#C10E21] font-semibold transition">Courses</a>
-            <a href="#about" className="text-[#2D2F33] hover:text-[#C10E21] font-semibold transition">About</a>
-            <a href="#pricing" className="text-[#2D2F33] hover:text-[#C10E21] font-semibold transition">Pricing</a>
+            <a href="#courses" className="text-[#2D2F33] hover:text-[#1E90FF] font-semibold transition">Courses</a>
+            <a href="#about" className="text-[#2D2F33] hover:text-[#1E90FF] font-semibold transition">About</a>
+            <a href="#pricing" className="text-[#2D2F33] hover:text-[#1E90FF] font-semibold transition">Pricing</a>
             <button
               onClick={() => router.push("/login")}
-              className="px-6 py-2.5 bg-[#C10E21] text-white font-bold uppercase rounded-lg hover:bg-[#a00d1c] transition"
+              className="px-6 py-2.5 bg-[#1E90FF] text-white font-bold uppercase rounded-lg hover:bg-[#1873CC] transition"
             >
               Login
             </button>

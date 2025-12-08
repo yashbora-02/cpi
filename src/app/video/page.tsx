@@ -64,19 +64,19 @@ export default function VideoPlayerPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1">
+      <main className="flex-1 lg:ml-0">
         {/* Professional Header */}
-        <div className="bg-gradient-to-r from-[#C10E21] to-[#00A5A8] text-white px-8 py-12 shadow-lg">
+        <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 shadow-lg mt-16 lg:mt-0">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-4xl font-bold mb-3">Training Video Library</h1>
-            <p className="text-lg text-white/90">Access your professional training content</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">Training Video Library</h1>
+            <p className="text-base sm:text-lg text-white/90">Access your professional training content</p>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-8 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
           {loading ? (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#00A5A8] border-t-transparent"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#00D4E0] border-t-transparent"></div>
               <p className="mt-4 text-gray-600 text-lg">Loading your training videos...</p>
             </div>
           ) : videos.length === 0 ? (
@@ -120,7 +120,7 @@ export default function VideoPlayerPage() {
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
-                          <svg className="w-8 h-8 text-[#C10E21] ml-1" fill="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-8 h-8 text-[#1E90FF] ml-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         </div>
@@ -141,7 +141,7 @@ export default function VideoPlayerPage() {
                         href={video.videoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#C10E21] to-[#00A5A8] text-white px-5 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
+                        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-5 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />

@@ -17,13 +17,16 @@ import {
   FaClipboardList,
   FaChevronDown,
   FaChevronUp,
-  FaHeadset
+  FaHeadset,
+  FaBars,
+  FaTimes
 } from "react-icons/fa";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [userRole, setUserRole] = useState<string>('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [open, setOpen] = useState({
     instructors: true,
@@ -60,20 +63,44 @@ export default function Sidebar() {
   const isInstructor = userRole === 'instructor';
 
   return (
-    <div className="w-64 min-h-screen bg-gradient-to-b from-[#2D2F33] to-[#1a1b1d] shadow-2xl p-4 flex flex-col border-r border-white/10">
-      {/* Logo */}
-      <div className="mb-8 pb-6 border-b border-white/10">
-        <Image
-          src="/logo.png"
-          alt="CarePoint Institute"
-          width={140}
-          height={50}
-          className="object-contain"
-        />
-      </div>
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg text-[#1E90FF] hover:text-[#00D4E0] transition-colors"
+        aria-label="Toggle menu"
+      >
+        {isMobileMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
+      </button>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-2">
+      {/* Backdrop for mobile */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`
+        fixed lg:static inset-y-0 left-0 z-40
+        w-64 min-h-screen bg-white shadow-2xl p-4 flex flex-col border-r border-gray-200
+        transform transition-transform duration-300 ease-in-out
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        {/* Logo */}
+        <div className="mb-8 pb-6 border-b border-gray-200">
+          <Image
+            src="/cpi logo.png"
+            alt="CarePoint Institute"
+            width={180}
+            height={60}
+            className="object-contain"
+          />
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 space-y-2">
         {/* General Section - Both see Dashboard and Video Player */}
         {(isAdmin || isInstructor) && (
           <DropdownSection
@@ -150,17 +177,18 @@ export default function Sidebar() {
         )}
       </nav>
 
-      {/* Logout Button */}
-      <div className="mt-auto pt-6 border-t border-white/10">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#C10E21] to-[#a00d1c] text-white font-bold rounded-lg hover:from-[#a00d1c] hover:to-[#C10E21] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-        >
-          <FaSignOutAlt />
-          Logout
-        </button>
+        {/* Logout Button */}
+        <div className="mt-auto pt-6 border-t border-gray-200">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white font-bold rounded-lg hover:from-[#00D4E0] hover:to-[#1E90FF] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+          >
+            <FaSignOutAlt />
+            Logout
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -185,16 +213,16 @@ function DropdownSection({
     <div className="mb-2">
       <button
         onClick={onToggle}
-        className="w-full flex justify-between items-center text-left px-4 py-3 text-white font-bold hover:bg-white/10 rounded-lg transition-all duration-300 group"
+        className="w-full flex justify-between items-center text-left px-4 py-3 text-[#2D2F33] font-bold hover:bg-gray-100 rounded-lg transition-all duration-300 group"
       >
         <div className="flex items-center gap-3">
-          <span className="text-[#00A5A8] group-hover:text-white transition-colors">{icon}</span>
+          <span className="text-[#1E90FF] group-hover:text-[#00D4E0] transition-colors">{icon}</span>
           <span>{label}</span>
         </div>
         {isOpen ? (
-          <FaChevronUp className="text-xs text-white/50" />
+          <FaChevronUp className="text-xs text-gray-400" />
         ) : (
-          <FaChevronDown className="text-xs text-white/50" />
+          <FaChevronDown className="text-xs text-gray-400" />
         )}
       </button>
       {isOpen && (
@@ -205,8 +233,8 @@ function DropdownSection({
               href={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                 currentPath === item.path
-                  ? "bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white shadow-lg"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
+                  ? "bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white shadow-lg"
+                  : "text-gray-600 hover:text-[#1E90FF] hover:bg-gray-50"
               }`}
             >
               {item.icon && <span className="text-base">{item.icon}</span>}

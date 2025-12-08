@@ -23,9 +23,9 @@ export default function SuccessModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform transition-all animate-slideUp">
         {/* Success Icon */}
-        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] px-6 py-8 text-center">
+        <div className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] px-6 py-8 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-            <FaCheckCircle className="text-[#00A5A8] text-5xl" />
+            <FaCheckCircle className="text-[#00D4E0] text-5xl" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">
             Class Created Successfully!
@@ -59,7 +59,7 @@ export default function SuccessModal({
           </div>
 
           {/* Info Message */}
-          <div className="bg-blue-50 border-l-4 border-[#00A5A8] p-4 rounded-r">
+          <div className="bg-blue-50 border-l-4 border-[#00D4E0] p-4 rounded-r">
             <p className="text-sm text-gray-700">
               Students have been notified via email. You can track their progress in the class roster.
             </p>
@@ -76,7 +76,7 @@ export default function SuccessModal({
           </button>
           <button
             onClick={onCreateNew}
-            className="flex-1 px-6 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white hover:from-[#008a8d] hover:to-[#00A5A8] transform hover:scale-105 active:scale-95"
+            className="flex-1 px-6 py-2.5 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white hover:from-[#008a8d] hover:to-[#00D4E0] transform hover:scale-105 active:scale-95"
           >
             <FaPlusCircle />
             <span>Create New Class</span>

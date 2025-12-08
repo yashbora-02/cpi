@@ -34,7 +34,7 @@ export default function CertificateViewer({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-2xl w-[98vw] h-[98vh] mx-2 overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#00A5A8] to-[#008a8d] px-6 py-4 flex items-center justify-between flex-shrink-0">
+        <div className="bg-gradient-to-r from-[#00D4E0] to-[#008a8d] px-6 py-4 flex items-center justify-between flex-shrink-0">
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
             Certificate for {studentName}
           </h3>
@@ -50,7 +50,7 @@ export default function CertificateViewer({
         <div className="bg-gray-50 px-6 py-3 flex gap-3 border-b border-gray-200 flex-shrink-0">
           <button
             onClick={handleDownload}
-            className="flex items-center gap-2 px-4 py-2 bg-[#00A5A8] text-white rounded-lg hover:bg-[#008a8d] transition-colors font-medium text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-[#00D4E0] text-white rounded-lg hover:bg-[#008a8d] transition-colors font-medium text-sm"
           >
             <FaDownload /> Download PDF
           </button>
@@ -77,7 +77,7 @@ export default function CertificateViewer({
                   <p className="text-gray-600 mb-4">Certificate not yet generated</p>
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 bg-[#00A5A8] text-white rounded-lg hover:bg-[#008a8d] transition-colors"
+                    className="px-4 py-2 bg-[#00D4E0] text-white rounded-lg hover:bg-[#008a8d] transition-colors"
                   >
                     Close
                   </button>

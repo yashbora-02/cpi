@@ -22,7 +22,7 @@ export default function ReauthorizeInstructorsPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Reauthorize Instructors</h1>
           <p className="text-base mt-2 text-white/90">Manage instructor reauthorization</p>
         </div>
@@ -65,7 +65,7 @@ export default function ReauthorizeInstructorsPage() {
 
           <button
             onClick={handleSearch}
-            className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+            className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
           >
             SEARCH
           </button>

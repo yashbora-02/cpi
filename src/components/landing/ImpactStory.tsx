@@ -7,7 +7,7 @@ export default function ImpactStory() {
   const router = useRouter();
 
   return (
-    <section className="py-20 bg-gradient-to-br from-[#00A5A8] to-[#008a8d] text-white">
+    <section className="py-20 bg-gradient-to-br from-[#00D4E0] to-[#008a8d] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
@@ -22,7 +22,7 @@ export default function ImpactStory() {
             </p>
             <div className="flex items-center space-x-4 mb-8">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                <span className="text-2xl font-bold text-[#C10E21]">SM</span>
+                <span className="text-2xl font-bold text-[#1E90FF]">SM</span>
               </div>
               <div>
                 <div className="font-bold text-lg">Sarah Martinez</div>
@@ -31,7 +31,7 @@ export default function ImpactStory() {
             </div>
             <button
               onClick={() => router.push("/login")}
-              className="px-8 py-4 bg-white text-[#C10E21] font-bold uppercase rounded-lg hover:bg-gray-100 transition-all shadow-xl"
+              className="px-8 py-4 bg-white text-[#1E90FF] font-bold uppercase rounded-lg hover:bg-gray-100 transition-all shadow-xl"
             >
               Be Ready Like Sarah
             </button>

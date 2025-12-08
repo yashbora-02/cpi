@@ -39,7 +39,7 @@ export default function StudentSearchPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00A5A8] text-white px-8 py-6 shadow-lg">
+        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Student Search</h1>
           <p className="text-base mt-2 text-white/90">Find and manage student records</p>
         </div>
@@ -81,7 +81,7 @@ export default function StudentSearchPage() {
             </div>
             <button
               onClick={handleSearch}
-              className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+              className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               Search Students
             </button>
@@ -137,7 +137,7 @@ export default function StudentSearchPage() {
 
               <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-6 items-start">
                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#C10E21] to-[#00A5A8] text-white px-4 py-3">
+                  <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-4 py-3">
                     <h3 className="text-lg font-semibold">Student Information</h3>
                   </div>
                   <div className="p-4">

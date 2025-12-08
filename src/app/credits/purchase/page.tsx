@@ -164,7 +164,7 @@ export default function PurchaseCredits() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00A5A8] text-white px-8 py-5 shadow-lg">
+        <div className="bg-[#00D4E0] text-white px-8 py-5 shadow-lg">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold">Purchase Training Credits</h1>
@@ -174,7 +174,7 @@ export default function PurchaseCredits() {
             </div>
             <button
               onClick={() => router.push("/dashboard")}
-              className="bg-white text-[#00A5A8] px-5 py-2.5 rounded-lg font-bold hover:bg-gray-100 transition-all duration-200 shadow-md hover:shadow-lg text-sm"
+              className="bg-white text-[#00D4E0] px-5 py-2.5 rounded-lg font-bold hover:bg-gray-100 transition-all duration-200 shadow-md hover:shadow-lg text-sm"
             >
               Back to Dashboard
             </button>
@@ -288,7 +288,7 @@ function PurchaseCard({
 
       {/* Credits */}
       <div className="mb-2">
-        <p className="text-2xl font-bold text-[#00A5A8]">{option.credits}</p>
+        <p className="text-2xl font-bold text-[#00D4E0]">{option.credits}</p>
         <p className="text-xs text-gray-600">Training Credits</p>
       </div>
 
@@ -304,7 +304,7 @@ function PurchaseCard({
       {/* Purchase Button */}
       <button
         onClick={() => onPurchase(option)}
-        className="w-full bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white py-2 rounded-lg font-bold hover:from-[#008a8d] hover:to-[#00A5A8] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm"
+        className="w-full bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white py-2 rounded-lg font-bold hover:from-[#008a8d] hover:to-[#00D4E0] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm"
       >
         <FaShoppingCart className="text-xs" />
         Purchase Now
@@ -374,7 +374,7 @@ function ShoppingCartModal({
               <p className="text-xs text-gray-600 mb-1">Course ID: {option.id}</p>
               <p className="text-xs text-gray-600">{option.courseType}</p>
               <div className="mt-3">
-                <span className="inline-block px-3 py-1 bg-[#00A5A8]/10 text-[#00A5A8] text-xs font-medium rounded-md">
+                <span className="inline-block px-3 py-1 bg-[#00D4E0]/10 text-[#00D4E0] text-xs font-medium rounded-md">
                   {option.credits} credits per package
                 </span>
               </div>
@@ -426,7 +426,7 @@ function ShoppingCartModal({
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-700">Total credits</span>
-                <span className="text-[#00A5A8] font-medium">{totalCredits} credits</span>
+                <span className="text-[#00D4E0] font-medium">{totalCredits} credits</span>
               </div>
               <div className="pt-3 mt-3 border-t border-gray-200 flex justify-between items-baseline">
                 <span className="text-sm font-semibold text-gray-900">Total</span>
@@ -437,7 +437,7 @@ function ShoppingCartModal({
 
           {/* Info Note */}
           <div className="flex items-start gap-2 text-xs text-gray-600 mb-6">
-            <FaCheckCircle className="mt-0.5 flex-shrink-0 text-[#00A5A8]" />
+            <FaCheckCircle className="mt-0.5 flex-shrink-0 text-[#00D4E0]" />
             <p>Credits will be instantly available after purchase confirmation</p>
           </div>
         </div>
@@ -452,7 +452,7 @@ function ShoppingCartModal({
           </button>
           <button
             onClick={onContinue}
-            className="flex-1 px-6 py-3 bg-[#00A5A8] text-white rounded-md font-medium hover:bg-[#008a8d] transition-colors text-sm"
+            className="flex-1 px-6 py-3 bg-[#00D4E0] text-white rounded-md font-medium hover:bg-[#008a8d] transition-colors text-sm"
           >
             Continue to agreement
           </button>
@@ -548,7 +548,7 @@ function PurchaseAgreementModal({
               </div>
               <div className="flex justify-between pb-2 border-b border-gray-200">
                 <span className="text-gray-700">Total credits</span>
-                <span className="font-medium text-[#00A5A8]">{totalCredits} credits</span>
+                <span className="font-medium text-[#00D4E0]">{totalCredits} credits</span>
               </div>
               <div className="flex justify-between items-baseline pt-2">
                 <span className="font-semibold text-gray-900">Total price</span>
@@ -595,7 +595,7 @@ function PurchaseAgreementModal({
                 type="checkbox"
                 checked={agreedToTerms}
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="mt-0.5 w-4 h-4 text-[#00A5A8] border-gray-300 rounded focus:ring-[#00A5A8] cursor-pointer"
+                className="mt-0.5 w-4 h-4 text-[#00D4E0] border-gray-300 rounded focus:ring-[#00D4E0] cursor-pointer"
               />
               <span className="text-xs text-gray-900 flex-1">
                 I have read and agree to the purchase terms and refund policy. I understand that clicking "Continue to payment" creates a binding transaction.
@@ -617,7 +617,7 @@ function PurchaseAgreementModal({
             disabled={!agreedToTerms}
             className={`flex-1 px-6 py-3 rounded-md font-medium text-sm transition-colors ${
               agreedToTerms
-                ? "bg-[#00A5A8] text-white hover:bg-[#008a8d]"
+                ? "bg-[#00D4E0] text-white hover:bg-[#008a8d]"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
@@ -967,7 +967,7 @@ function CheckoutModal({
                           </p>
                         </div>
                         {card.is_default && (
-                          <span className="ml-2 px-2 py-0.5 bg-[#00A5A8] text-white text-xs rounded">
+                          <span className="ml-2 px-2 py-0.5 bg-[#00D4E0] text-white text-xs rounded">
                             Default
                           </span>
                         )}
@@ -990,7 +990,7 @@ function CheckoutModal({
                     setCardName('');
                     setExpiryDate('');
                   }}
-                  className="text-sm text-[#00A5A8] hover:underline font-medium"
+                  className="text-sm text-[#00D4E0] hover:underline font-medium"
                 >
                   + Use a new payment method
                 </button>
@@ -1062,7 +1062,7 @@ function CheckoutModal({
                         type="checkbox"
                         checked={saveCard}
                         onChange={(e) => setSaveCard(e.target.checked)}
-                        className="w-4 h-4 text-[#00A5A8] border-gray-300 rounded focus:ring-[#00A5A8] cursor-pointer"
+                        className="w-4 h-4 text-[#00D4E0] border-gray-300 rounded focus:ring-[#00D4E0] cursor-pointer"
                       />
                       <span className="text-sm text-gray-900">
                         Save this card for future purchases
@@ -1303,8 +1303,8 @@ function SuccessModal({
       <div className="bg-white rounded-lg max-w-lg w-full animate-slideUp shadow-xl">
         {/* Header with Success Icon */}
         <div className="border-b border-gray-200 px-8 py-8 text-center">
-          <div className="w-16 h-16 bg-[#00A5A8]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FaCheckCircle className="text-[#00A5A8] text-4xl" />
+          <div className="w-16 h-16 bg-[#00D4E0]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FaCheckCircle className="text-[#00D4E0] text-4xl" />
           </div>
           <h3 className="text-2xl font-semibold text-gray-900 mb-1">Purchase complete</h3>
           <p className="text-sm text-gray-600">Your credits are now available</p>
@@ -1332,15 +1332,15 @@ function SuccessModal({
               </div>
               <div className="flex justify-between pb-2 border-b border-gray-200">
                 <span className="text-gray-700">Credits added</span>
-                <span className="font-medium text-[#00A5A8]">{credits} credits</span>
+                <span className="font-medium text-[#00D4E0]">{credits} credits</span>
               </div>
             </div>
           </div>
 
           {/* Success Message */}
-          <div className="bg-[#00A5A8]/5 border border-[#00A5A8]/20 rounded-lg p-4">
+          <div className="bg-[#00D4E0]/5 border border-[#00D4E0]/20 rounded-lg p-4">
             <div className="flex items-start gap-2">
-              <FaCheckCircle className="text-[#00A5A8] text-sm mt-0.5 flex-shrink-0" />
+              <FaCheckCircle className="text-[#00D4E0] text-sm mt-0.5 flex-shrink-0" />
               <p className="text-xs text-gray-700">
                 Your {credits} training credits have been added to your account and are ready to use. Visit your dashboard to view your updated balance.
               </p>
@@ -1358,7 +1358,7 @@ function SuccessModal({
         <div className="border-t border-gray-200 px-8 py-6">
           <button
             onClick={onClose}
-            className="w-full px-6 py-3 bg-[#00A5A8] text-white rounded-md font-medium hover:bg-[#008a8d] transition-colors text-sm"
+            className="w-full px-6 py-3 bg-[#00D4E0] text-white rounded-md font-medium hover:bg-[#008a8d] transition-colors text-sm"
           >
             Go to dashboard
           </button>

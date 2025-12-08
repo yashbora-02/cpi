@@ -186,7 +186,7 @@ export default function StudentEntryDrawer({
       {/* Drawer */}
       <div className="fixed top-0 right-0 w-full md:w-[80%] lg:w-[60%] h-full bg-white shadow-2xl z-50 overflow-y-auto transition-transform duration-300 animate-slide-in">
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-5 border-b bg-[#00A5A8] text-white shadow-lg">
+        <div className="flex justify-between items-center px-6 py-5 border-b bg-[#00D4E0] text-white shadow-lg">
           <div className="flex items-center gap-3">
             {mode === "upload" ? (
               <FaCloudUploadAlt className="text-2xl" />
@@ -231,7 +231,7 @@ export default function StudentEntryDrawer({
                 </div>
                 <button
                   onClick={downloadTemplate}
-                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-200 font-semibold text-sm flex items-center gap-2 transform hover:scale-[1.02] active:scale-95 flex-shrink-0"
+                  className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-200 font-semibold text-sm flex items-center gap-2 transform hover:scale-[1.02] active:scale-95 flex-shrink-0"
                 >
                   <FaDownload />
                   Download Sample CSV
@@ -242,18 +242,18 @@ export default function StudentEntryDrawer({
             <div
               className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-300 ${
                 isDragging
-                  ? 'border-[#00A5A8] bg-[#00A5A8]/5 scale-[1.01]'
-                  : 'border-gray-300 hover:border-[#00A5A8]/50'
+                  ? 'border-[#00D4E0] bg-[#00D4E0]/5 scale-[1.01]'
+                  : 'border-gray-300 hover:border-[#00D4E0]/50'
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
               <div className={`inline-block p-5 rounded-full mb-5 transition-all duration-300 ${
-                isDragging ? 'bg-[#00A5A8]/10 scale-110' : 'bg-gray-50'
+                isDragging ? 'bg-[#00D4E0]/10 scale-110' : 'bg-gray-50'
               }`}>
                 <FaCloudUploadAlt className={`text-5xl transition-all duration-300 ${
-                  isDragging ? 'text-[#00A5A8] animate-bounce' : 'text-gray-400'
+                  isDragging ? 'text-[#00D4E0] animate-bounce' : 'text-gray-400'
                 }`} />
               </div>
               <h3 className="text-lg font-semibold text-[#2D2F33] mb-2">
@@ -273,7 +273,7 @@ export default function StudentEntryDrawer({
                 />
                 <label
                   htmlFor="csv-upload"
-                  className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-8 py-3 rounded-lg cursor-pointer hover:shadow-lg flex items-center gap-2.5 transition-all transform hover:scale-[1.02] font-medium text-sm"
+                  className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-8 py-3 rounded-lg cursor-pointer hover:shadow-lg flex items-center gap-2.5 transition-all transform hover:scale-[1.02] font-medium text-sm"
                 >
                   <FaUpload />
                   Choose CSV File
@@ -287,25 +287,25 @@ export default function StudentEntryDrawer({
             </div>
             {uploadError && (
               <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                <div className="flex-shrink-0 w-5 h-5 bg-[#C10E21] rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-5 h-5 bg-[#1E90FF] rounded-full flex items-center justify-center">
                   <span className="text-white text-xs font-bold">!</span>
                 </div>
                 <div>
-                  <p className="text-[#C10E21] font-semibold text-sm">{uploadError}</p>
+                  <p className="text-[#1E90FF] font-semibold text-sm">{uploadError}</p>
                 </div>
               </div>
             )}
             {isProcessing && (
               <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center gap-3">
                 <div className="flex-shrink-0">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-200 border-t-[#00A5A8]"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-200 border-t-[#00D4E0]"></div>
                 </div>
                 <p className="text-gray-700 text-sm">Processing CSV file...</p>
               </div>
             )}
             {uploadSuccess && !isProcessing && (
               <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
-                <div className="flex-shrink-0 w-5 h-5 bg-[#00A5A8] rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-5 h-5 bg-[#00D4E0] rounded-full flex items-center justify-center">
                   <span className="text-white text-xs font-bold">✓</span>
                 </div>
                 <p className="text-gray-700 text-sm">{uploadSuccess}</p>
@@ -332,7 +332,7 @@ export default function StudentEntryDrawer({
               {students.map((student, idx) => (
                 <div
                   key={idx}
-                  className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr] gap-3 items-center p-4 bg-white rounded-xl hover:shadow-md transition-all border border-gray-200 hover:border-[#00A5A8]"
+                  className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr] gap-3 items-center p-4 bg-white rounded-xl hover:shadow-md transition-all border border-gray-200 hover:border-[#00D4E0]"
                 >
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                     <span className="text-sm font-bold text-gray-600">{idx + 1}</span>
@@ -340,21 +340,21 @@ export default function StudentEntryDrawer({
                   <input
                     type="text"
                     placeholder="First Name"
-                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                     value={student.firstName}
                     onChange={(e) => handleChange(idx, "firstName", e.target.value)}
                   />
                   <input
                     type="text"
                     placeholder="Last Name"
-                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                     value={student.lastName}
                     onChange={(e) => handleChange(idx, "lastName", e.target.value)}
                   />
                   <input
                     type="email"
                     placeholder="Email"
-                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00A5A8] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                    className="border border-gray-300 p-3 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
                     value={student.email}
                     onChange={(e) => handleChange(idx, "email", e.target.value)}
                   />
@@ -366,7 +366,7 @@ export default function StudentEntryDrawer({
             <div className="flex justify-end items-center mt-6 pt-4 border-t border-gray-200">
               <button
                 onClick={handleSave}
-                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm"
+                className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm"
               >
                 <FaUserPlus />
                 Save Students
@@ -396,7 +396,7 @@ export default function StudentEntryDrawer({
                     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
                       <div className="overflow-x-auto max-h-80">
                         <table className="min-w-full">
-                          <thead className="bg-[#00A5A8] text-white sticky top-0">
+                          <thead className="bg-[#00D4E0] text-white sticky top-0">
                             <tr>
                               <th className="px-4 py-3 text-left text-xs font-semibold uppercase">#</th>
                               <th className="px-4 py-3 text-left text-xs font-semibold uppercase">First Name</th>
@@ -429,7 +429,7 @@ export default function StudentEntryDrawer({
               <button
                 onClick={handleSave}
                 disabled={students.filter(s => s.firstName || s.lastName || s.email).length === 0}
-                className="bg-gradient-to-r from-[#00A5A8] to-[#008f91] text-white px-8 py-2.5 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
+                className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-8 py-2.5 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <FaUserPlus />
                 Save Students

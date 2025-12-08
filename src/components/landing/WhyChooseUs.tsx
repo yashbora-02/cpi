@@ -14,8 +14,8 @@ export default function WhyChooseUs() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#1E90FF] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#1E90FF] rounded-xl flex items-center justify-center mb-6">
               <FaUserMd className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Certified Expert Instructors</h3>
@@ -24,8 +24,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#1E90FF] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#1E90FF] rounded-xl flex items-center justify-center mb-6">
               <FaClock className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Flexible Learning Options</h3>
@@ -34,8 +34,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#C10E21] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#C10E21] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#1E90FF] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#1E90FF] rounded-xl flex items-center justify-center mb-6">
               <FaShieldAlt className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Latest Standards & Science</h3>
@@ -44,8 +44,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00D4E0] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#00D4E0] rounded-xl flex items-center justify-center mb-6">
               <FaCertificate className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Nationally Recognized Certification</h3>
@@ -54,8 +54,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00D4E0] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#00D4E0] rounded-xl flex items-center justify-center mb-6">
               <FaLaptop className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Interactive & Practical</h3>
@@ -64,8 +64,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00A5A8] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00D4E0] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#00D4E0] rounded-xl flex items-center justify-center mb-6">
               <FaAward className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Award-Winning Programs</h3>

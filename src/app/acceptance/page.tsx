@@ -22,99 +22,19 @@ import {
   FaBars,
   FaTimes,
   FaChevronDown,
-  FaUser
+  FaUser,
+  FaUserMd
 } from "react-icons/fa";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Acceptance() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [hasPurchased, setHasPurchased] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const { language, setLanguage, t } = useLanguage();
-
-  // Check for purchase verification on mount
-  useEffect(() => {
-    // Check URL parameters for purchase success
-    const params = new URLSearchParams(window.location.search);
-    const purchaseSuccess = params.get('purchase') === 'success';
-
-    // Also check localStorage for previous purchase
-    const previousPurchase = localStorage.getItem('cpi_purchase_complete');
-
-    if (purchaseSuccess) {
-      localStorage.setItem('cpi_purchase_complete', 'true');
-      setHasPurchased(true);
-    } else if (previousPurchase === 'true') {
-      setHasPurchased(true);
-    }
-
-    setIsLoading(false);
-  }, []);
 
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "es" : "en");
   };
-
-  // Show loading or redirect if not purchased
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00A5A8] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!hasPurchased) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-md w-full mx-4">
-          <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-[#C10E21] to-[#a00d1c] px-6 py-8 text-center">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-[#C10E21]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Access Restricted
-              </h2>
-              <p className="text-white/90 text-sm">
-                This page is only available after completing a purchase
-              </p>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-4">
-              <div className="bg-blue-50 border-l-4 border-[#00A5A8] p-4 rounded-r">
-                <p className="text-sm text-gray-700">
-                  To view acceptance information and guidelines, please complete your course purchase first.
-                </p>
-              </div>
-
-              <button
-                onClick={() => router.push('/courses')}
-                className="w-full px-6 py-3 bg-gradient-to-r from-[#00A5A8] to-[#008a8d] text-white font-medium rounded-lg hover:from-[#008a8d] hover:to-[#00A5A8] transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
-              >
-                Browse Courses
-              </button>
-
-              <button
-                onClick={() => router.push('/')}
-                className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 font-medium"
-              >
-                Go to Home
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -126,7 +46,7 @@ export default function Acceptance() {
             <div className="flex items-center">
               <button onClick={() => router.push("/")}>
                 <Image
-                  src="/logo.png"
+                  src="/cpi logo.png"
                   alt="CarePoint Institute"
                   width={120}
                   height={60}
@@ -137,18 +57,18 @@ export default function Acceptance() {
 
             {/* Center Navigation */}
             <div className="hidden md:flex items-center justify-center flex-1 space-x-8">
-              <a href="/#courses" className="flex items-center text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+              <a href="/#courses" className="flex items-center text-[#2D2F33] hover:text-[#1E90FF] font-medium transition">
                 {t.nav.cprCourses}
                 <FaChevronDown className="ml-1 text-xs" />
               </a>
-              <a href="/#training-options" className="flex items-center text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+              <a href="/#training-options" className="flex items-center text-[#2D2F33] hover:text-[#1E90FF] font-medium transition">
                 {t.nav.moreCourses}
                 <FaChevronDown className="ml-1 text-xs" />
               </a>
-              <button onClick={() => router.push("/acceptance")} className="text-[#C10E21] font-medium transition">
+              <button onClick={() => router.push("/acceptance")} className="text-[#1E90FF] font-medium transition">
                 {t.nav.acceptance}
               </button>
-              <button onClick={() => router.push("/login")} className="flex items-center text-[#2D2F33] hover:text-[#C10E21] font-medium transition">
+              <button onClick={() => router.push("/login")} className="flex items-center text-[#2D2F33] hover:text-[#1E90FF] font-medium transition">
                 <FaUser className="mr-2" />
                 {t.nav.logIn}
               </button>
@@ -156,7 +76,7 @@ export default function Acceptance() {
 
             {/* Right Side - Phone & Language */}
             <div className="hidden md:flex items-center space-x-4">
-              <a href="tel:1-800-555-0123" className="flex items-center text-[#00A5A8] hover:text-[#008a8d] font-medium transition">
+              <a href="tel:1-800-555-0123" className="flex items-center text-[#00D4E0] hover:text-[#008a8d] font-medium transition">
                 <FaPhone className="mr-2" />
                 {t.nav.phone}
               </a>
@@ -171,7 +91,7 @@ export default function Acceptance() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden ml-auto p-2 text-[#2D2F33] hover:text-[#C10E21] transition"
+              className="md:hidden ml-auto p-2 text-[#2D2F33] hover:text-[#1E90FF] transition"
             >
               {mobileMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
             </button>
@@ -183,37 +103,37 @@ export default function Acceptance() {
               <div className="flex flex-col space-y-4 px-4">
                 <button
                   onClick={() => { router.push("/#courses"); setMobileMenuOpen(false); }}
-                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                  className="text-[#2D2F33] hover:text-[#1E90FF] font-medium transition py-2 text-left"
                 >
                   {t.nav.cprCourses}
                 </button>
                 <button
                   onClick={() => { router.push("/#training-options"); setMobileMenuOpen(false); }}
-                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                  className="text-[#2D2F33] hover:text-[#1E90FF] font-medium transition py-2 text-left"
                 >
                   {t.nav.moreCourses}
                 </button>
                 <button
                   onClick={() => { router.push("/acceptance"); setMobileMenuOpen(false); }}
-                  className="text-[#C10E21] font-medium transition py-2 text-left"
+                  className="text-[#1E90FF] font-medium transition py-2 text-left"
                 >
                   {t.nav.acceptance}
                 </button>
                 <button
                   onClick={() => { router.push("/login"); setMobileMenuOpen(false); }}
-                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                  className="text-[#2D2F33] hover:text-[#1E90FF] font-medium transition py-2 text-left"
                 >
                   {t.nav.logIn}
                 </button>
                 <a
                   href="tel:1-800-555-0123"
-                  className="text-[#00A5A8] font-medium py-2"
+                  className="text-[#00D4E0] font-medium py-2"
                 >
                   {t.nav.phone}
                 </a>
                 <button
                   onClick={() => { toggleLanguage(); setMobileMenuOpen(false); }}
-                  className="text-[#2D2F33] hover:text-[#C10E21] font-medium transition py-2 text-left"
+                  className="text-[#2D2F33] hover:text-[#1E90FF] font-medium transition py-2 text-left"
                 >
                   {t.nav.language}
                 </button>
@@ -224,182 +144,206 @@ export default function Acceptance() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative bg-[#2D2F33] text-white overflow-hidden py-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#C10E21]/20 to-[#00A5A8]/20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+      <section className="relative bg-[#2D2F33] text-white overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/bg.webp')",
+            opacity: 0.4
+          }}
+        />
+
+        {/* Dark Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2D2F33]/65 via-[#2D2F33]/55 to-[#2D2F33]/70"></div>
+
+        {/* Red Accent Gradient on Left */}
+        <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#1E90FF]/30 via-[#1E90FF]/15 to-transparent"></div>
+
+        {/* Teal Accent Gradient on Right */}
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00D4E0]/25 via-[#00D4E0]/10 to-transparent"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
             {t.acceptance.heroTitle}<br />
-            <span className="text-[#00A5A8]">{t.acceptance.heroHighlight}</span>
+            <span className="text-[#00D4E0]">{t.acceptance.heroHighlight}</span>
           </h1>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white/95 leading-relaxed max-w-4xl mx-auto">
             {t.acceptance.heroSubtitle}
           </p>
         </div>
       </section>
 
-      {/* Standards Compliance */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-6">
-                {t.acceptance.guidelinesTitle}
-              </h2>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                {t.acceptance.guidelinesDesc1}
+      {/* FAQ Section */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2D2F33] mb-4 md:mb-6 px-2">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto px-2">
+              {t.acceptance.introText}
+            </p>
+          </div>
+
+          {/* Q&A Items */}
+          <div className="space-y-4 md:space-y-6">
+            {/* Question 1 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#1E90FF]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question1}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer1}
               </p>
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                {t.acceptance.guidelinesDesc2}
-              </p>
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#00A5A8] rounded-full flex items-center justify-center">
-                  <FaCalendarAlt className="text-xl text-white" />
-                </div>
-                <div>
-                  <p className="font-bold text-[#2D2F33]">{t.acceptance.certValidity}</p>
-                  <p className="text-gray-600">{t.acceptance.certValidityDesc}</p>
-                </div>
-              </div>
             </div>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FaShieldAlt className="text-2xl text-white" />
-                </div>
-                <h3 className="font-bold text-[#2D2F33] mb-2">{t.acceptance.ilcorProtocols}</h3>
-                <p className="text-sm text-gray-600">{t.acceptance.ilcorDesc}</p>
-              </div>
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FaGlobe className="text-2xl text-white" />
-                </div>
-                <h3 className="font-bold text-[#2D2F33] mb-2">{t.acceptance.ahaGuidelines}</h3>
-                <p className="text-sm text-gray-600">{t.acceptance.ahaDesc}</p>
-              </div>
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FaCertificate className="text-2xl text-white" />
-                </div>
-                <h3 className="font-bold text-[#2D2F33] mb-2">{t.acceptance.nationallyRecognized}</h3>
-                <p className="text-sm text-gray-600">{t.acceptance.nationallyDesc}</p>
-              </div>
-              <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-6 rounded-2xl shadow-lg text-center">
-                <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FaCalendarAlt className="text-2xl text-white" />
-                </div>
-                <h3 className="font-bold text-[#2D2F33] mb-2">{t.acceptance.updatedEvery}</h3>
-                <p className="text-sm text-gray-600">{t.acceptance.updatedDesc}</p>
+
+            {/* Question 2 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question2}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer2}
+              </p>
+            </div>
+
+            {/* Question 3 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#1E90FF]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question3}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer3}
+              </p>
+            </div>
+
+            {/* Question 4 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question4}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer4}
+              </p>
+            </div>
+
+            {/* Question 5 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#1E90FF]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question5}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer5}
+              </p>
+            </div>
+
+            {/* Question 6 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question6}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer6}
+              </p>
+            </div>
+
+            {/* Question 7 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#1E90FF]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question7}
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                {t.acceptance.answer7}
+              </p>
+            </div>
+
+            {/* Question 8 */}
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+              <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
+                {t.acceptance.question8}
+              </h3>
+              <div className="text-base md:text-lg text-gray-700 leading-relaxed space-y-3 md:space-y-4">
+                <p>{t.acceptance.answer8Part1}</p>
+                <p>{t.acceptance.answer8Part2}</p>
+                <p>{t.acceptance.answer8Part3}</p>
+                <p>{t.acceptance.answer8Part4}</p>
+                <p>{t.acceptance.answer8Part5}</p>
+                <p>{t.acceptance.answer8Part6}</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Organizations That Accept */}
-      <section className="py-20 bg-gradient-to-br from-[#F5F6F7] to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-4">
-              {t.acceptance.orgsTitle}
+      {/* Education Review Board */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2D2F33] mb-4 md:mb-6 px-2">
+              {t.acceptance.educationBoardTitle}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t.acceptance.orgsSubtitle}
+            <p className="text-base md:text-lg text-gray-600 italic max-w-3xl mx-auto px-2">
+              {t.acceptance.educationBoardNote}
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-4">
-                <FaHospital className="text-2xl text-white" />
+          <div className="grid sm:grid-cols-2 gap-6 md:gap-10 max-w-4xl mx-auto">
+            {/* Director of Medical Education */}
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 md:p-10 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-[#1E90FF] to-[#1873CC] rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
+                <FaUserMd className="text-5xl md:text-6xl text-white" />
               </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.medicaid}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.medicaidDesc}</p>
+              <h3 className="text-xl md:text-2xl font-bold text-[#2D2F33] mb-2 text-center">
+                {t.acceptance.directorTitle}
+              </h3>
+              <p className="text-sm md:text-base text-gray-600 text-center">Certified EMT & Medical Educator</p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-4">
-                <FaUserNurse className="text-2xl text-white" />
+            {/* Physician Medical Director */}
+            <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 md:p-10 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+              <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-[#00D4E0] to-[#008a8d] rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
+                <FaUserMd className="text-5xl md:text-6xl text-white" />
               </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.healthcare}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.healthcareDesc}</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-4">
-                <FaSchool className="text-2xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.schools}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.schoolsDesc}</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-4">
-                <FaHome className="text-2xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.groupHomes}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.groupHomesDesc}</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-4">
-                <FaUserNurse className="text-2xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.homeHealth}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.homeHealthDesc}</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-4">
-                <FaBuilding className="text-2xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.workplace}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.workplaceDesc}</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#00A5A8] rounded-xl flex items-center justify-center mb-4">
-                <FaRunning className="text-2xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.coaching}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.coachingDesc}</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all">
-              <div className="w-14 h-14 bg-[#C10E21] rounded-xl flex items-center justify-center mb-4">
-                <FaUsers className="text-2xl text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#2D2F33] mb-2">{t.acceptance.community}</h3>
-              <p className="text-gray-600 text-sm">{t.acceptance.communityDesc}</p>
+              <h3 className="text-xl md:text-2xl font-bold text-[#2D2F33] mb-2 text-center">
+                {t.acceptance.physicianTitle}
+              </h3>
+              <p className="text-sm md:text-base text-gray-600 text-center">Board-Certified Physician</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Important Clarification */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] p-8 md:p-12 rounded-3xl text-white">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+      <section className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] p-8 md:p-10 lg:p-14 rounded-2xl md:rounded-3xl text-white shadow-2xl">
+            <div className="flex items-center justify-center mb-6 md:mb-8">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-[#00D4E0] rounded-full flex items-center justify-center">
+                <FaShieldAlt className="text-2xl md:text-3xl text-white" />
+              </div>
+            </div>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 text-center px-2">
               {t.acceptance.clarificationTitle}
             </h2>
-            <p className="text-lg text-white/90 mb-6 leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-white/95 mb-4 md:mb-6 leading-relaxed">
               {t.acceptance.clarificationDesc1}
             </p>
-            <p className="text-lg text-white/90 leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-white/95 mb-8 md:mb-10 leading-relaxed">
               {t.acceptance.clarificationDesc2}
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <div className="flex items-center">
-                <FaCheckCircle className="text-[#00A5A8] mr-2" />
-                <span>{t.acceptance.meetsAHA}</span>
+            <div className="flex flex-wrap justify-center gap-3 md:gap-6 pt-6 border-t border-white/20">
+              <div className="flex items-center bg-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
+                <FaCheckCircle className="text-[#00D4E0] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
+                <span className="font-semibold text-sm md:text-base lg:text-lg">{t.acceptance.meetsAHA}</span>
               </div>
-              <div className="flex items-center">
-                <FaCheckCircle className="text-[#00A5A8] mr-2" />
-                <span>{t.acceptance.ilcorCompliant}</span>
+              <div className="flex items-center bg-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
+                <FaCheckCircle className="text-[#00D4E0] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
+                <span className="font-semibold text-sm md:text-base lg:text-lg">{t.acceptance.ilcorCompliant}</span>
               </div>
-              <div className="flex items-center">
-                <FaCheckCircle className="text-[#00A5A8] mr-2" />
-                <span>{t.acceptance.employerAccepted}</span>
+              <div className="flex items-center bg-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
+                <FaCheckCircle className="text-[#00D4E0] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
+                <span className="font-semibold text-sm md:text-base lg:text-lg">{t.acceptance.employerAccepted}</span>
               </div>
             </div>
           </div>
@@ -407,24 +351,30 @@ export default function Acceptance() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-[#C10E21] to-[#a00d1c] text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+      <section className="relative py-16 md:py-24 bg-gradient-to-br from-[#1E90FF] to-[#1873CC] text-white overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 md:mb-6 leading-tight px-2">
             {t.acceptance.ctaTitle}
           </h2>
-          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl lg:text-2xl text-white/95 mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
             {t.acceptance.ctaSubtitle}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center px-4">
             <button
               onClick={() => router.push("/login")}
-              className="px-10 py-5 bg-white text-[#C10E21] text-lg font-bold uppercase rounded-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
+              className="w-full sm:w-auto px-8 md:px-12 py-4 md:py-5 bg-white text-[#1E90FF] text-base md:text-lg font-bold rounded-lg md:rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
             >
               {t.acceptance.findCourse}
             </button>
             <button
               onClick={() => router.push("/")}
-              className="px-10 py-5 bg-[#00A5A8] text-white text-lg font-bold uppercase rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95"
+              className="w-full sm:w-auto px-8 md:px-12 py-4 md:py-5 bg-[#00D4E0] text-white text-base md:text-lg font-bold rounded-lg md:rounded-xl hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95 border-2 border-white/20"
             >
               {t.acceptance.learnMore}
             </button>
@@ -440,11 +390,11 @@ export default function Acceptance() {
             <div className="md:col-span-1">
               <div className="mb-6">
                 <Image
-                  src="/logo.png"
+                  src="/cpi logo.png"
                   alt="CarePoint Institute"
-                  width={80}
-                  height={80}
-                  className="rounded-lg"
+                  width={120}
+                  height={50}
+                  className="object-contain"
                 />
               </div>
               <p className="text-white/80 leading-relaxed">
@@ -456,12 +406,12 @@ export default function Acceptance() {
             <div>
               <h3 className="text-lg font-bold mb-4">{t.footer.quickLinks}</h3>
               <ul className="space-y-3">
-                <li><button onClick={() => router.push("/#courses")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.cprCourses}</button></li>
-                <li><button onClick={() => router.push("/#training-options")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.firstAid}</button></li>
-                <li><button onClick={() => router.push("/acceptance")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.accreditation}</button></li>
-                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.becomeInstructor}</button></li>
-                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.findClass}</button></li>
-                <li><button onClick={() => router.push("/login")} className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.logIn}</button></li>
+                <li><button onClick={() => router.push("/#courses")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.cprCourses}</button></li>
+                <li><button onClick={() => router.push("/#training-options")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.firstAid}</button></li>
+                <li><button onClick={() => router.push("/acceptance")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.accreditation}</button></li>
+                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.becomeInstructor}</button></li>
+                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.findClass}</button></li>
+                <li><button onClick={() => router.push("/login")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.logIn}</button></li>
               </ul>
             </div>
 
@@ -470,15 +420,15 @@ export default function Acceptance() {
               <h3 className="text-lg font-bold mb-4">{t.footer.contactUs}</h3>
               <ul className="space-y-3 text-white/80">
                 <li className="flex items-center">
-                  <FaPhone className="mr-3 text-[#00A5A8]" />
+                  <FaPhone className="mr-3 text-[#00D4E0]" />
                   {t.nav.phone}
                 </li>
                 <li className="flex items-center">
-                  <FaEnvelope className="mr-3 text-[#00A5A8]" />
+                  <FaEnvelope className="mr-3 text-[#00D4E0]" />
                   {t.acceptance.email}
                 </li>
                 <li className="flex items-start">
-                  <FaMapMarkerAlt className="mr-3 mt-1 text-[#00A5A8]" />
+                  <FaMapMarkerAlt className="mr-3 mt-1 text-[#00D4E0]" />
                   <span>{t.acceptance.address}<br />{t.acceptance.suite}<br />{t.acceptance.city}</span>
                 </li>
               </ul>
@@ -488,18 +438,20 @@ export default function Acceptance() {
             <div>
               <h3 className="text-lg font-bold mb-4">{t.footer.legal}</h3>
               <ul className="space-y-3">
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.privacy}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.dataProtection}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.security}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.refund}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00A5A8] transition">{t.footer.terms}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.privacy}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.dataProtection}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.security}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.refund}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.terms}</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-white/10 pt-8">
-            <div className="text-center text-white/60 text-sm">
-              {t.footer.copyright}
+            <div className="text-center text-white/60 text-sm space-y-2">
+              <div>{t.footer.ein}</div>
+              <div>{t.footer.businessAddress}</div>
+              <div className="mt-4">{t.footer.copyright}</div>
             </div>
           </div>
         </div>

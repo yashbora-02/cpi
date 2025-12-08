@@ -22,9 +22,24 @@ function getAdminApp() {
   }
 
   try {
-    // Try to load service account key
-    const serviceAccountPath = join(process.cwd(), 'serviceAccountKey.json');
+    // Try environment variable first (for Vercel/production)
+    const serviceAccountEnv = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
+    if (serviceAccountEnv) {
+      try {
+        const serviceAccount = JSON.parse(serviceAccountEnv);
+        adminApp = admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+        console.log('✅ Firebase Admin initialized from environment variable');
+        return adminApp;
+      } catch (parseError) {
+        console.error('❌ Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY:', parseError);
+      }
+    }
+
+    // Fallback to file (for local development)
+    const serviceAccountPath = join(process.cwd(), 'serviceAccountKey.json');
     try {
       const serviceAccount = JSON.parse(
         readFileSync(serviceAccountPath, 'utf8')
@@ -34,11 +49,12 @@ function getAdminApp() {
         credential: admin.credential.cert(serviceAccount),
       });
 
-      console.log('✅ Firebase Admin initialized with service account');
+      console.log('✅ Firebase Admin initialized with service account file');
     } catch (fileError) {
       // Fallback to basic initialization (will work in some cases)
       console.warn('⚠️  Service account key not found. Using basic initialization.');
-      console.warn('   Download service account key from Firebase Console for full functionality.');
+      console.warn('   For production: Add FIREBASE_SERVICE_ACCOUNT_KEY environment variable');
+      console.warn('   For local: Download serviceAccountKey.json from Firebase Console');
 
       adminApp = admin.initializeApp({
         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,

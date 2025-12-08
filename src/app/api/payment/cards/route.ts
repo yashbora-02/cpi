@@ -30,22 +30,35 @@ export async function GET(req: Request) {
     }
 
     const db = getFirestoreAdmin();
+
+    // Simplified query to avoid composite index requirement
+    // Fetch all cards for user, then sort in memory
     const cardsSnapshot = await db.collection('savedCards')
       .where('userEmail', '==', userEmail)
-      .orderBy('isDefault', 'desc')
-      .orderBy('createdAt', 'desc')
       .get();
 
-    const cards = cardsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    // Sort in memory: default cards first, then by creation date (newest first)
+    const cards = cardsSnapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      .sort((a: any, b: any) => {
+        // Sort by isDefault first (true before false)
+        if (a.isDefault !== b.isDefault) {
+          return b.isDefault ? 1 : -1;
+        }
+        // Then sort by createdAt (newest first)
+        const aTime = a.createdAt?.toMillis() || 0;
+        const bTime = b.createdAt?.toMillis() || 0;
+        return bTime - aTime;
+      });
 
     return NextResponse.json({ cards });
   } catch (error) {
     console.error("Error fetching saved cards:", error);
     return NextResponse.json(
-      { error: "Failed to fetch saved cards" },
+      { error: "Failed to fetch saved cards", details: (error as Error).message },
       { status: 500 }
     );
   }

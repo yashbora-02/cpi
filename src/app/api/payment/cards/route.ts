@@ -1,10 +1,8 @@
 import { verifyTokenFromRequest } from '@/lib/firebaseAdmin';
-import { PrismaClient } from '@/generated/prisma';
+import { getFirestoreAdmin, serverTimestamp } from '@/lib/firestoreAdmin';
 import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 // Helper function to detect card type from card number
 function detectCardType(cardNumber: string): string {
@@ -31,40 +29,25 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
     }
 
-    const savedCards = await prisma.savedCard.findMany({
-      where: {
-        user_email: userEmail,
-      },
-      orderBy: [
-        { is_default: 'desc' },
-        { created_at: 'desc' },
-      ],
-    });
+    const db = getFirestoreAdmin();
+    const cardsSnapshot = await db.collection('savedCards')
+      .where('userEmail', '==', userEmail)
+      .orderBy('isDefault', 'desc')
+      .orderBy('createdAt', 'desc')
+      .get();
 
-    return NextResponse.json({ cards: savedCards });
+    const cards = cardsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return NextResponse.json({ cards });
   } catch (error) {
     console.error("Error fetching saved cards:", error);
-
-    // Mock mode fallback
-    console.log("⚠️ Database not connected. Running in MOCK MODE.");
-    return NextResponse.json({
-      cards: [
-        {
-          id: 1,
-          user_email: "user@example.com",
-          card_last_four: "4242",
-          card_type: "Visa",
-          cardholder_name: "John Doe",
-          expiry_month: "12",
-          expiry_year: "25",
-          is_default: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ],
-    });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { error: "Failed to fetch saved cards" },
+      { status: 500 }
+    );
   }
 }
 
@@ -101,31 +84,40 @@ export async function POST(req: Request) {
     // Parse expiry date (format: MM/YY)
     const [expiryMonth, expiryYear] = expiryDate.split('/');
 
+    const db = getFirestoreAdmin();
+
     // If setting as default, unset all other default cards
     if (setAsDefault) {
-      await prisma.savedCard.updateMany({
-        where: {
-          user_email: userEmail,
-          is_default: true,
-        },
-        data: {
-          is_default: false,
-        },
+      const defaultCardsSnapshot = await db.collection('savedCards')
+        .where('userEmail', '==', userEmail)
+        .where('isDefault', '==', true)
+        .get();
+
+      const batch = db.batch();
+      defaultCardsSnapshot.docs.forEach(doc => {
+        batch.update(doc.ref, { isDefault: false });
       });
+      await batch.commit();
     }
 
     // Create new saved card
-    const savedCard = await prisma.savedCard.create({
-      data: {
-        user_email: userEmail,
-        card_last_four: cardLast4,
-        card_type: cardType,
-        cardholder_name: cardholderName,
-        expiry_month: expiryMonth.trim(),
-        expiry_year: expiryYear.trim(),
-        is_default: setAsDefault || false,
-      },
-    });
+    const cardData = {
+      userEmail,
+      cardLastFour: cardLast4,
+      cardType,
+      cardholderName,
+      expiryMonth: expiryMonth.trim(),
+      expiryYear: expiryYear.trim(),
+      isDefault: setAsDefault || false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    const cardRef = await db.collection('savedCards').add(cardData);
+    const savedCard = {
+      id: cardRef.id,
+      ...cardData,
+    };
 
     return NextResponse.json({
       success: true,
@@ -133,25 +125,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error saving card:", error);
-
-    // Mock mode fallback
-    console.log("⚠️ Database not connected. Running in MOCK MODE.");
-    return NextResponse.json({
-      success: true,
-      card: {
-        id: Date.now(),
-        user_email: decoded.email,
-        card_last_four: "4242",
-        card_type: "Visa",
-        cardholder_name: "Mock User",
-        expiry_month: "12",
-        expiry_year: "25",
-        is_default: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { error: "Failed to save card" },
+      { status: 500 }
+    );
   }
 }

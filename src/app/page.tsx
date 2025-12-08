@@ -437,7 +437,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold text-[#2D2F33] mb-3">{t.howWeTeach.scenario}</h3>
               <p className="text-gray-600">
-                {t.howWeTeach.scenarioDesc}
+                {t.howWeTeach.scenarioDesc}                                                     
               </p>
             </div>
 

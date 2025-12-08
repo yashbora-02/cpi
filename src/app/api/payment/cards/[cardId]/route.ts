@@ -1,10 +1,8 @@
 import { verifyTokenFromRequest } from '@/lib/firebaseAdmin';
-import { PrismaClient } from '@/generated/prisma';
+import { getFirestoreAdmin } from '@/lib/firestoreAdmin';
 import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 // DELETE - Remove a saved card
 export async function DELETE(
@@ -22,38 +20,37 @@ export async function DELETE(
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
     }
 
-    const { cardId: cardIdParam } = await params;
-    const cardId = parseInt(cardIdParam);
+    const { cardId } = await params;
+    const db = getFirestoreAdmin();
 
     // Verify card belongs to user before deleting
-    const card = await prisma.savedCard.findFirst({
-      where: {
-        id: cardId,
-        user_email: userEmail,
-      },
-    });
+    const cardDoc = await db.collection('savedCards').doc(cardId).get();
 
-    if (!card) {
+    if (!cardDoc.exists) {
       return NextResponse.json(
-        { error: "Card not found or unauthorized" },
+        { error: "Card not found" },
         { status: 404 }
       );
     }
 
+    const cardData = cardDoc.data();
+    if (cardData?.userEmail !== userEmail) {
+      return NextResponse.json(
+        { error: "Unauthorized - card belongs to different user" },
+        { status: 403 }
+      );
+    }
+
     // Delete the card
-    await prisma.savedCard.delete({
-      where: { id: cardId },
-    });
+    await cardDoc.ref.delete();
 
     return NextResponse.json({ success: true, message: "Card deleted successfully" });
   } catch (error) {
     console.error("Error deleting card:", error);
-
-    // Mock mode fallback
-    console.log("⚠️ Database not connected. Running in MOCK MODE.");
-    return NextResponse.json({ success: true, message: "Card deleted (mock mode)" });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { error: "Failed to delete card" },
+      { status: 500 }
+    );
   }
 }
 
@@ -73,62 +70,64 @@ export async function PUT(
       return NextResponse.json({ error: "User email not found" }, { status: 400 });
     }
 
-    const { cardId: cardIdParam } = await params;
-    const cardId = parseInt(cardIdParam);
+    const { cardId } = await params;
     const body = await req.json();
     const { setAsDefault } = body;
 
-    // Verify card belongs to user
-    const card = await prisma.savedCard.findFirst({
-      where: {
-        id: cardId,
-        user_email: userEmail,
-      },
-    });
+    const db = getFirestoreAdmin();
 
-    if (!card) {
+    // Verify card belongs to user
+    const cardDoc = await db.collection('savedCards').doc(cardId).get();
+
+    if (!cardDoc.exists) {
       return NextResponse.json(
-        { error: "Card not found or unauthorized" },
+        { error: "Card not found" },
         { status: 404 }
+      );
+    }
+
+    const cardData = cardDoc.data();
+    if (cardData?.userEmail !== userEmail) {
+      return NextResponse.json(
+        { error: "Unauthorized - card belongs to different user" },
+        { status: 403 }
       );
     }
 
     if (setAsDefault) {
       // Unset all other cards as default
-      await prisma.savedCard.updateMany({
-        where: {
-          user_email: userEmail,
-          is_default: true,
-        },
-        data: {
-          is_default: false,
-        },
+      const defaultCardsSnapshot = await db.collection('savedCards')
+        .where('userEmail', '==', userEmail)
+        .where('isDefault', '==', true)
+        .get();
+
+      const batch = db.batch();
+      defaultCardsSnapshot.docs.forEach(doc => {
+        batch.update(doc.ref, { isDefault: false });
       });
+      await batch.commit();
 
       // Set this card as default
-      const updatedCard = await prisma.savedCard.update({
-        where: { id: cardId },
-        data: { is_default: true },
-      });
+      await cardDoc.ref.update({ isDefault: true });
+
+      const updatedCard = {
+        id: cardDoc.id,
+        ...cardData,
+        isDefault: true,
+      };
 
       return NextResponse.json({ success: true, card: updatedCard });
     }
 
-    return NextResponse.json({ success: true, card });
-  } catch (error) {
-    console.error("Error updating card:", error);
-
-    // Mock mode fallback
-    console.log("⚠️ Database not connected. Running in MOCK MODE.");
-    const { cardId: cardIdParam } = await params;
     return NextResponse.json({
       success: true,
-      card: {
-        id: parseInt(cardIdParam),
-        is_default: true,
-      },
+      card: { id: cardDoc.id, ...cardData }
     });
-  } finally {
-    await prisma.$disconnect();
+  } catch (error) {
+    console.error("Error updating card:", error);
+    return NextResponse.json(
+      { error: "Failed to update card" },
+      { status: 500 }
+    );
   }
 }

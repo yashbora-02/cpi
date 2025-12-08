@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/generated/prisma";
+import { getFirestoreAdmin, serverTimestamp } from "@/lib/firestoreAdmin";
 import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { sendTicketNotificationToAdmin, sendTicketConfirmationToUser } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 // Generate unique ticket number
 function generateTicketNumber(): string {
@@ -78,108 +76,73 @@ export async function POST(req: NextRequest) {
     // Generate ticket number
     const ticketNumber = generateTicketNumber();
 
-    // Try to create ticket in database, fallback to mock if DB unavailable
-    try {
-      const ticket = await prisma.ticket.create({
-        data: {
-          ticket_number: ticketNumber,
-          type: type || "General Request",
-          title,
-          description,
-          reported_by: reportedBy,
-          email,
-          phone,
-          file_url: fileUrl,
-          file_name: fileName,
-          status: "open",
-        },
-      });
+    // Create ticket in Firestore
+    const db = getFirestoreAdmin();
+    const ticketData = {
+      ticketNumber,
+      type: type || "General Request",
+      title,
+      description,
+      reportedBy,
+      email,
+      phone,
+      fileUrl: fileUrl || null,
+      fileName: fileName || null,
+      status: "open",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
 
-      // Send email notifications
-      console.log("📧 Sending email notifications...");
+    const ticketRef = await db.collection('tickets').add(ticketData);
 
-      // Send notification to admin (your email)
-      const adminEmailResult = await sendTicketNotificationToAdmin({
-        ticketNumber: ticket.ticket_number,
-        type: type || "General Request",
-        title,
-        description,
-        reportedBy,
-        email,
-        phone,
-        fileName,
-      });
+    console.log(`✅ Ticket created: ${ticketNumber} (ID: ${ticketRef.id})`);
 
-      if (adminEmailResult.success) {
-        console.log("✅ Admin notification sent successfully");
-      } else {
-        console.error("❌ Failed to send admin notification:", adminEmailResult.error);
-      }
+    // Send email notifications
+    console.log("📧 Sending email notifications...");
 
-      // Send confirmation to user
-      const userEmailResult = await sendTicketConfirmationToUser(email, ticketNumber, reportedBy);
+    // Send notification to admin
+    const adminEmailResult = await sendTicketNotificationToAdmin({
+      ticketNumber,
+      type: type || "General Request",
+      title,
+      description,
+      reportedBy,
+      email,
+      phone,
+      fileName,
+    });
 
-      if (userEmailResult.success) {
-        console.log("✅ User confirmation sent successfully");
-      } else {
-        console.error("❌ Failed to send user confirmation:", userEmailResult.error);
-      }
-
-      return NextResponse.json({
-        success: true,
-        ticketNumber: ticket.ticket_number,
-        message: "Ticket created successfully",
-        emailsSent: {
-          admin: adminEmailResult.success,
-          user: userEmailResult.success,
-        },
-      });
-    } catch (dbError) {
-      // Database not available - use mock mode
-      console.log("⚠️  Database not connected. Running in MOCK MODE.");
-      console.log("📧 Emails would be sent for ticket:", ticketNumber);
-      console.log("🎫 Ticket Number:", ticketNumber);
-      console.log("📝 Ticket Details:");
-      console.log("   - Type:", type);
-      console.log("   - Title:", title);
-      console.log("   - Reported By:", reportedBy);
-      console.log("   - Email:", email);
-      console.log("   - Phone:", phone);
-      if (fileName) console.log("   - Attachment:", fileName);
-
-      // Still try to send emails even in mock mode
-      const adminEmailResult = await sendTicketNotificationToAdmin({
-        ticketNumber,
-        type: type || "General Request",
-        title,
-        description,
-        reportedBy,
-        email,
-        phone,
-        fileName,
-      });
-
-      const userEmailResult = await sendTicketConfirmationToUser(email, ticketNumber, reportedBy);
-
-      // Return success in mock mode
-      return NextResponse.json({
-        success: true,
-        ticketNumber: ticketNumber,
-        message: "Ticket created successfully (Mock Mode - No database connected)",
-        emailsSent: {
-          admin: adminEmailResult.success,
-          user: userEmailResult.success,
-        },
-      });
+    if (adminEmailResult.success) {
+      console.log("✅ Admin notification sent successfully");
+    } else {
+      console.error("❌ Failed to send admin notification:", adminEmailResult.error);
     }
+
+    // Send confirmation to user
+    const userEmailResult = await sendTicketConfirmationToUser(email, ticketNumber, reportedBy);
+
+    if (userEmailResult.success) {
+      console.log("✅ User confirmation sent successfully");
+    } else {
+      console.error("❌ Failed to send user confirmation:", userEmailResult.error);
+    }
+
+    return NextResponse.json({
+      success: true,
+      ticketNumber,
+      ticketId: ticketRef.id,
+      message: "Ticket created successfully",
+      emailsSent: {
+        admin: adminEmailResult.success,
+        user: userEmailResult.success,
+      },
+    });
   } catch (error) {
     console.error("Error creating ticket:", error);
     return NextResponse.json(
       { error: "Failed to create ticket" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -191,41 +154,23 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {
-      const tickets = await prisma.ticket.findMany({
-        orderBy: { created_at: "desc" },
-        take: 50, // Limit to last 50 tickets
-      });
+    const db = getFirestoreAdmin();
+    const ticketsSnapshot = await db.collection('tickets')
+      .orderBy('createdAt', 'desc')
+      .limit(50)
+      .get();
 
-      return NextResponse.json(tickets);
-    } catch (dbError) {
-      // Database not available - return mock data
-      console.log("⚠️  Database not connected. Returning mock ticket data.");
-      return NextResponse.json([
-        {
-          id: 1,
-          ticket_number: "TICKET-MOCK-001",
-          type: "General Request",
-          title: "Sample Ticket (Mock Data)",
-          description: "This is mock data. Connect database to see real tickets.",
-          reported_by: "Test User",
-          email: "test@example.com",
-          phone: "+1-555-123-4567",
-          file_url: null,
-          file_name: null,
-          status: "open",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ]);
-    }
+    const tickets = ticketsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return NextResponse.json(tickets);
   } catch (error) {
     console.error("Error fetching tickets:", error);
     return NextResponse.json(
       { error: "Failed to fetch tickets" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

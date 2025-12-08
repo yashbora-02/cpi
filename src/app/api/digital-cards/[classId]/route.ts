@@ -1,10 +1,8 @@
 import { verifyTokenFromRequest } from '@/lib/firebaseAdmin';
-import { PrismaClient } from '@/generated/prisma';
+import { getFirestoreAdmin } from '@/lib/firestoreAdmin';
 import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 export async function GET(
   req: Request,
@@ -17,63 +15,46 @@ export async function GET(
 
   try {
     const { classId } = await params;
+    const db = getFirestoreAdmin();
 
-    // Fetch digital card with students
-    const digitalCard = await prisma.digitalCard.findUnique({
-      where: {
-        class_id: classId,
-      },
-      include: {
-        students: true,
-      },
-    });
+    // Find digital card by classId
+    const digitalCardsSnapshot = await db.collection('digitalCards')
+      .where('classId', '==', classId)
+      .limit(1)
+      .get();
 
-    if (!digitalCard) {
+    if (digitalCardsSnapshot.empty) {
       return NextResponse.json(
         { error: "Class not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(digitalCard);
-  } catch (error) {
-    console.error("Error fetching digital card:", error);
-
-    // Mock mode fallback
-    console.log("⚠️ Database not connected. Running in MOCK MODE.");
-
-    // Return mock data for development
-    const { classId } = await params;
-    const mockData = {
-      id: 1,
-      class_id: classId,
-      program: "CPI Adult First Aid | CPR AED All Ages (2020) -DC",
-      site: "Arizona Provider Training, LLC",
-      class_type: "Initial",
-      start_date: "2025-05-30T00:00:00.000Z",
-      end_date: "2025-05-30T00:00:00.000Z",
-      accrediting_instructor: "John Doe",
-      assisting_instructor: null,
-      open_enrollment: false,
-      is_locked: true,
-      submitted_at: "2025-05-30T12:00:00.000Z",
-      submitted_by: "user@example.com",
-      credits_used: 1,
-      students: [
-        {
-          id: 1,
-          first_name: "Carrie",
-          last_name: "Long",
-          email: "carrie.long@example.com",
-          certificate_url: null,
-        },
-      ],
-      created_at: "2025-05-30T12:00:00.000Z",
-      updated_at: "2025-05-30T12:00:00.000Z",
+    const digitalCardDoc = digitalCardsSnapshot.docs[0];
+    const digitalCardData = {
+      id: digitalCardDoc.id,
+      ...digitalCardDoc.data(),
     };
 
-    return NextResponse.json(mockData);
-  } finally {
-    await prisma.$disconnect();
+    // Fetch students from subcollection
+    const studentsSnapshot = await digitalCardDoc.ref.collection('students').get();
+    const students = studentsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Add students to response
+    const response = {
+      ...digitalCardData,
+      students,
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error("Error fetching digital card:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch digital card" },
+      { status: 500 }
+    );
   }
 }

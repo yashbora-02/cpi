@@ -1,51 +1,72 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@/generated/prisma";
-import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
+import { getFirestoreAdmin } from "@/lib/firestoreAdmin";
 
 export const dynamic = "force-dynamic";
 
-const prisma = new PrismaClient();
-
-// Mock video data for fallback
-const mockVideos = [
-  {
-    id: 1,
-    title: "CPR Basics - Adult",
-    description: "Learn the fundamentals of CPR for adult patients",
-    video_id: "sample-video-1",
-    video_url: "https://www.youtube.com/watch?v=sample1",
-    thumbnail_url: "/thumbnail1.png",
-  },
-  {
-    id: 2,
-    title: "AED Training",
-    description: "How to properly use an Automated External Defibrillator",
-    video_id: "sample-video-2",
-    video_url: "https://www.youtube.com/watch?v=sample2",
-    thumbnail_url: "/thumbnail2.jpeg",
-  },
-];
-
 export async function GET(req: Request) {
-  const decoded = await verifyTokenFromRequest(req);
-
-  if (!decoded) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    const videos = await prisma.video.findMany({
-      orderBy: { id: "asc" },
+    // Get userId from query params (required for role-based access)
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+    const userRole = searchParams.get('role');
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "userId is required" },
+        { status: 400 }
+      );
+    }
+
+    const db = getFirestoreAdmin();
+
+    // Fetch all videos
+    const videosSnapshot = await db.collection('videos')
+      .orderBy('order', 'asc')
+      .get();
+
+    const allVideos = videosSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Admin gets access to all videos
+    if (userRole === 'admin') {
+      console.log(`✅ Admin access - Fetched ${allVideos.length} videos`);
+      return NextResponse.json(allVideos);
+    }
+
+    // For instructors/students, check their credits to determine access
+    const creditsSnapshot = await db.collection('credits')
+      .where('userId', '==', userId)
+      .get();
+
+    // Get all course types user has purchased (credits > 0)
+    const userCourseTypes = new Set<string>();
+    creditsSnapshot.docs.forEach(doc => {
+      const data = doc.data();
+      if (data.credits > 0) {
+        userCourseTypes.add(data.courseType);
+      }
     });
 
-    console.log("✅ Fetched videos from database:", videos.length, "records");
-    return NextResponse.json(videos);
+    // Filter videos based on user's purchased course types
+    const accessibleVideos = allVideos.filter((video: any) => {
+      // If video has no courseTypes defined or is marked as free, grant access
+      if (!video.courseTypes || video.courseTypes.length === 0 || video.accessLevel === 'free') {
+        return true;
+      }
+
+      // Check if user has credits for any of the video's course types
+      return video.courseTypes.some((courseType: string) => userCourseTypes.has(courseType));
+    });
+
+    console.log(`✅ Fetched ${accessibleVideos.length}/${allVideos.length} videos for user ${userId} (${userCourseTypes.size} course types)`);
+    return NextResponse.json(accessibleVideos);
   } catch (error) {
-    // Database not available - use mock mode
-    console.log("⚠️  Database not connected. Returning MOCK video data.");
-    console.log("   Mock videos:", mockVideos.length, "videos");
-    return NextResponse.json(mockVideos);
-  } finally {
-    await prisma.$disconnect();
+    console.error("Error fetching videos:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch videos" },
+      { status: 500 }
+    );
   }
 }

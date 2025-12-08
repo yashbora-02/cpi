@@ -1,9 +1,7 @@
-import { PrismaClient } from '@/generated/prisma';
 import { NextResponse } from 'next/server';
+import { getFirestoreAdmin } from '@/lib/firestoreAdmin';
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 // Simple password verification (matches the hashing in seed.ts)
 function verifyPassword(inputPassword: string, storedPassword: string): boolean {
@@ -34,17 +32,23 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Find user by username
-    const user = await prisma.user.findUnique({
-      where: { username: username.toLowerCase() },
-    });
+    const db = getFirestoreAdmin();
 
-    if (!user) {
+    // Query users collection by username
+    const usersSnapshot = await db.collection('users')
+      .where('username', '==', username.toLowerCase())
+      .limit(1)
+      .get();
+
+    if (usersSnapshot.empty) {
       return NextResponse.json(
         { error: 'Invalid username or password' },
         { status: 401 }
       );
     }
+
+    const userDoc = usersSnapshot.docs[0];
+    const user = userDoc.data();
 
     // Verify password
     if (!verifyPassword(password, user.password)) {
@@ -58,52 +62,18 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       user: {
-        id: user.id,
+        id: userDoc.id,
         username: user.username,
         role: user.role,
-        full_name: user.full_name,
+        full_name: user.fullName,
         email: user.email,
       },
     });
   } catch (error) {
-    console.error('Database error:', error);
-
-    // Mock mode fallback for development
-    console.log('⚠️ Database not connected. Running in MOCK MODE.');
-
-    // Use the already parsed body
-    // Mock credentials
-    if (username === 'admin' && password === 'admin123') {
-      return NextResponse.json({
-        success: true,
-        user: {
-          id: 1,
-          username: 'admin',
-          role: 'admin',
-          full_name: 'System Administrator',
-          email: 'admin@cpi-training.com',
-        },
-      });
-    }
-
-    if (username === 'instructor' && password === 'instructor123') {
-      return NextResponse.json({
-        success: true,
-        user: {
-          id: 2,
-          username: 'instructor',
-          role: 'instructor',
-          full_name: 'Training Instructor',
-          email: 'instructor@cpi-training.com',
-        },
-      });
-    }
-
+    console.error('Firestore error:', error);
     return NextResponse.json(
-      { error: 'Invalid username or password' },
-      { status: 401 }
+      { error: 'Login failed. Please try again.' },
+      { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

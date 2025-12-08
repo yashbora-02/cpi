@@ -79,12 +79,10 @@ export default function PurchaseCredits() {
   const [purchasedCredits, setPurchasedCredits] = useState(0);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.replace("/login");
-      }
-    });
-    return () => unsubscribe();
+    const userStr = localStorage.getItem("currentUser");
+    if (!userStr) {
+      router.replace("/login");
+    }
   }, [router]);
 
   const handlePurchase = (option: PurchaseOption) => {
@@ -113,15 +111,15 @@ export default function PurchaseCredits() {
     if (!selectedOption) return;
 
     try {
-      // Get Firebase ID token
-      const user = auth.currentUser;
-      if (!user) {
+      // Get user from localStorage
+      const userStr = localStorage.getItem("currentUser");
+      if (!userStr) {
         alert("Authentication error. Please log in again.");
         router.push("/login");
         return;
       }
 
-      const token = await user.getIdToken();
+      const user = JSON.parse(userStr);
 
       // Map course ID to credit type - using course IDs for unique identification
       let courseType = selectedOption.id;
@@ -135,13 +133,14 @@ export default function PurchaseCredits() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           packageId: selectedOption.id,
           courseType: courseType,
           credits: totalCredits,
           price: totalPrice,
+          userId: user.username,
+          userEmail: user.email,
         }),
       });
 

@@ -80,9 +80,10 @@ function DashboardContent() {
 
       setIsLoading(true);
       try {
-        // For now, since we switched auth systems, use mock data
-        // In production, you'd call an API that uses the new auth system
-        const res = await fetch(`/api/credits?t=${Date.now()}`, {
+        const user = JSON.parse(userStr);
+        const userId = user.username; // Use username as userId
+
+        const res = await fetch(`/api/credits?userId=${userId}&t=${Date.now()}`, {
           cache: 'no-store', // Prevent browser caching
         });
         const data = await res.json();
@@ -252,6 +253,74 @@ function DashboardContent() {
                   </div>
                   <p className="text-3xl font-bold text-gray-900">98%</p>
                   <p className="text-xs text-gray-500 mt-1">Above target of 95%</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Instructor Credits Overview - Instructor Only */}
+          {isInstructor && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Your Training Credits</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">Credits available for course certifications</p>
+                </div>
+                {isLoading && (
+                  <FaSpinner className="animate-spin text-xl text-gray-400" />
+                )}
+              </div>
+
+              {/* Credits Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 items-stretch">
+                <CreditCard
+                  title="CPI Adult First Aid (2020)"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-FA-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Adult First Aid | CPR AED Adult Infant"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-FA-CPR-AI-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Adult First Aid | CPR AED All Ages"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-FA-CPR-AA-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Basic Life Support (2020)"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-BLS-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI CPR AED All Ages (2020)"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-CPR-AA-2020")}
+                  isLoading={isLoading}
+                />
+                <CreditCard
+                  title="CPI Spanish Adult First Aid | CPR AED All Ages"
+                  subtitle="Blended - DC"
+                  credits={getCreditsByType("CPI-ES-FA-CPR-2020")}
+                  isLoading={isLoading}
+                />
+              </div>
+
+              {/* Contact Admin Note */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5">
+                  <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm text-blue-800 font-medium">Need more credits?</p>
+                  <p className="text-sm text-blue-700 mt-1">Contact your administrator to purchase additional training credits for your courses.</p>
                 </div>
               </div>
             </div>

@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@/generated/prisma";
+import { getFirestoreAdmin, serverTimestamp, increment } from "@/lib/firestoreAdmin";
 import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 /**
  * Generate unique class ID
@@ -20,14 +18,10 @@ function generateClassId(): string {
  * Create and lock a digital card with students
  */
 export async function POST(req: Request) {
-  // Skip auth in development
-  // const decoded = await verifyTokenFromRequest(req);
-  // if (!decoded) {
-  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  // }
-
-  // Temporary: Use mock user for development
-  const decoded = { email: "dev@example.com", uid: "dev-user-001" };
+  const decoded = await verifyTokenFromRequest(req);
+  if (!decoded) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
     const body = await req.json();
@@ -59,94 +53,91 @@ export async function POST(req: Request) {
       );
     }
 
+    const db = getFirestoreAdmin();
+    const userId = decoded.uid;
+    const userEmail = decoded.email || userId;
+
+    // Check available credits
+    const creditsSnapshot = await db.collection('credits')
+      .where('userId', '==', userId)
+      .get();
+
+    let totalCredits = 0;
+    creditsSnapshot.docs.forEach(doc => {
+      totalCredits += doc.data().credits || 0;
+    });
+
+    if (totalCredits < students.length) {
+      return NextResponse.json(
+        {
+          error: "Insufficient credits",
+          availableCredits: totalCredits,
+          requiredCredits: students.length
+        },
+        { status: 400 }
+      );
+    }
+
     // Generate unique class ID
     const classId = generateClassId();
 
-    try {
-      // Check available credits
-      const creditRecords = await prisma.credit.findMany();
-      const totalCredits = creditRecords.reduce((sum, c) => sum + c.credits, 0);
+    // Create digital card document
+    const digitalCardData = {
+      classId,
+      program,
+      site,
+      classType,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      accreditingInstructor,
+      assistingInstructor: assistingInstructor || null,
+      openEnrollment: openEnrollment || false,
+      isLocked: true,
+      submittedAt: serverTimestamp(),
+      submittedBy: userEmail,
+      creditsUsed: students.length,
+      userId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
 
-      if (totalCredits < students.length) {
-        return NextResponse.json(
-          {
-            error: "Insufficient credits",
-            availableCredits: totalCredits,
-            requiredCredits: students.length
-          },
-          { status: 400 }
-        );
-      }
+    const digitalCardRef = await db.collection('digitalCards').add(digitalCardData);
 
-      // Create digital card with lock
-      const digitalCard = await prisma.digitalCard.create({
-        data: {
-          class_id: classId,
-          program,
-          site,
-          class_type: classType,
-          start_date: new Date(startDate),
-          end_date: new Date(endDate),
-          accrediting_instructor: accreditingInstructor,
-          assisting_instructor: assistingInstructor || null,
-          open_enrollment: openEnrollment || false,
-          is_locked: true,
-          submitted_at: new Date(),
-          submitted_by: decoded.email || decoded.uid,
-          credits_used: students.length,
-          students: {
-            create: students.map((s: any) => ({
-              first_name: s.firstName,
-              last_name: s.lastName,
-              email: s.email,
-              certificate_url: "/cpi-cert.pdf", // Use mock certificate
-            })),
-          },
-        },
-        include: {
-          students: true,
-        },
+    // Create student documents as subcollection
+    const batch = db.batch();
+    students.forEach((student: any) => {
+      const studentRef = digitalCardRef.collection('students').doc();
+      batch.set(studentRef, {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        email: student.email,
+        certificateUrl: "/cpi-cert.pdf", // Mock certificate
+        createdAt: serverTimestamp(),
       });
+    });
 
-      // Deduct credits (simple implementation - deducts from first available credit type)
-      const firstCredit = creditRecords.find(c => c.credits > 0);
-      if (firstCredit) {
-        await prisma.credit.update({
-          where: { id: firstCredit.id },
-          data: {
-            credits: {
-              decrement: students.length,
-            },
-          },
-        });
-      }
+    // Commit student batch
+    await batch.commit();
 
-      console.log(`✅ Digital card created: ${classId}, Credits used: ${students.length}`);
-
-      return NextResponse.json({
-        success: true,
-        digitalCardId: digitalCard.id,
-        classId: digitalCard.class_id,
-        creditsUsed: students.length,
-        studentsCount: digitalCard.students.length,
-        message: "Digital card created and locked successfully",
-      });
-
-    } catch (dbError) {
-      // Database not available - return mock response for Vercel deployment
-      console.log("⚠️ Database not connected. Running in MOCK MODE.");
-      console.log(`🎭 Mock digital card created: ${classId}, Students: ${students.length}`);
-
-      return NextResponse.json({
-        success: true,
-        digitalCardId: 1,
-        classId: classId,
-        creditsUsed: students.length,
-        studentsCount: students.length,
-        message: "Digital card created and locked successfully (MOCK MODE)",
-        mockMode: true,
+    // Deduct credits (from first available credit type)
+    if (creditsSnapshot.docs.length > 0) {
+      const firstCreditDoc = creditsSnapshot.docs[0];
+      await firstCreditDoc.ref.update({
+        credits: increment(-students.length),
+        updatedAt: serverTimestamp(),
       });
     }
+
+    console.log(`✅ Digital card created: ${classId}, Credits used: ${students.length}`);
+
+    return NextResponse.json({
+      success: true,
+      digitalCardId: digitalCardRef.id,
+      classId,
+      creditsUsed: students.length,
+      studentsCount: students.length,
+      message: "Digital card created and locked successfully",
+    });
 
   } catch (error) {
     console.error("Error creating digital card:", error);
@@ -154,7 +145,5 @@ export async function POST(req: Request) {
       { error: "Failed to create digital card" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

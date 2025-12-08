@@ -4,40 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-CPI Training Platform - a comprehensive CPR and First Aid training management system built with Next.js 15, Firebase Authentication, PostgreSQL (via Prisma), and Tailwind CSS 4. The platform manages courses, instructors, students, training credits, and video content for certification programs.
+CPI Training Platform - a comprehensive CPR and First Aid training management system built with Next.js 15, Firebase Authentication, Firestore, and Tailwind CSS 4. The platform manages courses, instructors, students, training credits, and video content for certification programs.
 
 ## Development Commands
 
 ### Running the Application
 ```bash
 npm run dev          # Start development server
-npm run build        # Build for production (runs prisma generate first)
+npm run build        # Build for production
 npm start            # Start production server
 npm run lint         # Run ESLint
-npm install          # Install dependencies (automatically runs prisma generate via postinstall)
+npm install          # Install dependencies
 ```
 
-### Database Commands
-```bash
-npx prisma generate  # Generate Prisma Client (outputs to src/generated/prisma)
-npx prisma db push   # Push schema changes to database (creates tables if they don't exist)
-npm run db:push      # Push schema AND run seed script (creates default users)
-npm run db:seed      # Run seed script only (creates admin and instructor users)
-npx prisma studio    # Open Prisma Studio GUI for database management
-```
+### Database Seeding
+To seed Firestore with initial data:
+1. Start the dev server: `npm run dev`
+2. Visit: `http://localhost:3000/api/seed`
+3. This creates sample credits and videos in Firestore
 
-**Note:** `prisma generate` runs automatically when you run `npm install` due to the postinstall script.
-
-**Default Seeded Users** (created by `npm run db:seed` or `npm run db:push`):
-- **Admin**: Username: `admin` | Password: `admin123` | Email: admin@cpi-training.com
-- **Instructor**: Username: `instructor` | Password: `instructor123` | Email: instructor@cpi-training.com
-
-**Important:** The seed script uses simple base64 encoding for passwords. In production, implement proper bcrypt hashing.
+**Note:** Seeding is only available in development mode (NODE_ENV !== 'production')
 
 ### Environment Setup
 Required environment variables (see `.env.example`):
-- `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET` - Secret key for JWT signing (used for additional auth mechanisms)
 - `NEXT_PUBLIC_FIREBASE_API_KEY` - Firebase client API key
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` - Firebase auth domain
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID` - Firebase project ID
@@ -53,33 +42,64 @@ Required environment variables (see `.env.example`):
 ### Tech Stack
 - **Framework:** Next.js 15.3.3 with App Router
 - **Language:** TypeScript 5
-- **Database:** PostgreSQL with Prisma ORM 6.11.0
+- **Database:** Firebase Firestore (NoSQL document database)
 - **Auth:** Firebase Authentication (Email/Password + Google Sign-in)
 - **Styling:** Tailwind CSS 4.0
 - **UI Components:** React Icons, Headless UI
 - **Deployment:** Vercel
 - **Node.js:** 18+ required
 
+### Database Architecture
+
+**All data is stored in Firebase Firestore.** This is a NoSQL document database with real-time capabilities.
+
+**Firestore Collections:**
+
+1. **credits** - Training credits by user and course type
+   - Fields: `userId`, `userEmail`, `courseType`, `credits`, `updatedAt`
+   - One document per user per course type
+   - Real-time credit balance tracking
+
+2. **tickets** - Support tickets with file attachments
+   - Fields: `ticketNumber`, `type`, `title`, `description`, `reportedBy`, `email`, `phone`, `fileUrl`, `fileName`, `status`, `createdAt`, `updatedAt`
+   - Auto-generated unique ticket numbers
+
+3. **videos** - Training video metadata
+   - Fields: `videoId`, `title`, `description`, `videoUrl`, `thumbnailUrl`, `order`, `createdAt`, `updatedAt`
+   - Ordered list of training videos
+
+4. **digitalCards** - Class/training session records
+   - Fields: `classId`, `program`, `site`, `classType`, `startDate`, `endDate`, `accreditingInstructor`, `assistingInstructor`, `openEnrollment`, `isLocked`, `submittedAt`, `submittedBy`, `creditsUsed`, `userId`, `createdAt`, `updatedAt`
+   - **Subcollection:** `students` - Students enrolled in this digital card
+     - Fields: `firstName`, `lastName`, `email`, `certificateUrl`, `createdAt`
+
+5. **savedCards** - Saved payment cards for users
+   - Fields: `userEmail`, `cardLastFour`, `cardType`, `cardholderName`, `expiryMonth`, `expiryYear`, `isDefault`, `createdAt`, `updatedAt`
+
 ### Directory Structure
 ```
 src/
 ├── app/                      # Next.js App Router
 │   ├── api/                  # API route handlers (protected with Firebase Auth)
-│   │   ├── credits/          # GET credits data, POST purchase credits, GET balance
-│   │   ├── tickets/          # GET/POST support tickets with file uploads
+│   │   ├── auth/             # Authentication endpoints
+│   │   ├── credits/          # Credits management (GET/POST)
+│   │   │   ├── route.ts      # GET/POST user credits
+│   │   │   ├── balance/      # GET credit balance
+│   │   │   └── purchase/     # POST purchase credits
+│   │   ├── tickets/          # Support tickets (GET/POST)
 │   │   ├── videos/           # GET video playlist
-│   │   └── digital-cards/    # POST submit digital card with students
-│   ├── acceptance/           # Acceptance/accreditation info page (protected, requires purchase)
+│   │   ├── digital-cards/    # Digital card management
+│   │   │   ├── submit/       # POST create digital card
+│   │   │   └── [classId]/    # GET digital card by ID
+│   │   ├── payment/          # Payment card management
+│   │   │   └── cards/        # GET/POST saved cards
+│   │   │       └── [cardId]/ # DELETE/PUT card operations
+│   │   └── seed/             # Database seeding endpoint (dev only)
+│   ├── acceptance/           # Acceptance/accreditation info page
 │   ├── courses/              # Course browsing and enrollment
-│   │   ├── enrolled/         # User's enrolled courses
-│   │   └── page.tsx          # Browse all courses
-│   ├── credits/purchase/     # Credit purchase page with checkout modal
+│   ├── credits/purchase/     # Credit purchase page
 │   ├── dashboard/            # Main dashboard with credit overview
 │   ├── instructors/          # Instructor management
-│   │   ├── add/              # Add new instructors
-│   │   ├── development/      # Instructor development
-│   │   ├── manage/           # Manage existing instructors
-│   │   └── reauthorize/      # Reauthorize instructors
 │   ├── login/                # Login page (Email + Google)
 │   ├── register/             # Registration page
 │   ├── students/search/      # Student search functionality
@@ -90,32 +110,23 @@ src/
 │   └── page.tsx              # Landing page
 ├── components/               # Reusable components
 │   ├── Sidebar.tsx           # Main navigation sidebar
-│   ├── *Modal.tsx            # Various modal components (Confirm, AccessLink, Agreement, etc.)
-│   ├── *Drawer.tsx           # Drawer components (StudentEntry, SelectStudent)
-│   └── Student*.tsx          # Student-related components (List, History)
+│   ├── *Modal.tsx            # Various modal components
+│   ├── *Drawer.tsx           # Drawer components
+│   └── Student*.tsx          # Student-related components
 ├── lib/                      # Utility libraries
-│   ├── firebase.ts           # Firebase client config
-│   ├── firebaseAdmin.ts      # Firebase Admin SDK for server
+│   ├── firebase.ts           # Firebase client config (Auth + Firestore)
+│   ├── firebaseAdmin.ts      # Firebase Admin SDK (Auth verification)
+│   ├── firestoreAdmin.ts     # Firestore Admin SDK (database operations)
+│   ├── firestoreHelpers.ts   # Firestore client-side helpers
 │   ├── firebaseAuth.ts       # Auth helper functions
-│   ├── LanguageContext.tsx   # i18n context for English/Spanish translations
-│   ├── translations.ts       # Translation strings for i18n
-│   └── email.ts              # Email notification functions (Web3Forms)
-├── generated/
-│   └── prisma/               # Generated Prisma Client (custom output)
+│   ├── LanguageContext.tsx   # i18n context (English/Spanish)
+│   ├── translations.ts       # Translation strings
+│   └── email.ts              # Email notifications (Web3Forms)
 └── styles/                   # Global styles
 ```
 
-### Database Models (prisma/schema.prisma)
-1. **admins** - Admin user credentials (login_id, password, timestamps)
-2. **User** - User accounts with role-based access (username, password, role, full_name, email) - created by seed script
-3. **Credit** - Training credits by type (cpr_only, first_aid_only, combo)
-4. **Video** - Training video metadata (title, description, video_id, video_url, thumbnail_url)
-5. **Ticket** - Support tickets (ticket_number, type, title, description, reported_by, email, phone, file_url, file_name, status)
-6. **DigitalCard** - Class/training session records (class_id, program, site, class_type, dates, instructors, locking fields, credit tracking)
-7. **DigitalCardStudent** - Students enrolled in digital card classes (first_name, last_name, email, certificate_url) - one-to-many relationship with DigitalCard
-8. **SavedCard** - Saved payment cards for users (user_email, card_last_four, card_type, cardholder_name, expiry, is_default)
-
 ### Authentication Flow
+
 **Client-side** (`src/lib/firebase.ts`, `src/lib/firebaseAuth.ts`):
 1. User authenticates via Firebase (Email/Password or Google Sign-in)
 2. Firebase handles authentication state via `onAuthStateChanged`
@@ -134,35 +145,15 @@ src/
 - Use `"use client"` directive for components with hooks, event handlers, or browser APIs
 - Server components by default (no directive needed)
 - Props drilling for state management (no global state library)
-- **IMPORTANT:** Wrap `useSearchParams()` in a Suspense boundary to avoid hydration warnings:
-  ```typescript
-  import { Suspense } from 'react';
+- **IMPORTANT:** Wrap `useSearchParams()` in a Suspense boundary to avoid hydration warnings
 
-  function SearchParamsHandler() {
-    const searchParams = useSearchParams(); // Must be inside Suspense
-    // ... use searchParams
-    return null;
-  }
-
-  export default function Page() {
-    return (
-      <Suspense fallback={null}>
-        <SearchParamsHandler />
-        {/* rest of page */}
-      </Suspense>
-    );
-  }
-  ```
-
-**API Route Pattern:**
+**API Route Pattern (Firestore):**
 ```typescript
 import { verifyTokenFromRequest } from '@/lib/firebaseAdmin';
-import { PrismaClient } from '@/generated/prisma';
+import { getFirestoreAdmin, serverTimestamp } from '@/lib/firestoreAdmin';
 import { NextResponse } from 'next/server';
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 
 export async function GET(req: Request) {
   const decoded = await verifyTokenFromRequest(req);
@@ -171,12 +162,16 @@ export async function GET(req: Request) {
   }
 
   try {
-    // ... query logic
+    const db = getFirestoreAdmin();
+    const snapshot = await db.collection('credits')
+      .where('userId', '==', decoded.uid)
+      .get();
+
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     return NextResponse.json(data);
   } catch (error) {
+    console.error('Error:', error);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
 ```
@@ -191,7 +186,7 @@ import { auth } from '@/lib/firebase';
 export default function ProtectedPage() {
   const router = useRouter();
 
-  // Auth check - separate from data fetching
+  // Auth check
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -201,122 +196,108 @@ export default function ProtectedPage() {
     return () => unsubscribe();
   }, [router]);
 
-  // Data fetching - separate useEffect
+  // Data fetching
   useEffect(() => {
     const fetchData = async () => {
       const user = auth.currentUser;
       if (!user) return;
 
       const token = await user.getIdToken();
-      // Add cache-busting for fresh data after purchases/updates
       const res = await fetch(`/api/endpoint?t=${Date.now()}`, {
         headers: { Authorization: `Bearer ${token}` },
-        cache: 'no-store', // Prevent browser caching
+        cache: 'no-store',
       });
       // ... handle response
     };
     fetchData();
-  }, []); // Add dependencies as needed for refresh triggers
-
-  // ... component logic
+  }, []);
 }
 ```
 
 **Multi-Step Form Pattern (training/create-class):**
-- Uses `step` state variable for tracking current position (1-4)
-- Step 1: Program type selection (Blended/Digital) with conditional detail forms
+- Uses `step` state variable for tracking position (1-4)
+- Step 1: Program type selection
 - Step 2: Roster building with drawer-based student entry
-- Step 3: Review and confirmation with email notification options
-- Step 4: Progress tracking with student status display
+- Step 3: Review and confirmation
+- Step 4: Progress tracking
 - State accumulation across steps using multiple useState hooks
-- Navigation buttons (BACK/CONTINUE) control flow between steps
-
-**Database Mock Mode Pattern:**
-- API routes include graceful fallback when database is unavailable
-- Wrap database operations in try-catch blocks
-- On database error, log warning and return mock data or continue with limited functionality
-- Used in tickets API (`src/app/api/tickets/route.ts`) for development without database
-- Example:
-```typescript
-try {
-  const data = await prisma.model.findMany();
-  return NextResponse.json(data);
-} catch (dbError) {
-  console.log("⚠️ Database not connected. Running in MOCK MODE.");
-  return NextResponse.json(mockData);
-}
-```
 
 ## Important Implementation Details
 
-### Prisma Client Location
-The Prisma Client is generated to `src/generated/prisma` (not default node_modules). Always import from:
+### Firestore Usage
+
+**Server-side (API routes):**
 ```typescript
-import { PrismaClient } from '@/generated/prisma';
+import { getFirestoreAdmin, serverTimestamp, increment } from '@/lib/firestoreAdmin';
+
+const db = getFirestoreAdmin();
+
+// Add document
+const docRef = await db.collection('credits').add({
+  userId: 'user123',
+  credits: 10,
+  createdAt: serverTimestamp(),
+});
+
+// Update document
+await db.collection('credits').doc(docId).update({
+  credits: increment(-1),
+  updatedAt: serverTimestamp(),
+});
+
+// Query documents
+const snapshot = await db.collection('credits')
+  .where('userId', '==', 'user123')
+  .orderBy('createdAt', 'desc')
+  .limit(10)
+  .get();
+
+const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 ```
 
-**Important:** Instantiate PrismaClient at the top of API route files (outside request handlers) and disconnect in finally blocks:
+**Client-side:**
 ```typescript
-const prisma = new PrismaClient();
+import { db } from '@/lib/firebase';
+import { collection, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
-export async function POST(req: Request) {
-  try {
-    // ... database operations
-  } finally {
-    await prisma.$disconnect();
-  }
-}
+const docRef = doc(db, 'credits', docId);
+const docSnap = await getDoc(docRef);
+const data = docSnap.data();
 ```
 
 ### Component Responsibilities
-- **Sidebar.tsx** - Main navigation with collapsible dropdown sections (General, Instructors, Training, Courses, Support) and logout button
-  - Logout flow: Signs out via Firebase, removes localStorage token, redirects to `/login`
-- **Modal Components** - Various modals for confirmations, agreements, access links, checkout, and instructor management
-- **Drawer Components** - Side drawers for student entry and selection during class creation
-- **Student Components** - Reusable components for displaying student lists and history
+- **Sidebar.tsx** - Main navigation with collapsible sections and logout
+- **Modal Components** - Confirmations, agreements, checkout, instructor management
+- **Drawer Components** - Student entry and selection during class creation
+- **Student Components** - Displaying student lists and history
 
 ### Key Features
 
 **Support Ticket System** (`/support`, `/api/tickets`):
 - Create support tickets with form validation
 - File attachment upload (max 10MB, stored in `public/uploads/tickets/`)
-- Email notifications via Web3Forms (free service - https://web3forms.com)
-  - Admin notification sent to `ADMIN_EMAIL` with full ticket details
-  - User confirmation email sent with ticket number and 48hr response commitment
-  - Graceful degradation if `WEB3FORMS_ACCESS_KEY` not configured
-- Three ticket types: "General Request", "Application Issue / Bug", and "Digital Card Change Request"
+- Email notifications via Web3Forms (free service)
+- Three ticket types: "General Request", "Application Issue / Bug", "Digital Card Change Request"
 - Auto-generated unique ticket numbers (format: `TICKET-{timestamp}-{random}`)
-- Graceful fallback to mock mode when database is unavailable
-- Email functions located in `src/lib/email.ts`
 
 **Credit Purchase System** (`/credits/purchase`, `/api/credits/purchase`):
 - Purchase packages for CPR Only, First Aid Only, or Combo credits
 - Pre-configured packages with 10, 25, or 50 credits
-- Checkout modal with purchase confirmation
-- Updates credit balance in database on successful purchase
+- Updates credit balance in Firestore on successful purchase
 - Protected with Firebase authentication
 
 **Internationalization (i18n)**:
 - Language toggle between English and Spanish
 - Implemented via React Context (`src/lib/LanguageContext.tsx`)
-- Used on public pages like landing page and acceptance page
-- Translations stored in context provider with `t` object for lookups
-
-**Acceptance Page** (`/acceptance`):
-- Protected page requiring prior purchase (checked via localStorage)
-- Displays accreditation information, compliance standards, accepted organizations
-- Bilingual support (English/Spanish)
-- Access restricted unless user has completed a purchase
+- Translations stored in `src/lib/translations.ts`
 
 **Digital Card Submission** (`/training/create-class`, `/api/digital-cards/submit`):
 - Multi-step wizard for creating training classes
 - Generates unique class IDs (format: `DC-{timestamp}-{random}`)
-- Creates locked digital card records with student roster
+- Creates locked digital card records with student subcollection
 - Automatically deducts credits based on student count
 - Validates credit availability before submission
-- Stores student certificates and class metadata
 - Once locked, digital cards cannot be edited
-- Graceful fallback to mock mode when database is unavailable
 
 ### Styling Conventions
 - Tailwind CSS 4 utility classes throughout
@@ -325,48 +306,37 @@ export async function POST(req: Request) {
   - Primary Teal: `#00A5A8` (CPI Teal)
   - Dark Gray: `#2D2F33`
 - Gradient backgrounds: `from-[#C10E21] to-[#00A5A8]`
-- React Icons for UI elements (FaShieldAlt, FaGraduationCap, FaSignOutAlt, etc.)
+- React Icons for UI elements
 - Responsive breakpoints: sm, md, lg
-- Smooth transitions and hover effects on buttons and cards
-
-### Build Configuration Notes
-- Path aliases: `@/*` maps to `./src/*`
-- Vercel deployment configured in `vercel.json` (region: iad1)
-- Automatic Prisma Client generation on `npm install` via postinstall script
-
-### Development vs Production
-**Important:** API route authentication is currently commented out for development. Before deploying to production:
-1. Uncomment authentication checks in API routes (see `src/app/api/credits/route.ts:10-15`)
-2. Set up Firebase Admin SDK with proper credentials
-3. Ensure `NEXT_PUBLIC_FIREBASE_PROJECT_ID` is set for server-side token verification
 
 ## Common Development Workflows
 
 ### Adding a New API Route
-1. Create `route.ts` in `src/app/api/[route-name]/`
-2. Export `export const dynamic = "force-dynamic"` for dynamic rendering
-3. Import `verifyTokenFromRequest` from `@/lib/firebaseAdmin`
-4. Add authentication check: return 401 if decoded token is null
-5. Instantiate PrismaClient from `@/generated/prisma`
-6. Use try-catch for error handling
-7. Return `NextResponse.json()` with appropriate status codes
 
-### Adding a New Database Model
-1. Add model to `prisma/schema.prisma`
-2. Run `npx prisma db push` to sync schema to database
-3. Run `npx prisma generate` to update Prisma Client
-4. Create API route for CRUD operations
-5. Add Firebase auth check to protected endpoints
+1. Create `route.ts` in `src/app/api/[route-name]/`
+2. Export `export const dynamic = "force-dynamic"`
+3. Import `verifyTokenFromRequest` from `@/lib/firebaseAdmin`
+4. Import `getFirestoreAdmin, serverTimestamp` from `@/lib/firestoreAdmin`
+5. Add authentication check: return 401 if decoded token is null
+6. Get Firestore instance: `const db = getFirestoreAdmin()`
+7. Use try-catch for error handling
+8. Return `NextResponse.json()` with appropriate status codes
+
+### Adding a New Firestore Collection
+
+1. Define TypeScript interfaces in `src/lib/firestoreHelpers.ts` (optional)
+2. Create API route for server-side operations
+3. Use `getFirestoreAdmin()` for server-side access
+4. Use `db` from `src/lib/firebase.ts` for client-side access
+5. Add appropriate indexes in Firebase Console if using complex queries
 
 ### Adding a Protected Page
+
 1. Create `page.tsx` in appropriate `src/app/` subdirectory
 2. Add `"use client"` directive at the top
-3. Import necessary hooks: `useRouter`, `useEffect`, `useState`
+3. Import `useRouter`, `useEffect`, `useState`
 4. Import `onAuthStateChanged` from `firebase/auth` and `auth` from `@/lib/firebase`
-5. Set up auth state listener in `useEffect`:
-   - Subscribe to `onAuthStateChanged`
-   - Redirect to `/login` if user is null
-   - Unsubscribe on cleanup
+5. Set up auth state listener in `useEffect`
 6. Fetch data from API routes with `Authorization: Bearer ${token}` header
 
 ### Fetching Protected Data Pattern
@@ -380,99 +350,48 @@ const response = await fetch('/api/endpoint', {
 const data = await response.json();
 ```
 
-### Data Refresh Pattern
-When redirecting back to a page after an action (e.g., purchase), use query params to trigger refresh:
-```typescript
-// After successful action
-router.push('/dashboard?refresh=true');
-
-// In dashboard, wrap searchParams handler in Suspense
-function RefreshHandler({ onRefresh }: { onRefresh: () => void }) {
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (searchParams.get('refresh')) {
-      onRefresh();
-      router.replace('/dashboard', { scroll: false }); // Clean URL
-    }
-  }, [searchParams]);
-
-  return null;
-}
-
-// In main component
-export default function Dashboard() {
-  return (
-    <Suspense fallback={null}>
-      <RefreshHandler onRefresh={handleRefresh} />
-      {/* rest of page */}
-    </Suspense>
-  );
-}
-```
-
 ### Email Notifications
-Email functionality is implemented using Web3Forms (free service):
+
+Email functionality uses Web3Forms (free service):
 
 **Setup:**
-1. Sign up at https://web3forms.com to get a free access key
+1. Sign up at https://web3forms.com
 2. Add `WEB3FORMS_ACCESS_KEY` to environment variables
 3. Set `ADMIN_EMAIL` to receive ticket notifications
 
-**Available Functions** (`src/lib/email.ts`):
-- `sendTicketNotificationToAdmin(data)` - Send ticket details to admin email
+**Functions** (`src/lib/email.ts`):
+- `sendTicketNotificationToAdmin(data)` - Send ticket details to admin
 - `sendTicketConfirmationToUser(email, ticketNumber, name)` - Send confirmation to user
 
-**Implementation Pattern:**
-```typescript
-import { sendTicketNotificationToAdmin, sendTicketConfirmationToUser } from '@/lib/email';
-
-// Send notifications
-const adminResult = await sendTicketNotificationToAdmin({
-  ticketNumber, type, title, description,
-  reportedBy, email, phone, fileName
-});
-
-const userResult = await sendTicketConfirmationToUser(email, ticketNumber, name);
-
-// Check results
-if (adminResult.success) {
-  console.log('✅ Admin notification sent');
-}
-```
-
-**Alternative Providers:**
-To switch from Web3Forms to another provider (SendGrid, AWS SES, Resend):
-1. Update functions in `src/lib/email.ts`
-2. Replace Web3Forms API calls with new provider's SDK/API
-3. Update environment variables accordingly
-
-### Adding Internationalization
-The i18n system uses React Context for language switching:
-1. Wrap pages with `LanguageProvider` (see `src/lib/LanguageContext.tsx`)
-2. Use `useLanguage()` hook to access `language`, `setLanguage`, and `t` (translations)
-3. Add translations to both `en` and `es` objects in LanguageContext or `src/lib/translations.ts`
-4. Use `t.section.key` to access translated strings
-5. Toggle language with button calling `setLanguage("en" | "es")`
-
-Current supported pages: Landing page, Acceptance page
-
 ### Working with Digital Cards
+
 Digital cards represent completed training classes and are immutable once submitted:
 
 **Creating a Digital Card:**
 1. User fills out multi-step form in `/training/create-class`
-2. System validates credit availability (students.length <= available credits)
+2. System validates credit availability
 3. POST to `/api/digital-cards/submit` with class data and student roster
 4. API generates unique class ID: `DC-{timestamp}-{random}`
-5. Creates DigitalCard record with `is_locked: true` and `submitted_at: timestamp`
-6. Creates related DigitalCardStudent records via nested create
-7. Deducts credits from user's balance
+5. Creates DigitalCard document with `isLocked: true`
+6. Creates student documents in `students` subcollection
+7. Deducts credits from user's balance in Firestore
 8. Returns class ID and confirmation
 
 **Important Constraints:**
-- Digital cards are locked upon creation (`is_locked: true`)
+- Digital cards are locked upon creation (`isLocked: true`)
 - Locked cards cannot be edited or deleted
 - Each student consumes one credit
 - Submission fails if insufficient credits available
-- Use support tickets (type: "Digital Card Change Request") for modifications
+- Use support tickets for modification requests
+
+### Firebase Admin SDK Setup
+
+For server-side Firestore operations, you need a service account key:
+
+1. Go to Firebase Console → Project Settings → Service Accounts
+2. Click "Generate New Private Key"
+3. Save the JSON file as `serviceAccountKey.json` in project root
+4. **NEVER commit this file** (it's in .gitignore)
+5. For Vercel deployment, add the entire JSON content as `FIREBASE_SERVICE_ACCOUNT_KEY` environment variable
+
+**Fallback:** If no service account key is provided, the system will use basic initialization with `NEXT_PUBLIC_FIREBASE_PROJECT_ID` (limited functionality)

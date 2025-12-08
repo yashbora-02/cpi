@@ -13,13 +13,21 @@ function hashPassword(password: string): string {
   return Buffer.from(password).toString('base64');
 }
 
-export async function GET() {
-  // Only allow in development
+export async function GET(req: Request) {
+  // In production, require a secret key for security
   if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { error: 'Seeding is disabled in production' },
-      { status: 403 }
-    );
+    const { searchParams } = new URL(req.url);
+    const secret = searchParams.get('secret');
+
+    // Check for SEED_SECRET environment variable or use default
+    const expectedSecret = process.env.SEED_SECRET || 'cpi-seed-2024';
+
+    if (secret !== expectedSecret) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Add ?secret=YOUR_SEED_SECRET to the URL' },
+        { status: 403 }
+      );
+    }
   }
 
   try {

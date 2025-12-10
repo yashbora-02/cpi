@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFirestoreAdmin, serverTimestamp } from "@/lib/firestoreAdmin";
 import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
-import { writeFile, mkdir } from "fs/promises";
+import { storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import path from "path";
 import { sendTicketNotificationToAdmin, sendTicketConfirmationToUser } from "@/lib/email";
 
@@ -47,26 +48,29 @@ export async function POST(req: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = path.join(process.cwd(), "public", "uploads", "tickets");
-        await mkdir(uploadsDir, { recursive: true });
-
         // Generate unique filename
         const timestamp = Date.now();
         const ext = path.extname(file.name);
         const baseFileName = path.basename(file.name, ext).replace(/[^a-z0-9]/gi, '_').toLowerCase();
         fileName = `${baseFileName}_${timestamp}${ext}`;
-        const filePath = path.join(uploadsDir, fileName);
 
-        // Write file
-        await writeFile(filePath, buffer);
-        fileUrl = `/uploads/tickets/${fileName}`;
+        // Upload to Firebase Storage (works on both localhost and Vercel)
+        try {
+          const storageRef = ref(storage, `tickets/${fileName}`);
+          await uploadBytes(storageRef, buffer);
+          fileUrl = await getDownloadURL(storageRef);
+          console.log("✅ File uploaded to Firebase Storage:", fileUrl);
+        } catch (storageError) {
+          console.error("❌ Firebase Storage upload error:", storageError);
+          // Don't fail the entire request just because of file upload
+          fileName = file.name; // Keep the filename for reference
+          fileUrl = null;
+        }
       } catch (fileError) {
-        console.error("File upload error:", fileError);
-        return NextResponse.json(
-          { error: "Failed to upload file" },
-          { status: 500 }
-        );
+        console.error("❌ File processing error:", fileError);
+        // Don't fail the entire request just because of file upload
+        fileName = file.name; // Keep the filename for reference
+        fileUrl = null;
       }
     }
 
@@ -101,11 +105,7 @@ export async function POST(req: NextRequest) {
     try {
       const webhookUrl = "https://services.leadconnectorhq.com/hooks/e7GOxL4owltSw5EkwsLT/webhook-trigger/2a88072e-f694-4b77-823f-3da209a9aaf4";
 
-      // Get the full URL for the file
-      const requestUrl = new URL(req.url);
-      const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
-      const fullFileUrl = fileUrl ? `${baseUrl}${fileUrl}` : null;
-
+      // fileUrl is now a full Firebase Storage URL (no need to append base URL)
       const webhookPayload = {
         ticketNumber,
         ticketId: ticketRef.id,
@@ -116,8 +116,7 @@ export async function POST(req: NextRequest) {
         email,
         phone,
         fileName: fileName || null,
-        fileUrl: fullFileUrl,
-        fileUrlRelative: fileUrl || null,
+        fileUrl: fileUrl || null,
         status: "open",
         createdAt: new Date().toISOString(),
         // Additional fields for GoHighLevel
@@ -127,7 +126,7 @@ export async function POST(req: NextRequest) {
         ticket_subject: title,
         ticket_message: description,
         ticket_type: type || "General Request",
-        attachment_url: fullFileUrl,
+        attachment_url: fileUrl || null,
         attachment_name: fileName || null,
       };
 

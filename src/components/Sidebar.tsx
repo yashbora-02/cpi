@@ -19,7 +19,8 @@ import {
   FaChevronUp,
   FaHeadset,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaTicketAlt
 } from "react-icons/fa";
 
 export default function Sidebar() {
@@ -162,19 +163,18 @@ export default function Sidebar() {
           />
         )}
 
-        {/* Support Section - Admin only */}
-        {isAdmin && (
-          <DropdownSection
-            label="Support"
-            icon={<FaHeadset className="text-lg" />}
-            isOpen={open.support}
-            onToggle={() => toggle("support")}
-            links={[
-              { label: "Support Center", path: "/support", icon: <FaHeadset /> },
-            ]}
-            currentPath={pathname}
-          />
-        )}
+        {/* Support Section - Available to all users */}
+        <DropdownSection
+          label="Support"
+          icon={<FaHeadset className="text-lg" />}
+          isOpen={open.support}
+          onToggle={() => toggle("support")}
+          links={[
+            { label: "Support Center", path: "/support", icon: <FaHeadset /> },
+            { label: "View Tickets", path: "/tickets", icon: <FaTicketAlt /> },
+          ]}
+          currentPath={pathname}
+        />
       </nav>
 
         {/* Logout Button */}

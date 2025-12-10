@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
@@ -16,19 +16,20 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CarePoint Institute",
   description: "Evidence-based CPR, First Aid, and BLS training for healthcare professionals, direct support workers, and community members. Following AHA guidelines with specialized content.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
-  themeColor: "#1E90FF",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "CarePoint Institute",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#1E90FF",
 };
 
 export default function RootLayout({

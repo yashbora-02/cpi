@@ -187,18 +187,18 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="text-center max-w-4xl mx-auto">
             {/* Main Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6">
               {t.hero.title}<br />
               <span className="text-[#00D4E0]">{t.hero.titleHighlight}</span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl md:text-2xl text-white/95 leading-relaxed mb-6 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-white/95 leading-relaxed mb-6 max-w-3xl mx-auto">
               {t.hero.subtitle}
             </p>
 
             {/* Description */}
-            <p className="text-lg text-white/85 leading-relaxed mb-10 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-white/85 leading-relaxed mb-10 max-w-3xl mx-auto">
               {t.hero.description}
             </p>
 
@@ -232,10 +232,10 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-[#2D2F33] mb-6 leading-snug max-w-5xl mx-auto">
               {t.trainingBuilt.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base md:text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
               {t.trainingBuilt.subtitle}
             </p>
           </div>
@@ -287,10 +287,10 @@ export default function Home() {
       <section className="py-20 bg-gradient-to-br from-[#00D4E0] to-[#008a8d] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               {t.emergency.title}
             </h2>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
               {t.emergency.subtitle}
             </p>
           </div>
@@ -338,10 +338,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-4">
                 {t.instructor.title}
               </h2>
-              <p className="text-xl text-gray-600 mb-8">
+              <p className="text-lg md:text-xl text-gray-600 mb-8">
                 {t.instructor.subtitle}
               </p>
 
@@ -412,10 +412,10 @@ export default function Home() {
       <section className="py-20 bg-gradient-to-br from-[#F5F6F7] to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-4">
               {t.howWeTeach.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               {t.howWeTeach.subtitle}
             </p>
           </div>
@@ -468,10 +468,10 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-4">
               {t.certification.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               {t.certification.subtitle}
             </p>
           </div>
@@ -533,10 +533,10 @@ export default function Home() {
       <section id="courses" className="py-20 bg-gradient-to-br from-[#F5F6F7] to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-4">
               {t.nav.cprCourses}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               Browse our comprehensive CPR and First Aid training programs
             </p>
           </div>
@@ -590,7 +590,7 @@ export default function Home() {
       <section id="training-options" className="py-20 bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               {t.trainingOptions.title}
             </h2>
           </div>
@@ -674,10 +674,10 @@ export default function Home() {
       <section id="acceptance" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#2D2F33] mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D2F33] mb-4">
               {t.leadership.title}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               {t.leadership.subtitle}
             </p>
           </div>
@@ -716,10 +716,10 @@ export default function Home() {
       {/* Call to Action Section */}
       <section className="py-20 bg-gradient-to-br from-[#1E90FF] to-[#1873CC] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
             {t.cta.title}
           </h2>
-          <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto">
             {t.cta.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

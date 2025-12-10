@@ -13,6 +13,18 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Function to autofill credentials
+  const fillCredentials = (type: 'admin' | 'instructor') => {
+    if (type === 'admin') {
+      setUsername('admin');
+      setPassword('admin123');
+    } else {
+      setUsername('instructor');
+      setPassword('instructor123');
+    }
+    setError('');
+  };
+
   useEffect(() => {
     // Check if user is already logged in
     const userStr = localStorage.getItem("currentUser");
@@ -120,7 +132,7 @@ export default function Login() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
-                  placeholder="Enter your username"
+                  placeholder="admin"
                   required
                   autoComplete="username"
                 />
@@ -141,7 +153,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
-                  placeholder="Enter your password"
+                  placeholder="admin123"
                   required
                   autoComplete="current-password"
                 />
@@ -183,16 +195,24 @@ export default function Login() {
 
             {/* Demo Credentials Helper */}
             <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-              <p className="text-white/60 text-xs text-center mb-2">Demo Credentials:</p>
+              <p className="text-white/60 text-xs text-center mb-2">Demo Credentials - Click to autofill:</p>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-white/5 rounded p-2">
+                <button
+                  type="button"
+                  onClick={() => fillCredentials('admin')}
+                  className="bg-white/5 hover:bg-white/10 rounded p-2 transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
+                >
                   <p className="text-[#00D4E0] font-semibold mb-1">Admin</p>
                   <p className="text-white/70">admin / admin123</p>
-                </div>
-                <div className="bg-white/5 rounded p-2">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fillCredentials('instructor')}
+                  className="bg-white/5 hover:bg-white/10 rounded p-2 transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
+                >
                   <p className="text-[#00D4E0] font-semibold mb-1">Instructor</p>
                   <p className="text-white/70">instructor / instructor123</p>
-                </div>
+                </button>
               </div>
             </div>
 

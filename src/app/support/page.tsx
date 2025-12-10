@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import {
   FaHeadset,
   FaPhone,
@@ -34,14 +32,12 @@ export default function SupportPage() {
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Auth check
+  // Auth check - check localStorage instead of Firebase
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.replace("/login");
-      }
-    });
-    return () => unsubscribe();
+    const userStr = localStorage.getItem("currentUser");
+    if (!userStr) {
+      router.replace("/login");
+    }
   }, [router]);
 
   const handleInputChange = (
@@ -97,13 +93,12 @@ export default function SupportPage() {
     setIsSubmitting(true);
 
     try {
-      const user = auth.currentUser;
-      if (!user) {
+      // Check if user is logged in
+      const userStr = localStorage.getItem("currentUser");
+      if (!userStr) {
         router.replace("/login");
         return;
       }
-
-      const token = await user.getIdToken();
 
       // Create FormData for file upload
       const formDataToSend = new FormData();
@@ -120,9 +115,6 @@ export default function SupportPage() {
 
       const response = await fetch("/api/tickets", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: formDataToSend,
       });
 
@@ -159,7 +151,7 @@ export default function SupportPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Support Center</h1>
           <p className="text-base mt-2 text-white/90">We're here to help you</p>
         </div>
@@ -174,7 +166,7 @@ export default function SupportPage() {
                   onClick={() => setShowTicketForm(true)}
                   className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <FaTicketAlt className="text-2xl text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Create Support Ticket</h3>
@@ -191,7 +183,7 @@ export default function SupportPage() {
                   </div>
                   <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Call Support</h3>
                   <p className="text-gray-600 text-sm">1-800-555-0123</p>
-                  <p className="text-[#00D4E0] text-xs mt-1 font-medium">Mon-Fri, 9AM-5PM EST</p>
+                  <p className="text-[#1E90FF] text-xs mt-1 font-medium">Mon-Fri, 9AM-5PM EST</p>
                 </a>
 
                 {/* Chatbot */}
@@ -199,7 +191,7 @@ export default function SupportPage() {
                   onClick={() => alert("Chatbot feature coming soon!")}
                   className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <FaRobot className="text-2xl text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Chat with AI</h3>
@@ -222,7 +214,7 @@ export default function SupportPage() {
               {/* FAQ or Help Section */}
               <div className="bg-white rounded-xl shadow-md p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <FaHeadset className="text-[#00D4E0] text-2xl" />
+                  <FaHeadset className="text-[#1E90FF] text-2xl" />
                   <h2 className="text-2xl font-bold text-[#2D2F33]">How Can We Help?</h2>
                 </div>
                 <p className="text-gray-600 mb-4">
@@ -425,7 +417,7 @@ export default function SupportPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-8 py-3 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white rounded-lg hover:from-[#008a8d] hover:to-[#00D4E0] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="px-8 py-3 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white rounded-lg hover:from-[#00D4E0] hover:to-[#1E90FF] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Ticket"}
                   </button>
@@ -446,9 +438,9 @@ export default function SupportPage() {
                 </h2>
                 <div className="bg-gray-50 rounded-lg p-6 mb-6">
                   <p className="text-sm text-gray-600 mb-2">Your Ticket Number</p>
-                  <p className="text-2xl font-bold text-[#00D4E0]">{ticketNumber}</p>
+                  <p className="text-2xl font-bold text-[#1E90FF]">{ticketNumber}</p>
                 </div>
-                <div className="bg-blue-50 border-l-4 border-[#00D4E0] p-4 rounded-r mb-6">
+                <div className="bg-blue-50 border-l-4 border-[#1E90FF] p-4 rounded-r mb-6">
                   <p className="text-gray-700">
                     Hey, we got your ticket! We are working on it and will answer within <strong>48 hours</strong>.
                   </p>
@@ -458,7 +450,7 @@ export default function SupportPage() {
                     setShowSuccess(false);
                     setShowTicketForm(false);
                   }}
-                  className="px-8 py-3 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white rounded-lg hover:from-[#008a8d] hover:to-[#00D4E0] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95"
+                  className="px-8 py-3 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white rounded-lg hover:from-[#00D4E0] hover:to-[#1E90FF] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95"
                 >
                   Back to Support
                 </button>

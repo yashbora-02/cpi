@@ -70,6 +70,9 @@ export default function CreateClassPage() {
   const [showEditRequestModal, setShowEditRequestModal] = useState(false);
   const [userEmail, setUserEmail] = useState("");
 
+  // Blended class specific states
+  const [blendedAvailableCredits, setBlendedAvailableCredits] = useState(0);
+
   // Fetch available credits when component mounts (for digital cards)
   useEffect(() => {
     if (programType === "digital" && program) {
@@ -100,24 +103,73 @@ export default function CreateClassPage() {
       const { getCourseType } = await import('@/lib/courseTypeMapping');
       const courseType = program ? getCourseType(program) : null;
 
+      console.log('🔍 Fetching credits for:', { program, courseType, userId });
+
       // Build query params
       const params = new URLSearchParams({ userId });
       if (courseType) {
         params.append('courseType', courseType);
       }
 
-      const response = await fetch(`/api/credits/balance?${params.toString()}`, {
+      const url = `/api/credits/balance?${params.toString()}`;
+      console.log('📡 API URL:', url);
+
+      const response = await fetch(url, {
         cache: 'no-store',
       });
 
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ Credits response:', data);
         setAvailableCredits(data.availableCredits);
+      } else {
+        console.error('❌ API error:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error("Error fetching credits:", error);
+      console.error("❌ Error fetching credits:", error);
       // Fallback to default value
       setAvailableCredits(28);
+    }
+  };
+
+  const fetchBlendedCredits = async () => {
+    try {
+      // Get user from localStorage (custom auth)
+      const userStr = localStorage.getItem("currentUser");
+      if (!userStr) return;
+
+      const user = JSON.parse(userStr);
+      const userId = user.username; // Use username for custom auth
+
+      // Get courseType from the selected program
+      const { getCourseType } = await import('@/lib/courseTypeMapping');
+      const courseType = program ? getCourseType(program) : null;
+
+      console.log('🔍 [BLENDED] Fetching credits for:', { program, courseType, userId });
+
+      // Build query params
+      const params = new URLSearchParams({ userId });
+      if (courseType) {
+        params.append('courseType', courseType);
+      }
+
+      const url = `/api/credits/balance?${params.toString()}`;
+      console.log('📡 [BLENDED] API URL:', url);
+
+      const response = await fetch(url, {
+        cache: 'no-store',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ [BLENDED] Credits response:', data);
+        setBlendedAvailableCredits(data.availableCredits);
+      } else {
+        console.error('❌ [BLENDED] API error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("❌ [BLENDED] Error fetching credits:", error);
+      setBlendedAvailableCredits(0);
     }
   };
 
@@ -785,7 +837,11 @@ export default function CreateClassPage() {
                 {programType === "blended" && (
                   <button
                     className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
-                    onClick={() => setShowModal(true)}
+                    onClick={async () => {
+                      // Fetch latest course-specific credits before opening modal
+                      await fetchBlendedCredits();
+                      setShowModal(true);
+                    }}
                   >
                     SEND CLASS NOTIFICATIONS
                   </button>
@@ -794,7 +850,7 @@ export default function CreateClassPage() {
                 {programType === "digital" && (
                   <button
                     className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all font-medium text-sm disabled:opacity-50"
-                    onClick={() => {
+                    onClick={async () => {
                       // Validate required fields before opening modal
                       const missingFields = [];
                       if (!program) missingFields.push("Program");
@@ -808,6 +864,8 @@ export default function CreateClassPage() {
                         return;
                       }
 
+                      // Fetch latest course-specific credits before opening modal
+                      await fetchAvailableCredits();
                       setShowCreditConfirmModal(true);
                     }}
                     disabled={isSubmitting}
@@ -819,14 +877,64 @@ export default function CreateClassPage() {
 
               {showModal && (
                 <ConfirmModal
-                  onConfirm={() => {
-                    setShowModal(false);
-                    setStep(4); // proceed
+                  onConfirm={async () => {
+                    // Deduct credits before proceeding
+                    try {
+                      const userStr = localStorage.getItem("currentUser");
+                      if (!userStr) {
+                        alert("Please login again");
+                        return;
+                      }
+
+                      const user = JSON.parse(userStr);
+                      const userId = user.username;
+
+                      // Get courseType from the selected program
+                      const { getCourseType } = await import('@/lib/courseTypeMapping');
+                      const courseType = program ? getCourseType(program) : null;
+
+                      if (!courseType) {
+                        alert("Invalid program selected");
+                        return;
+                      }
+
+                      // Call API to deduct credits
+                      const response = await fetch('/api/credits/deduct', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          userId,
+                          courseType,
+                          amount: students.length,
+                        }),
+                      });
+
+                      if (!response.ok) {
+                        const error = await response.json();
+                        alert(`Failed to deduct credits: ${error.error}`);
+                        return;
+                      }
+
+                      const result = await response.json();
+                      console.log('✅ Credits deducted:', result);
+
+                      // Update local state with new balance
+                      setBlendedAvailableCredits(result.newBalance);
+
+                      setShowModal(false);
+                      setStep(4); // proceed
+                    } catch (error) {
+                      console.error('Error deducting credits:', error);
+                      alert('Failed to deduct credits. Please try again.');
+                    }
                   }}
                   onCancel={() => setShowModal(false)}
-                  availableCredits={28}
+                  availableCredits={blendedAvailableCredits}
                   creditsToUse={students.length}
                   studentCount={students.length}
+                  programName={program}
                 />
               )}
             </div>

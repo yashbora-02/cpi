@@ -8,14 +8,16 @@ interface ConfirmModalProps {
   availableCredits?: number;
   creditsToUse?: number;
   studentCount?: number;
+  programName?: string;
 }
 
 export default function ConfirmModal({
   onConfirm,
   onCancel,
-  availableCredits = 28,
+  availableCredits = 0,
   creditsToUse = 1,
   studentCount = 1,
+  programName,
 }: ConfirmModalProps) {
   const remainingCredits = availableCredits - creditsToUse;
   const hasInsufficientCredits = remainingCredits < 0;
@@ -55,6 +57,11 @@ export default function ConfirmModal({
             <h4 className="text-xs uppercase tracking-wide text-gray-600 font-semibold mb-3">
               Credit Summary
             </h4>
+            {programName && (
+              <p className="text-xs text-gray-500 mb-3 italic">
+                Program: {programName}
+              </p>
+            )}
             <div className="space-y-3">
               {/* Available Credits */}
               <div className="flex justify-between items-center">

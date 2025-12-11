@@ -40,9 +40,10 @@ Required environment variables (see `.env.example`):
 ## Architecture
 
 ### Tech Stack
-- **Framework:** Next.js 15.3.3 with App Router
+- **Framework:** Next.js 15.5.7 with App Router
 - **Language:** TypeScript 5
 - **Database:** Firebase Firestore (NoSQL document database)
+- **Storage:** Firebase Storage (for file uploads)
 - **Auth:** Firebase Authentication (Email/Password + Google Sign-in)
 - **Styling:** Tailwind CSS 4.0
 - **UI Components:** React Icons, Headless UI
@@ -275,10 +276,12 @@ const data = docSnap.data();
 
 **Support Ticket System** (`/support`, `/api/tickets`):
 - Create support tickets with form validation
-- File attachment upload (max 10MB, stored in `public/uploads/tickets/`)
+- File attachment upload to Firebase Storage (replaces local file system)
 - Email notifications via Web3Forms (free service)
+- GoHighLevel webhook integration for CRM automation
 - Three ticket types: "General Request", "Application Issue / Bug", "Digital Card Change Request"
 - Auto-generated unique ticket numbers (format: `TICKET-{timestamp}-{random}`)
+- Files stored in Firebase Storage under `tickets/` directory
 
 **Credit Purchase System** (`/credits/purchase`, `/api/credits/purchase`):
 - Purchase packages for CPR Only, First Aid Only, or Combo credits
@@ -350,9 +353,9 @@ const response = await fetch('/api/endpoint', {
 const data = await response.json();
 ```
 
-### Email Notifications
+### Email Notifications & Webhooks
 
-Email functionality uses Web3Forms (free service):
+**Email functionality** uses Web3Forms (free service):
 
 **Setup:**
 1. Sign up at https://web3forms.com
@@ -362,6 +365,12 @@ Email functionality uses Web3Forms (free service):
 **Functions** (`src/lib/email.ts`):
 - `sendTicketNotificationToAdmin(data)` - Send ticket details to admin
 - `sendTicketConfirmationToUser(email, ticketNumber, name)` - Send confirmation to user
+
+**GoHighLevel Webhook Integration:**
+- Ticket creation automatically triggers a webhook to GoHighLevel CRM
+- Webhook URL is hardcoded in `/api/tickets/route.ts`
+- Sends ticket data including file attachments for CRM automation
+- Operates independently of email notifications (both systems run in parallel)
 
 ### Working with Digital Cards
 

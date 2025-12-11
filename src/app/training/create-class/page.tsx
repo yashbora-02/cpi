@@ -88,14 +88,15 @@ export default function CreateClassPage() {
 
   const fetchAvailableCredits = async () => {
     try {
-      const user = auth.currentUser;
-      if (!user) return;
+      // Get user from localStorage (custom auth)
+      const userStr = localStorage.getItem("currentUser");
+      if (!userStr) return;
 
-      const token = await user.getIdToken();
-      const response = await fetch("/api/credits/balance", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const user = JSON.parse(userStr);
+      const userId = user.username; // Use username for custom auth
+
+      const response = await fetch(`/api/credits/balance?userId=${userId}`, {
+        cache: 'no-store',
       });
 
       if (response.ok) {
@@ -207,21 +208,26 @@ export default function CreateClassPage() {
     setShowCreditConfirmModal(false);
 
     try {
-      const user = auth.currentUser;
-      if (!user) {
+      // Get user from localStorage (custom auth)
+      const userStr = localStorage.getItem("currentUser");
+      if (!userStr) {
         alert("Please log in to submit");
         setIsSubmitting(false);
         return;
       }
 
-      const token = await user.getIdToken();
+      const user = JSON.parse(userStr);
+      const userId = user.username; // Use username for custom auth
+      const userEmail = user.email || `${userId}@cpi-training.com`;
+
       const response = await fetch("/api/digital-cards/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          userId, // Pass userId for custom auth
+          userEmail,
           program,
           site,
           classType,
@@ -257,7 +263,7 @@ export default function CreateClassPage() {
           open_enrollment: openEnrollment,
           credits_used: data.creditsUsed,
           submitted_at: new Date().toISOString(),
-          submitted_by: user.email || user.uid,
+          submitted_by: userEmail,
           students: studentsWithCerts,
         });
 

@@ -81,7 +81,7 @@ function DashboardContent() {
       setIsLoading(true);
       try {
         const user = JSON.parse(userStr);
-        const userId = user.username; // Use username as userId
+        const userId = user.username; // Use username as userId for custom auth
 
         const res = await fetch(`/api/credits?userId=${userId}&t=${Date.now()}`, {
           cache: 'no-store', // Prevent browser caching

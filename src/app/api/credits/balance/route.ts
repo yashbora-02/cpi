@@ -7,15 +7,27 @@ export const dynamic = "force-dynamic";
 /**
  * GET /api/credits/balance
  * Fetch user's available credit balance
+ * Supports both Firebase Auth (Bearer token) and custom auth (userId query param)
  */
 export async function GET(req: Request) {
-  const decoded = await verifyTokenFromRequest(req);
-  if (!decoded) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    const userId = decoded.uid;
+    const { searchParams } = new URL(req.url);
+    const userIdParam = searchParams.get('userId');
+
+    let userId: string;
+
+    // Support custom auth via query parameter (for admin/instructor)
+    if (userIdParam) {
+      userId = userIdParam;
+    } else {
+      // Fallback to Firebase Auth
+      const decoded = await verifyTokenFromRequest(req);
+      if (!decoded) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      userId = decoded.uid;
+    }
+
     const db = getFirestoreAdmin();
 
     // Fetch all credits for the user

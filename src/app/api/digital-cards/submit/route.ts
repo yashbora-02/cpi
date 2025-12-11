@@ -16,17 +16,15 @@ function generateClassId(): string {
 /**
  * POST /api/digital-cards/submit
  * Create and lock a digital card with students
+ * Supports both Firebase Auth and custom auth (userId in body)
  */
 export async function POST(req: Request) {
-  const decoded = await verifyTokenFromRequest(req);
-  if (!decoded) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
     const body = await req.json();
 
     const {
+      userId: bodyUserId,
+      userEmail: bodyUserEmail,
       program,
       site,
       classType,
@@ -37,6 +35,23 @@ export async function POST(req: Request) {
       openEnrollment,
       students,
     } = body;
+
+    let userId: string;
+    let userEmail: string;
+
+    // Support custom auth (userId in body for admin/instructor)
+    if (bodyUserId) {
+      userId = bodyUserId;
+      userEmail = bodyUserEmail || `${userId}@cpi-training.com`;
+    } else {
+      // Fallback to Firebase Auth
+      const decoded = await verifyTokenFromRequest(req);
+      if (!decoded) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      userId = decoded.uid;
+      userEmail = decoded.email || userId;
+    }
 
     // Validate required fields
     if (!program || !site || !classType || !startDate || !endDate || !accreditingInstructor) {
@@ -54,8 +69,6 @@ export async function POST(req: Request) {
     }
 
     const db = getFirestoreAdmin();
-    const userId = decoded.uid;
-    const userEmail = decoded.email || userId;
 
     // Check available credits
     const creditsSnapshot = await db.collection('credits')

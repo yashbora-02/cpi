@@ -134,7 +134,7 @@ export default function EditRequestModal({
               </div>
             </div>
 
-            <div className="bg-blue-50 border-l-4 border-[#00D4E0] p-4 rounded-r">
+            <div className="bg-blue-50 border-l-4 border-[#5DCCDB] p-4 rounded-r">
               <p className="text-sm text-gray-700">
                 Our support team will review your request and respond within 48 hours.
                 You will receive an email confirmation at: <strong>{userEmail}</strong>
@@ -146,7 +146,7 @@ export default function EditRequestModal({
           <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-center">
             <button
               onClick={handleClose}
-              className="px-6 py-2.5 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+              className="px-6 py-2.5 bg-[#2583F5] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               Close
             </button>
@@ -160,7 +160,7 @@ export default function EditRequestModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#00D4E0] to-[#008a8d] px-6 py-5">
+        <div className="bg-[#2583F5] px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <FaLock className="text-white text-2xl" />
@@ -179,7 +179,7 @@ export default function EditRequestModal({
         {/* Content */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Info Message */}
-          <div className="bg-blue-50 border-l-4 border-[#00D4E0] p-4 rounded-r">
+          <div className="bg-blue-50 border-l-4 border-[#5DCCDB] p-4 rounded-r">
             <p className="text-sm text-gray-800">
               This digital card has been submitted and locked. You cannot edit it directly.
               To request changes, please fill out the form below to create a support ticket.
@@ -215,7 +215,7 @@ export default function EditRequestModal({
             <select
               value={changeType}
               onChange={(e) => setChangeType(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#00D4E0]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB]"
               required
             >
               <option value="">-- Select --</option>
@@ -236,7 +236,7 @@ export default function EditRequestModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={5}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#00D4E0]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB]"
               placeholder="Please provide detailed information about the changes you need..."
               required
             />
@@ -264,7 +264,7 @@ export default function EditRequestModal({
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#00D4E0]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB]"
               placeholder="(123) 456-7890"
             />
           </div>
@@ -281,7 +281,7 @@ export default function EditRequestModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-5 py-2 bg-gradient-to-r from-[#00D4E0] to-[#008a8d] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-5 py-2 bg-[#2583F5] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Submitting..." : "Submit Support Ticket"}
             </button>

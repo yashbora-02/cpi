@@ -11,7 +11,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#1E90FF] to-[#00D4E0] rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#1E90FF] to-[#5DCCDB] rounded-lg flex items-center justify-center">
               <FaHeart className="text-2xl text-white" />
             </div>
             <span className="text-2xl font-bold text-[#2D2F33]">CPI Training</span>

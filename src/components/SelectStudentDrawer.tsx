@@ -111,7 +111,7 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
       {/* Drawer */}
       <div className="fixed right-0 top-0 h-full w-full md:w-[80%] lg:w-[60%] bg-white shadow-2xl z-50 overflow-y-auto transition-transform duration-300">
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-5 border-b bg-[#00D4E0] text-white shadow-lg">
+        <div className="flex justify-between items-center px-6 py-5 border-b bg-[#2583F5] text-white shadow-lg">
           <div className="flex items-center gap-3">
             <FaUsers className="text-2xl" />
             <div>
@@ -139,14 +139,14 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
             <input
               type="text"
               placeholder="Search by name..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition-all"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#5B7FFF] focus:border-transparent transition-all"
               value={search.name}
               onChange={(e) => handleSearchChange("name", e.target.value)}
             />
             <input
               type="text"
               placeholder="Status..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition-all"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#5B7FFF] focus:border-transparent transition-all"
               value={search.active}
               onChange={(e) => handleSearchChange("active", e.target.value)}
             />
@@ -182,7 +182,7 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
               Available Students ({filteredStudents.length})
             </h3>
             {selectedIds.length > 0 && (
-              <span className="bg-[#00D4E0] text-white px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-[#2583F5] text-white px-3 py-1 rounded-full text-sm font-medium">
                 {selectedIds.length} selected
               </span>
             )}
@@ -211,9 +211,9 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
                     className={`transition-colors ${
                       isAlreadyAdded
                         ? "bg-gray-100 opacity-60 cursor-not-allowed"
-                        : "hover:bg-[#00D4E0]/5 cursor-pointer"
+                        : "hover:bg-[#5DCCDB]/5 cursor-pointer"
                     } ${
-                      selectedIds.includes(student.id) && !isAlreadyAdded ? "bg-[#00D4E0]/10" : ""
+                      selectedIds.includes(student.id) && !isAlreadyAdded ? "bg-[#5DCCDB]/10" : ""
                     }`}
                     onClick={() => !isAlreadyAdded && toggleSelect(student.id)}
                   >
@@ -225,7 +225,7 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
                       ) : (
                         <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                           selectedIds.includes(student.id)
-                            ? "bg-[#00D4E0] border-[#00D4E0]"
+                            ? "bg-[#5DCCDB] border-[#5DCCDB]"
                             : "border-gray-300"
                         }`}>
                           {selectedIds.includes(student.id) && (
@@ -272,7 +272,7 @@ const SelectStudentDrawer: React.FC<SelectStudentDrawerProps> = ({
           <button
             onClick={handleSave}
             disabled={selectedIds.length === 0}
-            className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="bg-[#2583F5] text-white px-5 py-2 rounded-lg hover:shadow-lg flex items-center gap-2 transition-all font-medium text-sm disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:opacity-60 hover:bg-[#1a6ad9]"
           >
             <FaCheck /> Add Selected ({selectedIds.length})
           </button>

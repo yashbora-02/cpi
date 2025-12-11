@@ -305,10 +305,11 @@ const data = docSnap.data();
 ### Styling Conventions
 - Tailwind CSS 4 utility classes throughout
 - **Brand Colors**:
-  - Primary Red: `#C10E21` (CPI Red)
-  - Primary Teal: `#00A5A8` (CPI Teal)
+  - Primary Blue: `#1E90FF` (Dodger Blue)
+  - Primary Cyan: `#00D4E0` (Bright Cyan)
   - Dark Gray: `#2D2F33`
-- Gradient backgrounds: `from-[#C10E21] to-[#00A5A8]`
+- Gradient backgrounds: `from-[#1E90FF] via-[#1873CC] to-[#00D4E0]` (blue to cyan gradient)
+- Button gradients: `from-[#00D4E0] to-[#008a8d]` (cyan gradient)
 - React Icons for UI elements
 - Responsive breakpoints: sm, md, lg
 

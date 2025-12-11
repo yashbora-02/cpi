@@ -123,7 +123,7 @@ function DashboardContent() {
       <Sidebar />
       <main className="flex-1">
         {/* Modern Header with Stats */}
-        <div className="relative bg-gradient-to-br from-[#1E90FF] via-[#1873CC] to-[#00D4E0] text-white px-8 py-10 shadow-2xl overflow-hidden">
+        <div className="relative bg-gradient-to-br from-[#1E90FF] via-[#1873CC] to-[#5DCCDB] text-white px-8 py-10 shadow-2xl overflow-hidden">
           {/* Decorative Background Pattern */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-10 right-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
@@ -207,7 +207,7 @@ function DashboardContent() {
               <div className="flex justify-center pt-2">
                 <button
                   onClick={() => router.push("/credits/purchase")}
-                  className="bg-[#00D4E0] text-white px-8 py-2.5 rounded-md font-medium hover:bg-[#008a8d] transition-colors duration-200 flex items-center gap-2"
+                  className="bg-[#2583F5] text-white px-8 py-2.5 rounded-md font-medium hover:bg-[#1a6ad9] transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
                 >
                   <FaShoppingCart className="text-sm" />
                   Purchase Credits
@@ -228,10 +228,10 @@ function DashboardContent() {
 
               {/* Instructor Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-[#00D4E0]/10 to-[#00D4E0]/5 rounded-lg p-6 border border-[#00D4E0]/20">
+                <div className="bg-gradient-to-br from-[#5DCCDB]/10 to-[#5DCCDB]/5 rounded-lg p-6 border border-[#2583F5]/20">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-sm font-medium text-gray-600">Classes This Month</h3>
-                    <FaGraduationCap className="text-2xl text-[#00D4E0]" />
+                    <FaGraduationCap className="text-2xl text-[#2583F5]" />
                   </div>
                   <p className="text-3xl font-bold text-gray-900">12</p>
                   <p className="text-xs text-gray-500 mt-1">+3 from last month</p>
@@ -329,7 +329,7 @@ function DashboardContent() {
           {/* Quick Actions */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
             <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <FaChartLine className="text-[#00D4E0]" />
+              <FaChartLine className="text-[#2583F5]" />
               Quick Actions
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -419,7 +419,7 @@ function DashboardContent() {
                 </div>
               </div>
               <div className="bg-gray-100 rounded-lg h-3 overflow-hidden">
-                <div className="bg-gradient-to-r from-[#00D4E0] to-[#1E90FF] h-full" style={{width: '27%'}}></div>
+                <div className="bg-gradient-to-r from-[#5DCCDB] to-[#1E90FF] h-full" style={{width: '27%'}}></div>
               </div>
               <p className="text-xs text-gray-600 mt-2 text-center">27% to next discount level (10-2026)</p>
             </div>
@@ -437,7 +437,7 @@ function DashboardContent() {
                   <p className="text-sm text-gray-600">View My Recent Purchases (Last 6 Months)</p>
                 </div>
               </div>
-              <button className="text-sm font-semibold text-[#00D4E0] hover:text-[#008a8d] transition-colors flex items-center gap-1">
+              <button className="text-sm font-semibold text-[#2583F5] hover:text-[#2583F5] transition-colors flex items-center gap-1">
                 VIEW HISTORY
                 <FaChevronRight className="text-xs" />
               </button>
@@ -651,9 +651,9 @@ function ActionCard({
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-[#00D4E0] hover:shadow-lg transition-all duration-200 cursor-pointer group"
+      className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-[#2583F5] hover:shadow-lg transition-all duration-200 cursor-pointer group"
     >
-      <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-50 border-2 border-gray-200 text-gray-600 text-2xl mb-4 group-hover:border-[#00D4E0] group-hover:text-[#00D4E0] group-hover:bg-teal-50 transition-all">
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-50 border-2 border-gray-200 text-gray-600 text-2xl mb-4 group-hover:border-[#2583F5] group-hover:text-[#2583F5] group-hover:bg-cyan-50 transition-all">
         {icon}
       </div>
       <h4 className="font-bold text-gray-800 mb-1">{title}</h4>

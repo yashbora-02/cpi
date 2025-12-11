@@ -144,7 +144,7 @@ const EnterDigitalDetails: React.FC<DigitalCertCardsProps> = ({
       <div className="col-span-2 flex justify-end mt-6">
         <button
           onClick={onContinue}
-          className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+          className="bg-[#2583F5] text-white px-5 py-2 rounded-lg hover:bg-[#1a6ad9] hover:shadow-lg transition-all font-medium text-sm"
         >
           Save and Continue
         </button>

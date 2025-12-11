@@ -76,7 +76,7 @@ export default function Acceptance() {
 
             {/* Right Side - Phone & Language */}
             <div className="hidden md:flex items-center space-x-4">
-              <a href="tel:1-800-555-0123" className="flex items-center text-[#00D4E0] hover:text-[#008a8d] font-medium transition">
+              <a href="tel:1-800-555-0123" className="flex items-center text-[#5DCCDB] hover:text-[#5DCCDB] font-medium transition">
                 <FaPhone className="mr-2" />
                 {t.nav.phone}
               </a>
@@ -127,7 +127,7 @@ export default function Acceptance() {
                 </button>
                 <a
                   href="tel:1-800-555-0123"
-                  className="text-[#00D4E0] font-medium py-2"
+                  className="text-[#5DCCDB] font-medium py-2"
                 >
                   {t.nav.phone}
                 </a>
@@ -161,12 +161,12 @@ export default function Acceptance() {
         <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#1E90FF]/30 via-[#1E90FF]/15 to-transparent"></div>
 
         {/* Teal Accent Gradient on Right */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00D4E0]/25 via-[#00D4E0]/10 to-transparent"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#5DCCDB]/25 via-[#5DCCDB]/10 to-transparent"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
             {t.acceptance.heroTitle}<br />
-            <span className="text-[#00D4E0]">{t.acceptance.heroHighlight}</span>
+            <span className="text-[#5DCCDB]">{t.acceptance.heroHighlight}</span>
           </h1>
           <p className="text-xl md:text-2xl text-white/95 leading-relaxed max-w-4xl mx-auto">
             {t.acceptance.heroSubtitle}
@@ -200,7 +200,7 @@ export default function Acceptance() {
             </div>
 
             {/* Question 2 */}
-            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#5DCCDB]">
               <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
                 {t.acceptance.question2}
               </h3>
@@ -220,7 +220,7 @@ export default function Acceptance() {
             </div>
 
             {/* Question 4 */}
-            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#5DCCDB]">
               <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
                 {t.acceptance.question4}
               </h3>
@@ -240,7 +240,7 @@ export default function Acceptance() {
             </div>
 
             {/* Question 6 */}
-            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#5DCCDB]">
               <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
                 {t.acceptance.question6}
               </h3>
@@ -260,7 +260,7 @@ export default function Acceptance() {
             </div>
 
             {/* Question 8 */}
-            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#00D4E0]">
+            <div className="bg-white p-6 md:p-8 lg:p-10 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#5DCCDB]">
               <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-[#2D2F33] mb-3 md:mb-4 leading-snug">
                 {t.acceptance.question8}
               </h3>
@@ -302,7 +302,7 @@ export default function Acceptance() {
 
             {/* Physician Medical Director */}
             <div className="bg-gradient-to-br from-[#F5F6F7] to-white p-8 md:p-10 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
-              <div className="w-32 h-32 md:w-40 md:h-40 bg-gradient-to-br from-[#00D4E0] to-[#008a8d] rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
+              <div className="w-32 h-32 md:w-40 md:h-40 bg-[#2583F5] rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
                 <FaUserMd className="text-5xl md:text-6xl text-white" />
               </div>
               <h3 className="text-xl md:text-2xl font-bold text-[#2D2F33] mb-2 text-center">
@@ -319,7 +319,7 @@ export default function Acceptance() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-[#2D2F33] to-[#1a1b1d] p-8 md:p-10 lg:p-14 rounded-2xl md:rounded-3xl text-white shadow-2xl">
             <div className="flex items-center justify-center mb-6 md:mb-8">
-              <div className="w-14 h-14 md:w-16 md:h-16 bg-[#00D4E0] rounded-full flex items-center justify-center">
+              <div className="w-14 h-14 md:w-16 md:h-16 bg-[#5DCCDB] rounded-full flex items-center justify-center">
                 <FaShieldAlt className="text-2xl md:text-3xl text-white" />
               </div>
             </div>
@@ -334,15 +334,15 @@ export default function Acceptance() {
             </p>
             <div className="flex flex-wrap justify-center gap-3 md:gap-6 pt-6 border-t border-white/20">
               <div className="flex items-center bg-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
-                <FaCheckCircle className="text-[#00D4E0] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
+                <FaCheckCircle className="text-[#5DCCDB] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
                 <span className="font-semibold text-sm md:text-base lg:text-lg">{t.acceptance.meetsAHA}</span>
               </div>
               <div className="flex items-center bg-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
-                <FaCheckCircle className="text-[#00D4E0] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
+                <FaCheckCircle className="text-[#5DCCDB] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
                 <span className="font-semibold text-sm md:text-base lg:text-lg">{t.acceptance.ilcorCompliant}</span>
               </div>
               <div className="flex items-center bg-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
-                <FaCheckCircle className="text-[#00D4E0] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
+                <FaCheckCircle className="text-[#5DCCDB] mr-2 md:mr-3 text-lg md:text-xl flex-shrink-0" />
                 <span className="font-semibold text-sm md:text-base lg:text-lg">{t.acceptance.employerAccepted}</span>
               </div>
             </div>
@@ -374,7 +374,7 @@ export default function Acceptance() {
             </button>
             <button
               onClick={() => router.push("/")}
-              className="w-full sm:w-auto px-8 md:px-12 py-4 md:py-5 bg-[#00D4E0] text-white text-base md:text-lg font-bold rounded-lg md:rounded-xl hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95 border-2 border-white/20"
+              className="w-full sm:w-auto px-8 md:px-12 py-4 md:py-5 bg-[#5DCCDB] text-white text-base md:text-lg font-bold rounded-lg md:rounded-xl hover:bg-[#5DCCDB] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl active:scale-95 border-2 border-white/20"
             >
               {t.acceptance.learnMore}
             </button>
@@ -406,12 +406,12 @@ export default function Acceptance() {
             <div>
               <h3 className="text-lg font-bold mb-4">{t.footer.quickLinks}</h3>
               <ul className="space-y-3">
-                <li><button onClick={() => router.push("/#courses")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.cprCourses}</button></li>
-                <li><button onClick={() => router.push("/#training-options")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.firstAid}</button></li>
-                <li><button onClick={() => router.push("/acceptance")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.accreditation}</button></li>
-                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.becomeInstructor}</button></li>
-                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.findClass}</button></li>
-                <li><button onClick={() => router.push("/login")} className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.logIn}</button></li>
+                <li><button onClick={() => router.push("/#courses")} className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.cprCourses}</button></li>
+                <li><button onClick={() => router.push("/#training-options")} className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.firstAid}</button></li>
+                <li><button onClick={() => router.push("/acceptance")} className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.accreditation}</button></li>
+                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.becomeInstructor}</button></li>
+                <li><button onClick={() => router.push("/")} className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.findClass}</button></li>
+                <li><button onClick={() => router.push("/login")} className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.logIn}</button></li>
               </ul>
             </div>
 
@@ -420,15 +420,15 @@ export default function Acceptance() {
               <h3 className="text-lg font-bold mb-4">{t.footer.contactUs}</h3>
               <ul className="space-y-3 text-white/80">
                 <li className="flex items-center">
-                  <FaPhone className="mr-3 text-[#00D4E0]" />
+                  <FaPhone className="mr-3 text-[#5DCCDB]" />
                   {t.nav.phone}
                 </li>
                 <li className="flex items-center">
-                  <FaEnvelope className="mr-3 text-[#00D4E0]" />
+                  <FaEnvelope className="mr-3 text-[#5DCCDB]" />
                   {t.acceptance.email}
                 </li>
                 <li className="flex items-start">
-                  <FaMapMarkerAlt className="mr-3 mt-1 text-[#00D4E0]" />
+                  <FaMapMarkerAlt className="mr-3 mt-1 text-[#5DCCDB]" />
                   <span>{t.acceptance.address}<br />{t.acceptance.suite}<br />{t.acceptance.city}</span>
                 </li>
               </ul>
@@ -438,11 +438,11 @@ export default function Acceptance() {
             <div>
               <h3 className="text-lg font-bold mb-4">{t.footer.legal}</h3>
               <ul className="space-y-3">
-                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.privacy}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.dataProtection}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.security}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.refund}</a></li>
-                <li><a href="#" className="text-white/80 hover:text-[#00D4E0] transition">{t.footer.terms}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.privacy}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.dataProtection}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.security}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.refund}</a></li>
+                <li><a href="#" className="text-white/80 hover:text-[#5DCCDB] transition">{t.footer.terms}</a></li>
               </ul>
             </div>
           </div>

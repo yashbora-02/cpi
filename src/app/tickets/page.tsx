@@ -192,7 +192,7 @@ export default function TicketsPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white px-8 py-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -225,7 +225,7 @@ export default function TicketsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Ticket #, title, name, email..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent"
                 />
               </div>
 
@@ -238,7 +238,7 @@ export default function TicketsPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent"
                 >
                   <option value="all">All Statuses</option>
                   <option value="open">Open</option>
@@ -257,7 +257,7 @@ export default function TicketsPage() {
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent"
                 >
                   <option value="all">All Types</option>
                   <option value="General Request">General Request</option>
@@ -297,7 +297,7 @@ export default function TicketsPage() {
           {/* Tickets List */}
           {isLoading ? (
             <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-              <FaSpinner className="animate-spin text-4xl text-[#00D4E0] mx-auto mb-4" />
+              <FaSpinner className="animate-spin text-4xl text-[#5DCCDB] mx-auto mb-4" />
               <p className="text-gray-600">Loading tickets...</p>
             </div>
           ) : filteredTickets.length === 0 ? (
@@ -368,7 +368,7 @@ export default function TicketsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
                             onClick={() => setSelectedTicket(ticket)}
-                            className="text-[#00D4E0] hover:text-[#008a8d] font-semibold flex items-center gap-1"
+                            className="text-[#5DCCDB] hover:text-[#5DCCDB] font-semibold flex items-center gap-1"
                           >
                             View
                             <FaExternalLinkAlt className="text-xs" />
@@ -395,7 +395,7 @@ export default function TicketsPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-6 py-4 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white px-6 py-4 flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-bold">Ticket Details</h3>
                   <p className="text-sm text-white/80">{selectedTicket.ticketNumber}</p>

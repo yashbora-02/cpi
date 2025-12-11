@@ -68,7 +68,7 @@ export default function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg text-[#1E90FF] hover:text-[#00D4E0] transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white rounded-lg shadow-lg text-[#1E90FF] hover:text-[#5DCCDB] transition-colors"
         aria-label="Toggle menu"
       >
         {isMobileMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
@@ -181,7 +181,7 @@ export default function Sidebar() {
         <div className="mt-auto pt-6 border-t border-gray-200">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white font-bold rounded-lg hover:from-[#00D4E0] hover:to-[#1E90FF] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white font-bold rounded-lg hover:from-[#5DCCDB] hover:to-[#1E90FF] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
           >
             <FaSignOutAlt />
             Logout
@@ -216,7 +216,7 @@ function DropdownSection({
         className="w-full flex justify-between items-center text-left px-4 py-3 text-[#2D2F33] font-bold hover:bg-gray-100 rounded-lg transition-all duration-300 group"
       >
         <div className="flex items-center gap-3">
-          <span className="text-[#1E90FF] group-hover:text-[#00D4E0] transition-colors">{icon}</span>
+          <span className="text-[#1E90FF] group-hover:text-[#5DCCDB] transition-colors">{icon}</span>
           <span>{label}</span>
         </div>
         {isOpen ? (
@@ -233,7 +233,7 @@ function DropdownSection({
               href={item.path}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                 currentPath === item.path
-                  ? "bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white shadow-lg"
+                  ? "bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white shadow-lg"
                   : "text-gray-600 hover:text-[#1E90FF] hover:bg-gray-50"
               }`}
             >

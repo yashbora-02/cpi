@@ -97,7 +97,7 @@ export default function Login() {
       {/* Gradient Overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#2D2F33]/90 via-[#2D2F33]/85 to-[#2D2F33]/90"></div>
       <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#1E90FF]/20 to-transparent"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00D4E0]/15 to-transparent"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#5DCCDB]/15 to-transparent"></div>
 
       {/* Login Card */}
       <div className="relative z-10 w-full max-w-md px-4">
@@ -131,7 +131,7 @@ export default function Login() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent transition"
                   placeholder="admin"
                   required
                   autoComplete="username"
@@ -152,7 +152,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
+                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent transition"
                   placeholder="admin123"
                   required
                   autoComplete="current-password"
@@ -178,7 +178,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] hover:from-[#00D4E0] hover:to-[#1E90FF] text-white py-4 rounded-lg font-bold uppercase tracking-wide transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+              className="w-full bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] hover:from-[#5DCCDB] hover:to-[#1E90FF] text-white py-4 rounded-lg font-bold uppercase tracking-wide transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -202,7 +202,7 @@ export default function Login() {
                   onClick={() => fillCredentials('admin')}
                   className="bg-white/5 hover:bg-white/10 rounded p-2 transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <p className="text-[#00D4E0] font-semibold mb-1">Admin</p>
+                  <p className="text-[#5DCCDB] font-semibold mb-1">Admin</p>
                   <p className="text-white/70">admin / admin123</p>
                 </button>
                 <button
@@ -210,7 +210,7 @@ export default function Login() {
                   onClick={() => fillCredentials('instructor')}
                   className="bg-white/5 hover:bg-white/10 rounded p-2 transition-all duration-200 transform hover:scale-105 active:scale-95 cursor-pointer"
                 >
-                  <p className="text-[#00D4E0] font-semibold mb-1">Instructor</p>
+                  <p className="text-[#5DCCDB] font-semibold mb-1">Instructor</p>
                   <p className="text-white/70">instructor / instructor123</p>
                 </button>
               </div>
@@ -221,7 +221,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="text-[#00D4E0] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
+                className="text-[#5DCCDB] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
               >
                 ← Back to Home
               </button>

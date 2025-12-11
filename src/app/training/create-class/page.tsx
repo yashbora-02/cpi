@@ -499,7 +499,7 @@ export default function CreateClassPage() {
                   <div className="mt-6 overflow-x-auto">
                     <div className="mb-3 flex items-center justify-between">
                       <h4 className="text-md font-semibold text-gray-800">Student Roster</h4>
-                      <span className="bg-[#00D4E0] text-white px-3 py-1 rounded-full text-sm font-medium">
+                      <span className="bg-[#2583F5] text-white px-3 py-1 rounded-full text-sm font-medium">
                         {students.length} {students.length === 1 ? 'Student' : 'Students'}
                       </span>
                     </div>
@@ -552,7 +552,7 @@ export default function CreateClassPage() {
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                  className="bg-[#2583F5] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                 >
                   CONTINUE TO REVIEW
                 </button>
@@ -577,7 +577,7 @@ export default function CreateClassPage() {
                         onChange={(e) => setSendStudentEmail(e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#00D4E0]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00D4E0]"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5DCCDB]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5DCCDB]"></div>
                     </div>
                     <span className="text-sm text-gray-800 font-medium">
                       Online Student Course Email
@@ -591,7 +591,7 @@ export default function CreateClassPage() {
                         onChange={(e) => setSendAdminEmail(e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#00D4E0]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00D4E0]"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#5DCCDB]/20 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#5DCCDB]"></div>
                     </div>
                     <span className="text-sm text-gray-800 font-medium">
                       Online Admin Training Email
@@ -787,7 +787,7 @@ export default function CreateClassPage() {
                               <>
                                 <button
                                   onClick={() => handleEditStudent(idx)}
-                                  className="hover:text-[#00D4E0] transition-colors"
+                                  className="hover:text-[#5DCCDB] transition-colors"
                                   title="Edit student"
                                 >
                                   <FaEdit className="w-4 h-4" />
@@ -817,7 +817,7 @@ export default function CreateClassPage() {
                 {programType === "blended" && (
                   <div className="flex justify-end mt-4 gap-2 text-sm text-gray-600">
                     <button className="hover:text-black">«</button>
-                    <span className="bg-[#00D4E0] text-white px-3 py-1 rounded">
+                    <span className="bg-[#2583F5] text-white px-3 py-1 rounded">
                       1
                     </span>
                     <button className="hover:text-black">»</button>
@@ -836,7 +836,7 @@ export default function CreateClassPage() {
 
                 {programType === "blended" && (
                   <button
-                    className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                    className="bg-[#2583F5] text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                     onClick={async () => {
                       // Fetch latest course-specific credits before opening modal
                       await fetchBlendedCredits();
@@ -849,7 +849,7 @@ export default function CreateClassPage() {
 
                 {programType === "digital" && (
                   <button
-                    className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all font-medium text-sm disabled:opacity-50"
+                    className="bg-[#2583F5] text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all font-medium text-sm disabled:opacity-50"
                     onClick={async () => {
                       // Validate required fields before opening modal
                       const missingFields = [];
@@ -1054,7 +1054,7 @@ export default function CreateClassPage() {
                               ) : (
                                 <button
                                   onClick={() => handleEditStudent(idx)}
-                                  className="hover:text-[#00D4E0] transition-colors"
+                                  className="hover:text-[#5DCCDB] transition-colors"
                                   title="Edit student"
                                 >
                                   <FaEdit className="w-4 h-4" />
@@ -1070,7 +1070,7 @@ export default function CreateClassPage() {
                                         );
                                         setShowLinkModal(true);
                                       }}
-                                      className="hover:text-[#00D4E0] transition-colors"
+                                      className="hover:text-[#5DCCDB] transition-colors"
                                       title="Access Link"
                                     >
                                       <FaLink className="w-4 h-4" />
@@ -1108,7 +1108,7 @@ export default function CreateClassPage() {
               </div>
               <div className="flex justify-end mt-6">
                 <button
-                  className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                  className="bg-[#2583F5] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                   onClick={() => setShowSuccessModal(true)}
                 >
                   Submit Class
@@ -1172,7 +1172,7 @@ export default function CreateClassPage() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
               {/* Header */}
-              <div className="bg-[#00D4E0] px-6 py-4">
+              <div className="bg-[#2583F5] px-6 py-4">
                 <h3 className="text-lg font-semibold text-white">
                   Remove Student
                 </h3>
@@ -1198,7 +1198,7 @@ export default function CreateClassPage() {
                 </button>
                 <button
                   onClick={confirmRemoveStudent}
-                  className="px-5 py-2 bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+                  className="px-5 py-2 bg-[#2583F5] text-white rounded-lg hover:shadow-lg transition-all font-medium text-sm"
                 >
                   Remove
                 </button>

@@ -7,7 +7,7 @@ export default function ImpactStory() {
   const router = useRouter();
 
   return (
-    <section className="py-20 bg-gradient-to-br from-[#00D4E0] to-[#008a8d] text-white">
+    <section className="py-20 bg-[#2583F5] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>

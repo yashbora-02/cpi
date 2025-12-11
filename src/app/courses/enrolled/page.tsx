@@ -30,7 +30,7 @@ export default function EnrolledCoursesPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#00D4E0] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#5DCCDB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -54,8 +54,8 @@ export default function EnrolledCoursesPage() {
 
         {/* Empty State */}
         <div className="bg-white rounded-lg shadow-md p-8 text-center max-w-2xl mx-auto">
-          <div className="w-16 h-16 bg-[#00D4E0]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FaBookOpen className="text-[#00D4E0] text-2xl" />
+          <div className="w-16 h-16 bg-[#5DCCDB]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FaBookOpen className="text-[#5DCCDB] text-2xl" />
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
             Your Enrolled Courses
@@ -65,7 +65,7 @@ export default function EnrolledCoursesPage() {
           </p>
           <button
             onClick={() => router.push("/courses")}
-            className="px-6 py-2 bg-[#00D4E0] text-white font-semibold rounded-lg hover:bg-[#008a8d] transition-all duration-300 transform hover:scale-105 active:scale-95"
+            className="px-6 py-2 bg-[#5DCCDB] text-white font-semibold rounded-lg hover:bg-[#5DCCDB] transition-all duration-300 transform hover:scale-105 active:scale-95"
           >
             Browse Available Courses
           </button>

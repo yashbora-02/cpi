@@ -119,14 +119,14 @@ export default function Register() {
       {/* Gradient Overlays */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#2D2F33]/90 via-[#2D2F33]/85 to-[#2D2F33]/90"></div>
       <div className="absolute left-0 top-0 bottom-0 w-1/2 bg-gradient-to-r from-[#1E90FF]/20 to-transparent"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#00D4E0]/15 to-transparent"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-[#5DCCDB]/15 to-transparent"></div>
 
       {/* Register Card */}
       <div className="relative z-10 w-full max-w-md px-4">
         {/* Logo and Branding */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#1E90FF] to-[#00D4E0] rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#1E90FF] to-[#5DCCDB] rounded-xl flex items-center justify-center shadow-lg">
               <FaShieldAlt className="text-3xl text-white" />
             </div>
             <span className="text-3xl font-bold text-white">CPI Training</span>
@@ -150,7 +150,7 @@ export default function Register() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent transition"
                   placeholder="Enter your full name"
                   required
                 />
@@ -170,7 +170,7 @@ export default function Register() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent transition"
                   placeholder="Enter your email"
                   required
                 />
@@ -190,7 +190,7 @@ export default function Register() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent transition"
                   placeholder="Create a password (min 6 characters)"
                   required
                 />
@@ -210,7 +210,7 @@ export default function Register() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent transition"
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent transition"
                   placeholder="Confirm your password"
                   required
                 />
@@ -269,14 +269,14 @@ export default function Register() {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="text-[#00D4E0] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
+                className="text-[#5DCCDB] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
               >
                 ← Back to Home
               </button>
               <button
                 type="button"
                 onClick={() => router.push("/login")}
-                className="text-[#00D4E0] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
+                className="text-[#5DCCDB] hover:text-white font-semibold transition-all duration-300 hover:scale-110 hover:underline active:scale-95"
               >
                 Already have account? Login →
               </button>

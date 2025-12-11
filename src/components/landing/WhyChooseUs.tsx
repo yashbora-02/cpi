@@ -44,8 +44,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00D4E0] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#00D4E0] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#5DCCDB] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#5DCCDB] rounded-xl flex items-center justify-center mb-6">
               <FaCertificate className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Nationally Recognized Certification</h3>
@@ -54,8 +54,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00D4E0] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#00D4E0] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#5DCCDB] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#5DCCDB] rounded-xl flex items-center justify-center mb-6">
               <FaLaptop className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Interactive & Practical</h3>
@@ -64,8 +64,8 @@ export default function WhyChooseUs() {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#00D4E0] hover:shadow-2xl transition-all">
-            <div className="w-16 h-16 bg-[#00D4E0] rounded-xl flex items-center justify-center mb-6">
+          <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-[#5DCCDB] hover:shadow-2xl transition-all">
+            <div className="w-16 h-16 bg-[#5DCCDB] rounded-xl flex items-center justify-center mb-6">
               <FaAward className="text-3xl text-white" />
             </div>
             <h3 className="text-2xl font-bold text-[#2D2F33] mb-4">Award-Winning Programs</h3>

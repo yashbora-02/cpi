@@ -66,7 +66,7 @@ export default function VideoPlayerPage() {
       <Sidebar />
       <main className="flex-1 lg:ml-0">
         {/* Professional Header */}
-        <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 shadow-lg mt-16 lg:mt-0">
+        <div className="bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 shadow-lg mt-16 lg:mt-0">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">Training Video Library</h1>
             <p className="text-base sm:text-lg text-white/90">Access your professional training content</p>
@@ -76,7 +76,7 @@ export default function VideoPlayerPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
           {loading ? (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#00D4E0] border-t-transparent"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#5DCCDB] border-t-transparent"></div>
               <p className="mt-4 text-gray-600 text-lg">Loading your training videos...</p>
             </div>
           ) : videos.length === 0 ? (
@@ -141,7 +141,7 @@ export default function VideoPlayerPage() {
                         href={video.videoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-5 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
+                        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white px-5 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow duration-300"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />

@@ -81,7 +81,7 @@ export default function StudentSearchPage() {
             </div>
             <button
               onClick={handleSearch}
-              className="bg-gradient-to-r from-[#00D4E0] to-[#008f91] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
+              className="bg-[#2583F5] text-white px-5 py-2 rounded-lg hover:shadow-lg transition-all font-medium text-sm"
             >
               Search Students
             </button>
@@ -96,7 +96,7 @@ export default function StudentSearchPage() {
 
           {searched && searchResults.length > 0 && !selectedStudent && (
             <div>
-              <div className="bg-gradient-to-r from-blue-50 to-teal-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
                 <h2 className="text-xl font-semibold text-gray-800">
                   Search Results: {searchResults.length} student{searchResults.length > 1 ? 's' : ''} found
                 </h2>
@@ -137,7 +137,7 @@ export default function StudentSearchPage() {
 
               <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-6 items-start">
                 <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-4 py-3">
+                  <div className="bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white px-4 py-3">
                     <h3 className="text-lg font-semibold">Student Information</h3>
                   </div>
                   <div className="p-4">

@@ -151,7 +151,7 @@ export default function SupportPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Support Center</h1>
           <p className="text-base mt-2 text-white/90">We're here to help you</p>
         </div>
@@ -166,7 +166,7 @@ export default function SupportPage() {
                   onClick={() => setShowTicketForm(true)}
                   className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <FaTicketAlt className="text-2xl text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Create Support Ticket</h3>
@@ -191,7 +191,7 @@ export default function SupportPage() {
                   onClick={() => alert("Chatbot feature coming soon!")}
                   className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <FaRobot className="text-2xl text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-[#2D2F33] mb-2">Chat with AI</h3>
@@ -259,7 +259,7 @@ export default function SupportPage() {
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent text-gray-900"
                   >
                     <option value="General Request">General Request</option>
                     <option value="Application Issue / Bug">Application Issue / Bug</option>
@@ -276,7 +276,7 @@ export default function SupportPage() {
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent text-gray-900 ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent text-gray-900 ${
                       errors.title ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Brief summary of your issue"
@@ -296,7 +296,7 @@ export default function SupportPage() {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={6}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent text-gray-900 ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent text-gray-900 ${
                       errors.description ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Please provide detailed information about your request or issue"
@@ -317,7 +317,7 @@ export default function SupportPage() {
                       name="reportedBy"
                       value={formData.reportedBy}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent text-gray-900 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent text-gray-900 ${
                         errors.reportedBy ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Your full name"
@@ -336,7 +336,7 @@ export default function SupportPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent text-gray-900 ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent text-gray-900 ${
                         errors.email ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="your.email@example.com"
@@ -357,7 +357,7 @@ export default function SupportPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#00D4E0] focus:border-transparent text-gray-900 ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#5DCCDB] focus:border-transparent text-gray-900 ${
                       errors.phone ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="+1 (555) 123-4567"
@@ -382,7 +382,7 @@ export default function SupportPage() {
                     />
                     <label
                       htmlFor="file-upload"
-                      className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#00D4E0] transition-colors"
+                      className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#5DCCDB] transition-colors"
                     >
                       <FaPaperclip className="text-gray-400 mr-2" />
                       <span className="text-gray-600">
@@ -417,7 +417,7 @@ export default function SupportPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-8 py-3 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white rounded-lg hover:from-[#00D4E0] hover:to-[#1E90FF] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="px-8 py-3 bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white rounded-lg hover:from-[#5DCCDB] hover:to-[#1E90FF] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Ticket"}
                   </button>
@@ -450,7 +450,7 @@ export default function SupportPage() {
                     setShowSuccess(false);
                     setShowTicketForm(false);
                   }}
-                  className="px-8 py-3 bg-gradient-to-r from-[#1E90FF] to-[#00D4E0] text-white rounded-lg hover:from-[#00D4E0] hover:to-[#1E90FF] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95"
+                  className="px-8 py-3 bg-gradient-to-r from-[#1E90FF] to-[#5DCCDB] text-white rounded-lg hover:from-[#5DCCDB] hover:to-[#1E90FF] font-medium shadow-md hover:shadow-lg transition-all transform hover:scale-105 active:scale-95"
                 >
                   Back to Support
                 </button>

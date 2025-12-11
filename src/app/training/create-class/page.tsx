@@ -72,7 +72,8 @@ export default function CreateClassPage() {
 
   // Fetch available credits when component mounts (for digital cards)
   useEffect(() => {
-    if (programType === "digital") {
+    if (programType === "digital" && program) {
+      // Only fetch when both programType and program are set
       fetchAvailableCredits();
     }
 

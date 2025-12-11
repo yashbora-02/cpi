@@ -31,7 +31,7 @@ export default function ManageInstructorsPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold">Manage Instructors</h1>
           <p className="text-base mt-2 text-white/90">View and manage all instructors</p>
         </div>

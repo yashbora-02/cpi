@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getFirestoreAdmin, serverTimestamp, increment } from "@/lib/firestoreAdmin";
 import { verifyTokenFromRequest } from "@/lib/firebaseAdmin";
+import { getCourseType } from "@/lib/courseTypeMapping";
 
 export const dynamic = "force-dynamic";
 
@@ -70,22 +71,39 @@ export async function POST(req: Request) {
 
     const db = getFirestoreAdmin();
 
-    // Check available credits
+    // Get courseType from program name
+    const courseType = getCourseType(program);
+    if (!courseType) {
+      return NextResponse.json(
+        { error: "Invalid program: course type not found" },
+        { status: 400 }
+      );
+    }
+
+    // Check available credits for this specific course type
     const creditsSnapshot = await db.collection('credits')
       .where('userId', '==', userId)
+      .where('courseType', '==', courseType)
       .get();
 
     let totalCredits = 0;
+    let creditDocRef = null;
+
     creditsSnapshot.docs.forEach(doc => {
-      totalCredits += doc.data().credits || 0;
+      const credits = doc.data().credits || 0;
+      totalCredits += credits;
+      if (!creditDocRef && credits > 0) {
+        creditDocRef = doc.ref; // Store first doc with credits for deduction
+      }
     });
 
     if (totalCredits < students.length) {
       return NextResponse.json(
         {
-          error: "Insufficient credits",
+          error: "Insufficient credits for this course type",
           availableCredits: totalCredits,
-          requiredCredits: students.length
+          requiredCredits: students.length,
+          courseType,
         },
         { status: 400 }
       );
@@ -132,10 +150,9 @@ export async function POST(req: Request) {
     // Commit student batch
     await batch.commit();
 
-    // Deduct credits (from first available credit type)
-    if (creditsSnapshot.docs.length > 0) {
-      const firstCreditDoc = creditsSnapshot.docs[0];
-      await firstCreditDoc.ref.update({
+    // Deduct credits from the specific course type
+    if (creditDocRef) {
+      await creditDocRef.update({
         credits: increment(-students.length),
         updatedAt: serverTimestamp(),
       });

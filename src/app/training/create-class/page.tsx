@@ -84,7 +84,7 @@ export default function CreateClassPage() {
     });
 
     return () => unsubscribe();
-  }, [programType]);
+  }, [programType, program]); // Refetch when program changes
 
   const fetchAvailableCredits = async () => {
     try {
@@ -95,7 +95,17 @@ export default function CreateClassPage() {
       const user = JSON.parse(userStr);
       const userId = user.username; // Use username for custom auth
 
-      const response = await fetch(`/api/credits/balance?userId=${userId}`, {
+      // Get courseType from the selected program
+      const { getCourseType } = await import('@/lib/courseTypeMapping');
+      const courseType = program ? getCourseType(program) : null;
+
+      // Build query params
+      const params = new URLSearchParams({ userId });
+      if (courseType) {
+        params.append('courseType', courseType);
+      }
+
+      const response = await fetch(`/api/credits/balance?${params.toString()}`, {
         cache: 'no-store',
       });
 
@@ -285,7 +295,7 @@ export default function CreateClassPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-8 py-6 shadow-lg">
           <h2 className="text-3xl font-bold">
             Add Class/Blended Online Training
           </h2>
@@ -1096,6 +1106,7 @@ export default function CreateClassPage() {
           availableCredits={availableCredits}
           creditsToUse={students.length}
           studentCount={students.length}
+          programName={program}
         />
 
         {/* Certificate Viewer Modal */}

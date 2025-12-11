@@ -1,9 +1,29 @@
+# Environment files
 .env.local
 .env*.local
-node_modules
-.next
-.git
-*.log
-coverage
-.DS_Store
 serviceAccountKey.json
+
+# Node modules
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Development
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Testing
+coverage/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

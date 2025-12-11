@@ -9,6 +9,8 @@ interface CreditConfirmationModalProps {
   availableCredits: number;
   creditsToUse: number;
   studentCount: number;
+  programName?: string; // Optional: show which program/course
+  courseType?: string; // Optional: show course type
 }
 
 export default function CreditConfirmationModal({
@@ -18,6 +20,8 @@ export default function CreditConfirmationModal({
   availableCredits,
   creditsToUse,
   studentCount,
+  programName,
+  courseType,
 }: CreditConfirmationModalProps) {
   if (!show) return null;
 
@@ -53,17 +57,24 @@ export default function CreditConfirmationModal({
               <span className="font-semibold">{studentCount} student{studentCount !== 1 ? 's' : ''}</span>.
               This will deduct <span className="font-semibold">{creditsToUse} credit{creditsToUse !== 1 ? 's' : ''}</span> from your account.
             </p>
+            {programName && (
+              <p className="text-gray-700 text-xs mt-2">
+                <span className="font-semibold">Course:</span> {programName}
+              </p>
+            )}
           </div>
 
           {/* Credit Summary Card */}
           <div className="bg-gray-50 rounded-lg p-5 border border-gray-200">
             <h4 className="text-xs uppercase tracking-wide text-gray-600 font-semibold mb-3">
-              Credit Summary
+              Credit Summary{courseType ? ` - ${courseType}` : ''}
             </h4>
             <div className="space-y-3">
               {/* Available Credits */}
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-700">Current Balance:</span>
+                <span className="text-sm text-gray-700">
+                  {courseType ? `Balance for ${courseType}:` : 'Current Balance:'}
+                </span>
                 <span className="text-lg font-bold text-gray-900">
                   {availableCredits} credits
                 </span>

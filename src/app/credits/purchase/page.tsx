@@ -164,7 +164,7 @@ export default function PurchaseCredits() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00D4E0] text-white px-8 py-5 shadow-lg">
+        <div className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-8 py-5 shadow-lg">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold">Purchase Training Credits</h1>

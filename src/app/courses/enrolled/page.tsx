@@ -42,7 +42,7 @@ export default function EnrolledCoursesPage() {
       <Sidebar />
       <main className="flex-1">
         {/* Header */}
-        <div className="bg-[#00D4E0] text-white px-8 py-6 shadow-lg">
+        <div className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-8 py-6 shadow-lg">
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <FaGraduationCap />
             My Enrolled Courses

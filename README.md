@@ -1,39 +1,45 @@
 # CPI Training Platform
 
-A comprehensive CPR and First Aid training management platform built with Next.js, Firebase, and Prisma.
+A comprehensive CPR and First Aid training management platform built with Next.js 15, Firebase Firestore, and Tailwind CSS 4.
 
 ## Features
 
-- **User Authentication**: Firebase Authentication with email/password and Google sign-in
+- **Custom Authentication**: Admin/Instructor login with custom auth system
 - **Course Management**: Browse and enroll in CPR and First Aid courses
-- **Instructor Portal**: Manage instructors, create classes, and track students
-- **Credit System**: Track training credits by type (CPR Only, First Aid Only, Combo)
-- **Responsive Design**: Modern UI with Tailwind CSS and smooth animations
-- **Video Player**: Integrated video training content
+- **Digital Card Creation**: Create locked digital certification cards for students
+- **Course-Specific Credits**: Credits are tracked per course type (CPR, First Aid, BLS, etc.)
+- **Credit Purchase System**: Purchase training credits with multiple package options
+- **Support Ticket System**: Submit tickets with file attachments and email notifications
+- **Video Training**: Integrated video player for training content
+- **Responsive Design**: Modern UI with Tailwind CSS 4 and smooth animations
+- **Real-time Database**: Firebase Firestore for scalable, real-time data
 
 ## Tech Stack
 
-- **Framework**: Next.js 15.3.3
-- **Authentication**: Firebase Auth
-- **Database**: PostgreSQL with Prisma ORM
+- **Framework**: Next.js 15.5.7 (App Router)
+- **Language**: TypeScript 5
+- **Database**: Firebase Firestore (NoSQL)
+- **Authentication**: Custom auth + Firebase Auth (Email/Password, Google)
+- **Storage**: Firebase Storage
 - **Styling**: Tailwind CSS 4
 - **Icons**: React Icons
-- **Deployment**: Vercel
+- **Email**: Web3Forms (free email service)
+- **Deployment**: Vercel-ready
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database
-- Firebase project
+- Firebase project ([console.firebase.google.com](https://console.firebase.google.com))
+- Firebase service account key (for admin operations)
 
 ### Installation
 
 1. Clone the repository:
 ```bash
 git clone https://github.com/yashbora-02/cpi-demo.git
-cd cpi-demo
+cd cpi
 ```
 
 2. Install dependencies:
@@ -46,135 +52,181 @@ npm install
 Copy `.env.example` to `.env.local` and fill in your values:
 
 ```env
-# Database
-DATABASE_URL="postgresql://user:password@host:5432/database"
-
-# JWT Secret
-JWT_SECRET="your-secret-key-here"
-
-# Firebase Configuration
+# Firebase Client Configuration
 NEXT_PUBLIC_FIREBASE_API_KEY="your-api-key"
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="your-project.firebaseapp.com"
 NEXT_PUBLIC_FIREBASE_PROJECT_ID="your-project-id"
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="your-bucket"
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET="your-project.firebasestorage.app"
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="your-sender-id"
 NEXT_PUBLIC_FIREBASE_APP_ID="your-app-id"
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID="your-measurement-id"
+
+# Email Configuration (Optional - for support tickets)
+WEB3FORMS_ACCESS_KEY="your-web3forms-access-key"
+ADMIN_EMAIL="your-email@example.com"
 ```
 
-4. Set up the database:
+4. Add Firebase service account key:
+
+Download your service account key from Firebase Console and save it as `serviceAccountKey.json` in the project root (already in .gitignore).
+
+5. Seed the database (first-time setup):
 ```bash
-npx prisma generate
-npx prisma db push
+npm run dev
+# Then visit: http://localhost:3000/api/seed
 ```
 
-5. Run the development server:
+6. Run the development server:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+### Default Login Credentials
+
+- **Username**: admin
+- **Password**: admin123
 
 ## Deploy on Vercel
+
+**📖 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.**
 
 ### Quick Deploy
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yashbora-02/cpi-demo)
 
-### Manual Deployment
+### Manual Deployment Steps
 
-1. Push your code to GitHub
-2. Go to [Vercel](https://vercel.com) and sign in
-3. Click "New Project"
-4. Import your GitHub repository
-5. Configure environment variables in Vercel dashboard:
-   - Add all variables from `.env.local`
-   - Make sure `DATABASE_URL` points to your production database
-6. Click "Deploy"
+1. **Push code to GitHub**:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin <your-github-repo-url>
+   git push -u origin main
+   ```
 
-### Environment Variables Setup on Vercel
+2. **Deploy on Vercel**:
+   - Go to [vercel.com/new](https://vercel.com/new)
+   - Import your GitHub repository
+   - Vercel will auto-detect Next.js
 
-Go to your project settings → Environment Variables and add:
+3. **Configure Environment Variables** in Vercel dashboard:
 
-- `DATABASE_URL` - Your production PostgreSQL connection string
-- `JWT_SECRET` - Secure random string for JWT signing
-- `NEXT_PUBLIC_FIREBASE_API_KEY`
-- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-- `NEXT_PUBLIC_FIREBASE_APP_ID`
-- `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
+   Required:
+   - `NEXT_PUBLIC_FIREBASE_API_KEY`
+   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+   - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+   - `NEXT_PUBLIC_FIREBASE_APP_ID`
+   - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
+   - `FIREBASE_SERVICE_ACCOUNT_KEY` (entire JSON content)
 
-### Database Setup for Production
+   Optional:
+   - `WEB3FORMS_ACCESS_KEY` (for email notifications)
+   - `ADMIN_EMAIL` (for ticket notifications)
 
-1. Create a production PostgreSQL database (recommended: [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres), [Supabase](https://supabase.com/), or [Railway](https://railway.app/))
-2. Add the connection string to Vercel environment variables
-3. Run Prisma migrations in production:
-   - Vercel will automatically run `prisma generate` during build
-   - You may need to run `npx prisma db push` manually for initial setup
+4. **Click Deploy** ✨
+
+### Post-Deployment
+
+1. **Seed your database**: Visit `https://your-domain.vercel.app/api/seed`
+2. **Configure Firebase**: Add your Vercel domain to Firebase authorized domains
+3. **Test the application**: Login with admin/admin123
 
 ## Project Structure
 
 ```
-cpi-demo/
+cpi/
 ├── src/
-│   ├── app/              # Next.js app directory
-│   │   ├── api/          # API routes
-│   │   ├── courses/      # Course pages
-│   │   ├── dashboard/    # Dashboard page
-│   │   ├── login/        # Login page
-│   │   ├── register/     # Registration page
-│   │   └── page.tsx      # Landing page
-│   ├── components/       # React components
-│   ├── lib/              # Utility functions & configs
-│   └── styles/           # Global styles
-├── prisma/
-│   └── schema.prisma     # Database schema
-├── public/               # Static assets
-└── vercel.json          # Vercel configuration
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/                # API routes
+│   │   │   ├── auth/           # Authentication endpoints
+│   │   │   ├── credits/        # Credit management
+│   │   │   ├── digital-cards/  # Digital card creation
+│   │   │   ├── tickets/        # Support tickets
+│   │   │   └── videos/         # Video content
+│   │   ├── dashboard/          # Main dashboard
+│   │   ├── courses/            # Course management
+│   │   ├── credits/purchase/   # Credit purchase page
+│   │   ├── training/           # Class creation wizard
+│   │   ├── support/            # Support center
+│   │   ├── login/              # Login page
+│   │   └── page.tsx            # Landing page
+│   ├── components/             # Reusable React components
+│   ├── lib/                    # Utilities & Firebase config
+│   │   ├── firebase.ts         # Firebase client
+│   │   ├── firebaseAdmin.ts    # Firebase Admin SDK
+│   │   ├── firestoreAdmin.ts   # Firestore Admin
+│   │   ├── courseTypeMapping.ts # Course type mappings
+│   │   └── email.ts            # Email service
+│   └── styles/                 # Global CSS
+├── public/                     # Static assets
+│   └── uploads/                # User uploads
+├── vercel.json                 # Vercel configuration
+├── DEPLOYMENT.md               # Deployment guide
+└── CLAUDE.md                   # Project documentation
 ```
 
-## Features by Page
+## Key Features
 
-### Landing Page (`/`)
-- Professional landing page with CTA buttons
-- Course showcase
-- Pricing information
-- FAQ section
-- Testimonials
+### 🎓 Digital Card Creation
+- Multi-step wizard for creating training classes
+- Automatic student roster management
+- Locked cards after submission (immutable)
+- Certificate generation for students
 
-### Authentication
-- `/login` - Email/password and Google sign-in
-- `/register` - User registration with validation
+### 💳 Course-Specific Credit System
+- Credits are tracked per course type (CPR-AA, FA, BLS, etc.)
+- Cannot use credits across different course types
+- Real-time credit balance display
+- Credit purchase with multiple package options
 
-### Dashboard (`/dashboard`)
-- Credit overview (CPR Only, First Aid Only, Combo)
-- Quick access to main features
-- Logout functionality
+### 🎫 Support Ticket System
+- Create tickets with file attachments
+- Email notifications to admins
+- Unique ticket number generation
+- Support for Application Issues, Bugs, and Change Requests
 
-### Courses
-- `/courses` - Browse available courses
-- `/courses/enrolled` - View enrolled courses with progress tracking
+### 📹 Video Training
+- Integrated video player
+- Course-based video organization
+- Progress tracking
 
-### Instructor Portal
-- Manage instructors
-- Create and schedule classes
-- Student search functionality
+### 👤 User Management
+- Custom authentication for admin/instructors
+- Firebase Auth for end users
+- Role-based access control
+
+## Firestore Database Structure
+
+See [CLAUDE.md](./CLAUDE.md) for complete database schema.
+
+**Main Collections:**
+- `credits` - User credits by course type
+- `digitalCards` - Training class records (with students subcollection)
+- `tickets` - Support tickets
+- `videos` - Training videos
+- `savedCards` - Payment cards
 
 ## Firebase Setup
 
 1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
-2. Enable Authentication → Email/Password and Google sign-in methods
-3. Copy your Firebase config to `.env.local`
-4. Add your deployment domain to Firebase authorized domains
+2. Enable Firestore Database
+3. Enable Authentication → Email/Password and Google (optional)
+4. Create service account key for admin operations
+5. Copy Firebase config to `.env.local`
+6. Add your deployment domain to Firebase authorized domains
 
 ## Learn More
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Firebase Documentation](https://firebase.google.com/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [Vercel Documentation](https://vercel.com/docs)
+- [Next.js 15 Documentation](https://nextjs.org/docs)
+- [Firebase Firestore](https://firebase.google.com/docs/firestore)
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
+- [Tailwind CSS 4](https://tailwindcss.com/docs)
+- [Vercel Deployment](https://vercel.com/docs)
 
 ## Support
 
